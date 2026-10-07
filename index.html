@@ -1305,6 +1305,11 @@ document.addEventListener('click',e=>{
   const g=e.target.closest('[data-go]'); if(g){ const [v,a,b]=g.dataset.go.split(':'); route(v,a,b); }
 });
 function route(v,a,b){
+  routeInner(v,a,b);
+  if(v==='resume'&&Q&&Q.u){ v='quiz'; a=UNITS.indexOf(Q.u); b=Q.l; }
+  if(v!=='bubble') try{ sessionStorage.setItem('e3-view',JSON.stringify({v,a,b,g:GRADE})); }catch(e){}
+}
+function routeInner(v,a,b){
   if(canSpeak) try{speechSynthesis.cancel()}catch(e){}
   if(v==='bubble') return bubbleGame();
   VIEW=v;
@@ -1318,6 +1323,23 @@ function route(v,a,b){
   else if(v==='game') startGame(UNITS[+a],b);
   else if(v==='say') sayChallenge(UNITS[+a]);
   else if(v==='gram') gramIntro(UNITS[+a]);
+}
+/* 새로 고침을 해도 보고 있던 화면으로 돌아와요 (같은 탭에서만) */
+function restoreView(){
+  let o=null; try{ o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); }catch(e){}
+  if(!o||!o.v||o.v==='start') return start();
+  try{
+    setGrade(o.g); const u=UNITS[+o.a], rs=resumeInfo();
+    if(o.v==='grade'||o.v==='home') return route('home');
+    if(!u) return route('home');
+    if(o.v==='quiz'||o.v==='resume'){
+      if(rs&&rs.r.i<rs.r.qs.length&&(o.v==='resume'||(rs.u===u&&rs.r.l===+o.b))) return route('resume');
+      return o.v==='quiz'?route('unit',o.a):route('home');
+    }
+    if(o.v==='game') return route('lesson',o.a,3);
+    if(o.v==='unit'||o.v==='lesson'||o.v==='gram'||o.v==='say') return route(o.v,o.a,o.b);
+    start();
+  }catch(e){ start(); }
 }
 
 /* ---------- 첫 화면 ---------- */
@@ -2049,7 +2071,7 @@ function bubbleGame(){
   requestAnimationFrame(frame);
 }
 
-start();
+restoreView();
 initCloud();
 </script>
 </body>
