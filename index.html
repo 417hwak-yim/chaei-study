@@ -321,6 +321,48 @@ p,li,.lead,.inst,.sit p,.fb p,.tip,.lesson span,.unit .ko,.gtxt span,.game span,
 h1,h2,h3,.lesson b,.fb b,.mzq{text-wrap:balance}
 .nb,.stkline b,.result p b{white-space:nowrap!important; text-wrap:nowrap!important}
 .gtxt span .nb{display:inline}
+/* 계절 배경 그릇과 겨울 (12월~2월) */
+#scene{position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden; border-radius:24px}
+.autumn.winter{background:radial-gradient(ellipse 60% 34% at 18% 108%,#FFFFFF 0 99%,transparent 100%),radial-gradient(ellipse 70% 30% at 74% 112%,#EAF3FB 0 99%,transparent 100%),linear-gradient(165deg,#CFE4F7 0%,#E3F0FA 50%,#F4FAFE 100%)}
+.autumn.winter .hero p{color:#3A5A80}
+.autumn.winter .fallttl span{text-shadow:-2px -2px 0 #fff,2px -2px 0 #fff,-2px 2px 0 #fff,2px 2px 0 #fff,0 4px 0 rgba(27,39,80,.18)}
+.autumn.winter .fallground{background:linear-gradient(#FFFFFF,#E6F0F8)}
+.flake{width:calc(clamp(7px,1.4vw,12px) * var(--f))!important; aspect-ratio:1; border-radius:50%; background:#FFFFFF; box-shadow:0 0 0 1.5px rgba(27,39,80,.28); top:-8%!important; animation-name:snowfall!important}
+@keyframes snowfall{0%{transform:translate(0,0)} 25%{transform:translate(10px,110px)} 50%{transform:translate(-8px,220px)} 75%{transform:translate(9px,330px)} 100%{transform:translate(0,460px)}}
+.fsnowman{bottom:30%; width:calc(clamp(30px,6.4vw,58px) * var(--s,1))}
+.fsnowman svg,.fgift svg{display:block; width:100%; height:auto}
+.fgift{bottom:16%; width:calc(clamp(16px,3.2vw,30px) * var(--s,1)); transform:rotate(var(--r))}
+:root[data-season="winter"] body{background-color:#EEF5FB}
+@media (prefers-color-scheme:dark){ :root[data-season="winter"]:not([data-theme="light"]) body{background-color:var(--paper)} }
+:root[data-season="winter"][data-theme="dark"] body{background-color:var(--paper)}
+@media (prefers-reduced-motion:reduce){ .flake{animation:none!important; top:calc(8% + var(--f) * 40%)!important} }
+/* 봄 (3~5월) */
+.autumn.spring{background:radial-gradient(ellipse 60% 34% at 18% 108%,#B5E596 0 99%,transparent 100%),radial-gradient(ellipse 70% 30% at 74% 112%,#9BDB7C 0 99%,transparent 100%),linear-gradient(165deg,#DDF2FF 0%,#FDE8F1 55%,#FFF4D9 100%)}
+.autumn.spring .hero p{color:#3F6B3A}
+.autumn.spring .fallground{background:linear-gradient(#8FD468,#6FBF4F)}
+.petal{width:calc(clamp(8px,1.6vw,14px) * var(--f))!important; aspect-ratio:1.25; background:#F9B5CC; border-radius:80% 12% 80% 12%; box-shadow:0 0 0 1.3px rgba(27,39,80,.3); top:-8%!important}
+.bfly{position:absolute; width:clamp(18px,3.6vw,34px); animation:bflyfloat 2.6s ease-in-out infinite alternate}
+.bfly svg,.ftulip svg,.cloudx svg{display:block; width:100%; height:auto}
+@keyframes bflyfloat{from{transform:translate(0,0) rotate(-10deg)} to{transform:translate(16px,-14px) rotate(10deg)}}
+.ftulip{bottom:34%; width:calc(clamp(11px,2.3vw,21px) * var(--s,1))}
+:root[data-season="spring"] body{background-color:#F4FAF0}
+/* 여름 (6~8월) */
+.autumn.summer{background:linear-gradient(170deg,#7CCBFF 0%,#BFE7FF 60%,#E2F5FF 100%)}
+.autumn.summer .hero p{color:#1F5E8C}
+.autumn.summer .fallground{background:linear-gradient(#FBE7B0,#F2D38A)}
+.autumn.summer #scene::before{content:""; position:absolute; left:0; right:0; bottom:clamp(46px,10vw,78px); height:clamp(20px,4.6vw,38px); background:linear-gradient(#2F9BE0,#63C1F0); border-top:2px solid var(--ink)}
+.sunx{position:absolute; left:47%; top:5%; width:clamp(30px,6.4vw,58px); aspect-ratio:1; border-radius:50%; background:#FFD23F; border:2px solid var(--ink); box-shadow:0 0 0 clamp(4px,1vw,9px) rgba(255,210,63,.4)}
+.cloudx{position:absolute; left:-22%; width:calc(clamp(42px,9vw,86px) * var(--s,1)); animation:cloudmove linear infinite}
+@keyframes cloudmove{from{left:-22%} to{left:110%}}
+:root[data-season="summer"] body{background-color:#EAF6FF}
+@media (prefers-color-scheme:dark){ :root[data-season="spring"]:not([data-theme="light"]) body,:root[data-season="summer"]:not([data-theme="light"]) body{background-color:var(--paper)} }
+:root[data-season="spring"][data-theme="dark"] body,:root[data-season="summer"][data-theme="dark"] body{background-color:var(--paper)}
+@media (prefers-reduced-motion:reduce){ .petal{animation:none!important; top:calc(10% + var(--f) * 40%)!important} .bfly,.cloudx{animation:none} .cloudx:nth-of-type(2){left:10%} .cloudx:nth-of-type(3){left:55%} .cloudx:nth-of-type(4){left:30%} }
+/* 학년 상자: 내용이 상자 밖으로 나가지 않게 */
+.grade{overflow:hidden; gap:clamp(8px,2.4vw,16px); padding:clamp(12px,3vw,18px)}
+.gtxt{min-width:0}
+.gnum{width:clamp(52px,13vw,72px); height:clamp(52px,13vw,72px); font-size:clamp(1.9rem,6vw,2.6rem); flex:none}
+.gicon{font-size:clamp(1.7rem,6vw,2.6rem); flex:none; line-height:1; max-width:1.3em; overflow:hidden}
 </style>
 </head>
 <body>
@@ -1387,7 +1429,12 @@ function home(){
 /* ---------- 처음 화면: 학년 고르기 ---------- */
 function start(){
   BACK='start'; VIEW='start'; calY=new Date().getFullYear(); calM=new Date().getMonth();
-  const FALL=['#D9482B','#E88A1A','#C99A12','#7A8B2E','#B5532A','#E0603B','#A63D2F'], rainbow=t=>{ let k=0; return [...t].map(c=>c===' '?' ':'<span style="color:'+FALL[k%FALL.length]+';--r:'+[-5,4,-3,5,-4,3][k++%6]+'deg">'+c+'</span>').join(''); };
+  /* 계절 배경: 3~5월 봄, 6~8월 여름, 9~11월 가을, 12~2월 겨울. 달력을 넘기면 그 달의 계절로 바뀌어요 */
+  const seasonOf=m=>m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter';
+  let SEASON=seasonOf(calM+1); try{ const q=new URLSearchParams(location.search).get('season'); if(['spring','summer','autumn','winter'].includes(q)) SEASON=q; }catch(e){}
+  const PAL={spring:['#E0457B','#2FA36B','#F08A24','#8A5CF0','#E4485F','#3D9BD6','#C99A12'],summer:['#1F8FE0','#F08A24','#2FA36B','#E4485F','#D7A300','#1FA3A3','#E0457B'],autumn:['#D9482B','#E88A1A','#C99A12','#7A8B2E','#B5532A','#E0603B','#A63D2F'],winter:['#2F6FD0','#1FA3A3','#D9482B','#3F8765','#6A5ACD','#2E9BD6','#C23B5E']};
+  let FALL=PAL[SEASON];
+  const rainbow=t=>{ let k=0; return [...t].map(c=>c===' '?' ':'<span style="color:'+FALL[k%FALL.length]+';--r:'+[-5,4,-3,5,-4,3][k++%6]+'deg">'+c+'</span>').join(''); };
   const ACORN='<svg viewBox="0 0 24 30"><ellipse cx="12" cy="18.5" rx="7.5" ry="9.5" fill="#D9A05B" stroke="#1B2750" stroke-width="1.6"/><path d="M2.5 14 Q12 1 21.5 14 Q12 18 2.5 14Z" fill="#7A4A21" stroke="#1B2750" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 6.5V2.5" stroke="#1B2750" stroke-width="1.8" stroke-linecap="round"/></svg>';
   const MAPLE=c=>'<svg viewBox="0 0 40 46"><path d="M20 31V43" stroke="#1B2750" stroke-width="2.2" stroke-linecap="round"/><path d="M20 2 L23.5 10 L30 7 L28.5 16 L37 17 L31 24 L34 30 L25 29.5 L22 34 L20 30.5 L18 34 L15 29.5 L6 30 L9 24 L3 17 L11.5 16 L10 7 L16.5 10 Z" fill="'+c+'" stroke="#1B2750" stroke-width="1.8" stroke-linejoin="round"/><path d="M20 29V9M20 26L10 18M20 26L30 18M20 28L11 27M20 28L29 27" stroke="#1B2750" stroke-width="1" stroke-linecap="round" opacity=".45" fill="none"/></svg>';
   const GINKGO=c=>'<svg viewBox="0 0 40 46"><path d="M20 30 Q21.5 37 19 43" stroke="#1B2750" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M20 30 C8 28.5 2 19 4 8.5 C10 4 16 6 20 12.5 C24 6 30 4 36 8.5 C38 19 32 28.5 20 30 Z" fill="'+c+'" stroke="#1B2750" stroke-width="1.8" stroke-linejoin="round"/><path d="M20 29L8 12M20 29L14 9M20 29L26 9M20 29L32 12M20 29V14" stroke="#1B2750" stroke-width="1" stroke-linecap="round" opacity=".4" fill="none"/></svg>';
@@ -1400,19 +1447,55 @@ function start(){
     +[[23,-22,'m','#D9482B',40],[26.5,28,'g','#F2C230',30],[30,-6,'m','#E88A1A',44],[37,42,'g','#E8B81A',26],[42,-38,'m','#E0603B',38],[55,16,'m','#E88A1A',42],[58.5,-26,'g','#F2C230',28],[64,32,'m','#D9482B',40],[69.5,-12,'g','#E8B81A',34],[79,22,'m','#E0603B',42],[83,-32,'g','#F2C230',28],[89,8,'m','#E88A1A',36]].map(f=>'<span class="fleaf" style="left:'+f[0]+'%;bottom:'+f[4]+'%;--r:'+f[1]+'deg">'+(f[2]==='m'?MAPLE(f[3]):GINKGO(f[3]))+'</span>').join('')
     +'<span class="facorn" style="left:21%;--r:-18deg">'+ACORN+'</span><span class="facorn" style="left:46%;--r:14deg">'+ACORN+'</span><span class="facorn" style="left:51%;--r:-30deg">'+ACORN+'</span><span class="facorn" style="left:74%;--r:20deg">'+ACORN+'</span>'
     +'</div>';
-  let h='<div class="starttop autumn"><div class="leaves" aria-hidden="true">'+leaves+'</div>'+ground+'<header class="hero">'+(KID.photo?'<img class="kidface" src="'+KID.photo+'" alt="'+KID.name+' 사진">':'')+'<div class="herotxt"><h1 class="fallttl" aria-label="'+KID.name+'의 영어 공부">'+rainbow(KID.name+'의')+' <br>'+rainbow('영어 공부')+'</h1><p>'+KID.call+' 공부할 학년을 골라요.</p></div></header><section class="board cal" id="cal" aria-label="공부 달력">'+calHTML()+'</section></div>';
+  const PINE='<svg viewBox="0 0 80 110"><rect x="35" y="88" width="10" height="18" rx="2" fill="#6B4A33" stroke="#1B2750" stroke-width="2"/><g stroke="#1B2750" stroke-width="2" stroke-linejoin="round"><path d="M40 44 L70 92 H10Z" fill="#2F8F63"/><path d="M40 22 L64 66 H16Z" fill="#37A072"/><path d="M40 4 L58 40 H22Z" fill="#40B081"/></g><g fill="#FFFFFF" stroke="#1B2750" stroke-width="1.4" stroke-linejoin="round"><path d="M40 4 L49 22 Q44 18 40 22 Q36 18 31 22Z"/><path d="M40 28 L52 50 Q46 45 40 50 Q34 45 28 50Z"/><path d="M40 50 L55 74 Q47 68 40 74 Q33 68 25 74Z"/></g></svg>';
+  const SNOWMAN='<svg viewBox="0 0 70 96"><g stroke="#1B2750" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M20 52 L6 42 M50 52 L64 40" fill="none" stroke="#6B4A33" stroke-width="2.4"/><circle cx="35" cy="66" r="24" fill="#FFFFFF"/><circle cx="35" cy="32" r="16" fill="#FFFFFF"/><path d="M23 44 Q35 50 47 44 L45 50 Q35 55 25 50Z" fill="#E4485F"/><path d="M40 49 L46 62 L39 60Z" fill="#E4485F"/><rect x="24" y="8" width="22" height="12" rx="2" fill="#1B2750"/><path d="M19 20 H51" stroke-width="3.2"/><path d="M36 33 L47 36 L36 38Z" fill="#F08A24"/></g><circle cx="29" cy="28" r="2.1" fill="#1B2750"/><circle cx="40" cy="28" r="2.1" fill="#1B2750"/><circle cx="35" cy="60" r="2.1" fill="#1B2750"/><circle cx="35" cy="70" r="2.1" fill="#1B2750"/><circle cx="27" cy="36" r="2.4" fill="#FF9E9E" opacity=".8"/><circle cx="43" cy="36" r="2.4" fill="#FF9E9E" opacity=".8"/></svg>';
+  const GIFT=(a,b)=>'<svg viewBox="0 0 40 40"><g stroke="#1B2750" stroke-width="2" stroke-linejoin="round"><rect x="5" y="15" width="30" height="21" rx="2" fill="'+a+'"/><rect x="3" y="10" width="34" height="8" rx="2" fill="'+a+'"/><rect x="17" y="10" width="6" height="26" fill="'+b+'"/><path d="M20 10 Q10 0 9 7 Q9 11 20 10 Q31 11 31 7 Q30 0 20 10Z" fill="'+b+'"/></g></svg>';
+  const snow=[[4,9,0,1],[11,12,5,.6],[19,10,2,.8],[27,14,8,.55],[35,11,4,1],[43,13,1,.7],[52,9.5,6,.6],[60,12.5,3,.9],[69,10.5,9,.65],[77,13.5,2.5,1],[86,11.5,7,.6],[94,9,4.5,.8]].map(f=>'<span class="leaf flake" style="left:'+f[0]+'%;--f:'+f[3]+';animation-duration:'+f[1]+'s;animation-delay:-'+f[2]+'s"></span>').join('');
+  const wground='<div class="fallground" aria-hidden="true">'
+    +'<span class="ftree" style="left:1%;--s:1">'+PINE+'</span><span class="ftree" style="left:12%;--s:.7">'+PINE+'</span><span class="ftree" style="right:1%;--s:.82">'+PINE+'</span>'
+    +'<span class="fsnowman" style="left:25%">'+SNOWMAN+'</span><span class="fsnowman" style="left:66%;--s:.78">'+SNOWMAN+'</span>'
+    +'<span class="fgift" style="left:40%;--r:-8deg">'+GIFT('#E4485F','#FFC83A')+'</span><span class="fgift" style="left:46%;--r:6deg;--s:.8">'+GIFT('#3D7BF2','#FFFFFF')+'</span><span class="fgift" style="left:80%;--r:5deg;--s:.9">'+GIFT('#2FA36B','#E4485F')+'</span>'
+    +'</div>';
+  /* 봄: 벚나무, 떨어지는 꽃잎, 튤립, 나비 */
+  const TULIP=c=>'<svg viewBox="0 0 30 50"><path d="M15 48V22" stroke="#2F8F3F" stroke-width="3" stroke-linecap="round"/><path d="M15 40 Q6 36 5 27 Q12 29 15 38Z" fill="#4FAE4A" stroke="#1B2750" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 8 Q10 12 15 6 Q20 12 24 8 Q26 22 15 24 Q4 22 6 8Z" fill="'+c+'" stroke="#1B2750" stroke-width="2" stroke-linejoin="round"/></svg>';
+  const BFLY=c=>'<svg viewBox="0 0 40 32"><g stroke="#1B2750" stroke-width="1.8" stroke-linejoin="round"><path d="M20 16 Q8 0 3 8 Q0 16 20 18Z" fill="'+c+'"/><path d="M20 16 Q32 0 37 8 Q40 16 20 18Z" fill="'+c+'"/><path d="M20 18 Q10 30 7 24 Q6 18 20 18Z" fill="#FFFFFF"/><path d="M20 18 Q30 30 33 24 Q34 18 20 18Z" fill="#FFFFFF"/><ellipse cx="20" cy="17" rx="2" ry="7" fill="#1B2750"/></g></svg>';
+  const petals=[[5,10,0,1],[13,13,5,.7],[22,11,2,.9],[31,15,8,.6],[40,12,4,1],[49,14,1,.75],[58,10.5,6,.65],[67,13.5,3,.95],[76,11.5,9,.7],[85,14.5,2.5,1],[93,12,7,.65]].map(f=>'<span class="leaf petal" style="left:'+f[0]+'%;--f:'+f[3]+';animation-duration:'+f[1]+'s;animation-delay:-'+f[2]+'s"></span>').join('')
+    +'<span class="bfly" style="left:34%;top:54%">'+BFLY('#FFC83A')+'</span><span class="bfly" style="left:8%;top:64%;animation-delay:-1.4s">'+BFLY('#8AB4F8')+'</span>';
+  const sground='<div class="fallground" aria-hidden="true">'
+    +'<span class="ftree" style="left:1%;--s:1">'+TREE('#F7A8C4','#FBC4D8','#F58FB0','#FFD9E6')+'</span><span class="ftree" style="left:13%;--s:.72">'+TREE('#FBC4D8','#F58FB0','#F7A8C4','#FFE3EC')+'</span><span class="ftree" style="right:1%;--s:.8">'+TREE('#F58FB0','#FFD9E6','#FBC4D8','#F7A8C4')+'</span>'
+    +[[24,'#E4485F',1],[28,'#FFC83A',.8],[32,'#8A5CF0',.9],[44,'#FF8A3D',.85],[48,'#E0457B',1],[60,'#FFC83A',.9],[64,'#E4485F',.8],[76,'#8A5CF0',1],[80,'#FF8A3D',.85]].map(f=>'<span class="ftulip" style="left:'+f[0]+'%;--s:'+f[2]+'">'+TULIP(f[1])+'</span>').join('')
+    +'</div>';
+  /* 여름: 해와 구름, 바다, 야자나무, 파라솔, 수박과 공 */
+  const PALM='<svg viewBox="0 0 90 120"><path d="M44 116 Q40 82 48 52" stroke="#1B2750" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M44 116 Q40 82 48 52" stroke="#A9743F" stroke-width="7" fill="none" stroke-linecap="round"/><g fill="#2FA36B" stroke="#1B2750" stroke-width="2" stroke-linejoin="round"><path d="M48 50 Q20 30 4 46 Q24 42 48 50Z"/><path d="M48 50 Q76 30 88 48 Q70 42 48 50Z"/><path d="M48 50 Q30 12 10 16 Q30 24 48 50Z"/><path d="M48 50 Q66 12 84 18 Q66 26 48 50Z"/><path d="M48 50 Q40 16 46 6 Q56 22 48 50Z"/></g><circle cx="44" cy="55" r="5" fill="#8A5A2B" stroke="#1B2750" stroke-width="1.6"/><circle cx="53" cy="56" r="5" fill="#8A5A2B" stroke="#1B2750" stroke-width="1.6"/></svg>';
+  const PARASOL='<svg viewBox="0 0 90 110"><path d="M45 20 V106" stroke="#1B2750" stroke-width="3.4" stroke-linecap="round"/><path d="M6 46 Q45 -6 84 46 Q71 38 58 46 Q45 38 32 46 Q19 38 6 46Z" fill="#E4485F" stroke="#1B2750" stroke-width="2" stroke-linejoin="round"/><path d="M32 46 Q38 16 45 12 Q52 16 58 46 Q45 38 32 46Z" fill="#FFFFFF" stroke="#1B2750" stroke-width="2" stroke-linejoin="round"/></svg>';
+  const BALL='<svg viewBox="0 0 40 40"><g stroke="#1B2750" stroke-width="2" stroke-linejoin="round"><circle cx="20" cy="20" r="17" fill="#FFFFFF"/><path d="M20 3 Q7 20 20 37 Q14 20 20 3Z" fill="#E4485F"/><path d="M20 3 Q33 20 20 37 Q26 20 20 3Z" fill="#3D7BF2"/><path d="M6 10 Q20 4 34 10 Q20 12 6 10Z" fill="#FFC83A"/></g></svg>';
+  const MELON='<svg viewBox="0 0 50 30"><g stroke="#1B2750" stroke-width="2" stroke-linejoin="round"><path d="M3 4 H47 Q44 28 25 28 Q6 28 3 4Z" fill="#2FA36B"/><path d="M7.5 4 H42.5 Q40 23 25 23 Q10 23 7.5 4Z" fill="#F0556B"/></g><g fill="#1B2750"><ellipse cx="18" cy="11" rx="1.4" ry="2"/><ellipse cx="25" cy="15" rx="1.4" ry="2"/><ellipse cx="32" cy="11" rx="1.4" ry="2"/></g></svg>';
+  const STARF='<svg viewBox="0 0 40 40"><path d="M20 3 L24.5 14.5 L37 15.5 L27.5 23.5 L30.5 36 L20 29 L9.5 36 L12.5 23.5 L3 15.5 L15.5 14.5Z" fill="#F7A23B" stroke="#1B2750" stroke-width="2" stroke-linejoin="round"/></svg>';
+  const CLOUD='<svg viewBox="0 0 80 40"><path d="M14 34 Q2 34 4 24 Q6 16 16 18 Q18 6 32 8 Q42 2 50 12 Q64 8 66 20 Q78 20 76 30 Q74 34 66 34Z" fill="#FFFFFF" stroke="#1B2750" stroke-width="2" stroke-linejoin="round"/></svg>';
+  const sky='<span class="sunx"></span>'+[[6,1,46,5],[22,.7,60,30],[12,.85,52,44]].map(c=>'<span class="cloudx" style="top:'+c[0]+'%;--s:'+c[1]+';animation-duration:'+c[2]+'s;animation-delay:-'+c[3]+'s">'+CLOUD+'</span>').join('');
+  const mground='<div class="fallground" aria-hidden="true">'
+    +'<span class="ftree" style="left:1%;--s:1.05">'+PALM+'</span><span class="ftree" style="left:13%;--s:.75">'+PALM+'</span><span class="ftree" style="right:2%;--s:.85">'+PARASOL+'</span>'
+    +'<span class="fgift" style="left:27%;--r:-10deg;--s:1.1">'+BALL+'</span><span class="fgift" style="left:42%;--r:6deg;--s:1.5">'+MELON+'</span><span class="fgift" style="left:55%;--r:-14deg;--s:.9">'+STARF+'</span><span class="fgift" style="left:68%;--r:12deg;--s:1.4">'+MELON+'</span><span class="fgift" style="left:79%;--r:8deg;--s:.8">'+STARF+'</span>'
+    +'</div>';
+  const wrap=t=>'<div class="leaves" aria-hidden="true">'+t+'</div>';
+  const scene=sn=>sn==='winter'?wrap(snow)+wground:sn==='spring'?wrap(petals)+sground:sn==='summer'?wrap(sky)+mground:wrap(leaves)+ground;
+  const titleHTML=()=>rainbow(KID.name+'의')+' <br>'+rainbow('영어 공부');
+  let h='<div class="starttop autumn'+(SEASON!=='autumn'?' '+SEASON:'')+'" id="hero" data-sn="'+SEASON+'"><div id="scene">'+scene(SEASON)+'</div><header class="hero">'+(KID.photo?'<img class="kidface" src="'+KID.photo+'" alt="'+KID.name+' 사진">':'')+'<div class="herotxt"><h1 class="fallttl" id="herottl" aria-label="'+KID.name+'의 영어 공부">'+titleHTML()+'</h1><p>'+KID.call+' 공부할 학년을 골라요.</p></div></header><section class="board cal" id="cal" aria-label="공부 달력">'+calHTML()+'</section></div>';
   const rs=resumeInfo();
   if(rs&&rs.r.i<rs.r.qs.length) h+='<button class="lesson" style="--u:'+rs.u.color+';width:100%;margin-top:18px" data-go="resume"><span class="n">이어서 풀기</span><span><b>'+KID.ya+', 지난번에 풀던 문제 이어서 풀까?</b><span>'+rs.u.g+'학년 '+rs.u.num+'단원 '+(rs.r.l+1)+'차시 '+LN(rs.u,rs.r.l)[0]+', '+(rs.r.i+1)+'번 문제부터 이어서 풀어요.</span></span><span class="go pic" style="font-size:1.8rem">📖</span></button>';
   { const Bp=STATE.bp||{}, n=(Bp.tix||0)+(Bp.left>0?1:0); if(n) h+='<button class="lesson" style="--u:#E0457B;width:100%;margin-top:18px" data-go="bubble"><span class="n">방울 게임</span><span><b>🫧 말랑팝 방울 슈터</b><span>'+(Bp.left>0?'하던 게임이 '+Math.ceil(Bp.left)+'초 남았어요. ':'')+(Bp.tix?'60초 이용권 '+Bp.tix+'장이 있어요.':'')+' 멈춘 곳부터 이어서 해요.</span></span><span class="go pic" style="font-size:1.8rem">🎮</span></button>'; }
   h+='<section class="grades">';
   Object.keys(GRADES).forEach(g=>{
     const G=GRADES[g], n=G.units.length*SLOTS.length, got=G.units.reduce((c,u)=>c+SLOTS.filter(l=>prog[u.id+'-'+l]).length,0);
-    h+='<button class="grade" style="--u:'+G.color+'" '+(n?'data-go="grade:'+g+'"':'disabled')+'><span class="gnum">'+g+'</span><span class="gtxt"><b>'+g+'학년</b><span>'+(n?G.units.length+'단원, <span class="nb">동물 도장 '+got+' / '+n+'개</span>':'준비 중이에요')+'</span>'+(n?'<span class="gbar"><i style="width:'+(got/n*100)+'%"></i></span>':'')+'</span><span class="pic gicon">'+G.icon+'</span></button>';
+    h+='<button class="grade" style="--u:'+G.color+'" '+(n?'data-go="grade:'+g+'"':'disabled')+'><span class="gnum">'+g+'</span><span class="gtxt"><b>'+g+'학년</b><span>'+(n?G.units.length+'단원, <span class="nb">동물 도장 '+got+' / '+n+'개</span>':'준비 중이에요')+'</span>'+(n?'<span class="gbar"><i style="width:'+(got/n*100)+'%"></i></span>':'')+'</span></button>';
   });
   h+='</section><p class="sync" id="sync">'+syncText()+'</p>';
   h+='<details><summary>다른 기기로 기록 옮기기</summary><p>이 기기에서 모은 동물 도장을 코드로 바꿔요. 코드를 복사해서 다른 기기의 이 화면에 붙여 넣으면 도장이 합쳐져요.</p><div class="row"><input class="code en" id="mycode" readonly aria-label="내 기록 코드" value="'+makeCode()+'"><button class="btn" id="copycode">코드 복사</button></div><div class="row" style="margin-top:12px"><input class="code en" id="incode" aria-label="받은 기록 코드" placeholder="다른 기기의 코드를 붙여 넣어요" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn main" id="usecode">도장 가져오기</button></div><p id="codemsg" class="lead" style="margin:10px 0 0"></p></details>';
   show(h);
-  document.getElementById('cal').onclick=e=>{ const b=e.target.closest('[data-cal]'); if(!b||b.disabled) return; calM+=+b.dataset.cal; if(calM<0){calM=11;calY--;} if(calM>11){calM=0;calY++;} document.getElementById('cal').innerHTML=calHTML(); };
+  document.getElementById('cal').onclick=e=>{ const b=e.target.closest('[data-cal]'); if(!b||b.disabled) return; calM+=+b.dataset.cal; if(calM<0){calM=11;calY--;} if(calM>11){calM=0;calY++;} document.getElementById('cal').innerHTML=calHTML();
+    const sn=seasonOf(calM+1), hero=document.getElementById('hero');
+    if(hero&&hero.dataset.sn!==sn){ hero.dataset.sn=sn; hero.classList.remove('winter','spring','summer'); if(sn!=='autumn') hero.classList.add(sn); FALL=PAL[sn]; document.getElementById('scene').innerHTML=scene(sn); document.getElementById('herottl').innerHTML=titleHTML(); document.documentElement.dataset.season=sn; } };
+  document.documentElement.dataset.season=SEASON;
   const my=document.getElementById('mycode'), msg=document.getElementById('codemsg');
   document.getElementById('copycode').onclick=()=>{ my.focus(); my.select(); let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
     if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(my.value).then(()=>{msg.textContent='코드를 복사했어요.'},()=>{msg.textContent=ok?'코드를 복사했어요.':'코드가 선택됐어요. 길게 눌러 복사해 주세요.'});
