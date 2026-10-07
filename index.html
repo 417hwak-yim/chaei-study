@@ -315,6 +315,12 @@ input.type{font-family:'Andika',sans-serif; font-size:1.6rem; text-align:center;
   .stim .pic{font-size:4rem}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+/* 줄바꿈: 낱말 중간이나 조사 앞에서 끊기지 않게, 띄어쓰기에서만 줄을 바꿔요 */
+body{word-break:keep-all; overflow-wrap:break-word; line-break:strict}
+p,li,.lead,.inst,.sit p,.fb p,.tip,.lesson span,.unit .ko,.gtxt span,.game span,.hinfo p,.sync,summary,td{text-wrap:pretty}
+h1,h2,h3,.lesson b,.fb b,.mzq{text-wrap:balance}
+.nb,.stkline b,.result p b{white-space:nowrap!important; text-wrap:nowrap!important}
+.gtxt span .nb{display:inline}
 </style>
 </head>
 <body>
@@ -1401,7 +1407,7 @@ function start(){
   h+='<section class="grades">';
   Object.keys(GRADES).forEach(g=>{
     const G=GRADES[g], n=G.units.length*SLOTS.length, got=G.units.reduce((c,u)=>c+SLOTS.filter(l=>prog[u.id+'-'+l]).length,0);
-    h+='<button class="grade" style="--u:'+G.color+'" '+(n?'data-go="grade:'+g+'"':'disabled')+'><span class="gnum">'+g+'</span><span class="gtxt"><b>'+g+'학년</b><span>'+(n?G.units.length+'단원, 동물 도장 '+got+' / '+n+'개':'준비 중이에요')+'</span>'+(n?'<span class="gbar"><i style="width:'+(got/n*100)+'%"></i></span>':'')+'</span><span class="pic gicon">'+G.icon+'</span></button>';
+    h+='<button class="grade" style="--u:'+G.color+'" '+(n?'data-go="grade:'+g+'"':'disabled')+'><span class="gnum">'+g+'</span><span class="gtxt"><b>'+g+'학년</b><span>'+(n?G.units.length+'단원, <span class="nb">동물 도장 '+got+' / '+n+'개</span>':'준비 중이에요')+'</span>'+(n?'<span class="gbar"><i style="width:'+(got/n*100)+'%"></i></span>':'')+'</span><span class="pic gicon">'+G.icon+'</span></button>';
   });
   h+='</section><p class="sync" id="sync">'+syncText()+'</p>';
   h+='<details><summary>다른 기기로 기록 옮기기</summary><p>이 기기에서 모은 동물 도장을 코드로 바꿔요. 코드를 복사해서 다른 기기의 이 화면에 붙여 넣으면 도장이 합쳐져요.</p><div class="row"><input class="code en" id="mycode" readonly aria-label="내 기록 코드" value="'+makeCode()+'"><button class="btn" id="copycode">코드 복사</button></div><div class="row" style="margin-top:12px"><input class="code en" id="incode" aria-label="받은 기록 코드" placeholder="다른 기기의 코드를 붙여 넣어요" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn main" id="usecode">도장 가져오기</button></div><p id="codemsg" class="lead" style="margin:10px 0 0"></p></details>';
