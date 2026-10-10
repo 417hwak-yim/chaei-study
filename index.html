@@ -457,6 +457,7 @@ h1,h2,h3,.lesson b,.fb b,.mzq{text-wrap:balance}
 @keyframes hjdraw{to{stroke-dashoffset:0}}
 .hjnum{opacity:0; animation:hjpop .2s linear forwards} .hjnum circle{fill:#fff; stroke:#1B2750; stroke-width:5} .hjnum text{fill:#1B2750; font:700 38px 'Outfit','Noto Sans KR',sans-serif}
 @keyframes hjpop{to{opacity:1}}
+.hjdraw,.hjnum{animation-play-state:paused} svg.hjgo .hjdraw,svg.hjgo .hjnum{animation-play-state:running}
 .hjsen{border-left:4px solid var(--u); background:var(--card); border-radius:0 12px 12px 0; padding:10px 12px; margin:8px 0; font-size:1.12rem; line-height:1.9}
 .hjsen.q{font-size:1.25rem; text-align:left}
 .hjw{background:var(--sun); color:#1B2750; border-radius:8px; padding:1px 6px; white-space:nowrap} .hjw small{margin-left:3px; font-weight:700}
@@ -1638,6 +1639,17 @@ function hjAnimSvg(c,hi){
   return h+'</g></svg>';
 }
 function hjAnim(box){ box.innerHTML=hjAnimSvg(box.dataset.c); }
+/* 획순은 그 그림이 화면에 실제로 보일 때부터 그어요. 화면 밖에 있거나 다른 창을 보고 있으면 기다려요 */
+(function(){
+  const go=v=>v.classList.add('hjgo');
+  if(!('IntersectionObserver' in window)||!('MutationObserver' in window)){ const st=document.createElement('style'); st.textContent='.hjdraw,.hjnum{animation-play-state:running}'; document.head.appendChild(st); return; }
+  const wait=new Set();
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting||e.intersectionRatio<.6) return; io.unobserve(e.target); if(document.hidden) wait.add(e.target); else go(e.target); }),{threshold:.6});
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ wait.forEach(v=>{ if(v.isConnected) io.observe(v); }); wait.clear(); } });
+  const scan=n=>{ if(n.nodeType!==1) return; const d=n.matches&&n.matches('.hjdraw')?[n]:n.querySelectorAll('.hjdraw'); d.forEach(x=>{ const v=x.closest('svg'); if(v&&!v.classList.contains('hjgo')) io.observe(v); }); };
+  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(scan))).observe(document.documentElement,{childList:true,subtree:true});
+  scan(document.documentElement);
+})();
 /* 여러 번 쓰기: 흐린 글자 → 더 흐린 글자 → 안 보고 쓰기 → 견주어 보기 */
 const HJR=['① 번호 순서대로 흐린 글자 위에 써요','② 더 흐린 글자 위에 번호대로 써요','③ 이번에는 안 보고 써요','글자를 비춰서 견주어 봐요'];
 function hjClear(b){ const c=b.closest('.hjcard').querySelector('.hjpad'); c.getContext('2d').clearRect(0,0,c.width,c.height); }
@@ -2706,11 +2718,14 @@ const canSpeak='speechSynthesis' in window && typeof SpeechSynthesisUtterance!==
 function say(t){
   if(!canSpeak) return;
   try{ speechSynthesis.cancel(); const lang=/[가-힣]/.test(t)?'ko-KR':'en-US';
-    /* 문장은 끊지 않고 통째로 읽어요. 물음표가 있으면 목소리가 스스로 끝을 올려요. 기기에 더 자연스러운 목소리가 있으면 그것을 골라요 */
-    const u=new SpeechSynthesisUtterance(t.replace(/’/g,"'").replace(/_+/g,' ')); u.lang=lang; u.rate=.8;
+    /* 기기에 더 자연스러운 목소리가 있으면 그것을 골라요 */
+    let voice=null;
     try{ const sc=v=>(/natural|neural|enhanced|premium|siri/i.test(v.name)?4:0)+(/google|online/i.test(v.name)?2:0)+(v.lang.replace('_','-')===lang?1:0);
-      const vs=speechSynthesis.getVoices().filter(v=>v.lang.replace('_','-').slice(0,2)===lang.slice(0,2)).sort((a,b)=>sc(b)-sc(a)); if(vs[0]&&sc(vs[0])>1) u.voice=vs[0]; }catch(e){}
-    speechSynthesis.speak(u);}catch(e){}
+      const vs=speechSynthesis.getVoices().filter(v=>v.lang.replace('_','-').slice(0,2)===lang.slice(0,2)).sort((a,b)=>sc(b)-sc(a)); if(vs[0]&&sc(vs[0])>1) voice=vs[0]; }catch(e){}
+    const put=(s,p)=>{ if(!s.trim()) return; const u=new SpeechSynthesisUtterance(s); u.lang=lang; u.rate=.8; u.pitch=p; if(voice) u.voice=voice; speechSynthesis.speak(u); };
+    /* 문장은 끊지 않고 통째로 읽어요. 물음표의 억양은 기기 목소리가 스스로 내요 */
+    put(t.replace(/’/g,"'").replace(/_+/g,' ').replace(/\s+([?？])/g,'$1'),1);
+  }catch(e){}
 }
 /* 영어 문제는 열리자마자 지문을 한 번 읽어 줘요. 빈칸(___)이 있는 문장은 빈칸을 빼고 읽어요 */
 const AUTOSAID=new WeakSet();
