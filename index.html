@@ -2718,10 +2718,10 @@ const canSpeak='speechSynthesis' in window && typeof SpeechSynthesisUtterance!==
 function say(t){
   if(!canSpeak) return;
   try{ speechSynthesis.cancel(); const lang=/[가-힣]/.test(t)?'ko-KR':'en-US';
-    /* 기기에 더 자연스러운 목소리가 있으면 그것을 골라요 */
+    /* 기기에 더 자연스러운 목소리가 있으면 그것을 골라요. 영어의 Google 목소리는 물음표에서도 끝을 올리지 않아서 기기 목소리를 먼저 써요 */
     let voice=null;
-    try{ const sc=v=>(/natural|neural|enhanced|premium|siri/i.test(v.name)?4:0)+(/google|online/i.test(v.name)?2:0)+(v.lang.replace('_','-')===lang?1:0);
-      const vs=speechSynthesis.getVoices().filter(v=>v.lang.replace('_','-').slice(0,2)===lang.slice(0,2)).sort((a,b)=>sc(b)-sc(a)); if(vs[0]&&sc(vs[0])>1) voice=vs[0]; }catch(e){}
+    try{ const sc=v=>(/natural|neural|enhanced|premium|siri/i.test(v.name)?4:0)+(/online/i.test(v.name)?2:0)+(/google/i.test(v.name)?(lang==='en-US'?-3:2):0)+(v.lang.replace('_','-')===lang?1:0);
+      const vs=speechSynthesis.getVoices().filter(v=>v.lang.replace('_','-').slice(0,2)===lang.slice(0,2)).sort((a,b)=>sc(b)-sc(a)); if(vs[0]&&(lang==='en-US'||sc(vs[0])>1)) voice=vs[0]; }catch(e){}
     const put=(s,p)=>{ if(!s.trim()) return; const u=new SpeechSynthesisUtterance(s); u.lang=lang; u.rate=.8; u.pitch=p; if(voice) u.voice=voice; speechSynthesis.speak(u); };
     /* 문장은 끊지 않고 통째로 읽어요. 물음표의 억양은 기기 목소리가 스스로 내요 */
     put(t.replace(/’/g,"'").replace(/_+/g,' ').replace(/\s+([?？])/g,'$1'),1);
