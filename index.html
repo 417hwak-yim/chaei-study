@@ -185,7 +185,7 @@ input.type{font-family:'Andika',sans-serif; font-size:1.6rem; text-align:center;
 .cal .lead{font-size:.85rem; line-height:1.4}
 .calhead{display:flex; align-items:center; justify-content:space-between; gap:8px}
 .calhead h2{font-size:1.05rem; margin:0}
-.calnav{border:2px solid var(--ink); background:var(--card); border-radius:50%; width:30px; height:30px; font-size:.75rem; padding:0; box-shadow:0 2px 0 var(--ink)}
+.calnav{border:2px solid var(--ink); background:var(--card); border-radius:50%; width:38px; height:38px; font-size:.85rem; padding:0; box-shadow:0 2px 0 var(--ink)}
 .calnav[disabled]{opacity:.35; cursor:default}
 .calgrid{display:grid; grid-template-columns:repeat(7,1fr); gap:3px}
 .cw{text-align:center; font-family:'Jua',sans-serif; color:var(--soft); font-size:.75rem}
@@ -245,7 +245,7 @@ input.type{font-family:'Andika',sans-serif; font-size:1.6rem; text-align:center;
 .cd.bday em{position:absolute; left:0; top:-5px; font-style:normal; font-size:.75rem; line-height:1}
 .cd.bday.done{background:var(--ok); border-color:#E0457B} .cd.bday.done b{color:#fff}
 .bdnote{display:inline-block; margin-left:4px; padding:0 8px; border-radius:999px; background:#FFE1EA; color:#B5234F; font-family:'Jua',sans-serif}
-@media (max-width:600px){ .cd.bday em{font-size:.55rem; top:-4px} .holnote,.calmarks .bdnote{font-size:.66rem; padding:0 6px} .calmarks{gap:3px; margin-top:5px} }
+@media (max-width:600px){ .cd.bday em{font-size:.55rem; top:-4px} .holnote,.calmarks .bdnote{font-size:.78rem; padding:0 6px} .calmarks{gap:3px; margin-top:5px} }
 /* 가을 바닥: 단풍나무, 낙엽 더미, 도토리, 다람쥐 */
 .fallground{position:absolute; left:0; right:0; bottom:0; height:clamp(46px,10vw,78px); pointer-events:none; background:linear-gradient(#C97A3A,#B5642B); border-top:2px solid var(--ink)}
 .fallground>span{position:absolute; line-height:1}
@@ -424,7 +424,7 @@ h1,h2,h3,.lesson b,.fb b,.mzq{text-wrap:balance}
   .todaycard .tmark{min-width:30px; height:30px; font-size:.8rem; border-radius:9px}
   .todaycard .tt b{font-size:.9rem} .todaycard .tw{display:none} .todaycard .tl{font-size:.76rem} .todaycard .tgo{display:none}
   .tcount i{width:8px; height:8px} .tcount b{font-size:.68rem}
-  .tdone{width:30px; height:30px; font-size:.6rem; border-width:2px; box-shadow:none} .tnext{display:none}
+  .tdone{width:32px; height:32px; font-size:.68rem; border-width:2px; box-shadow:none} .tnext{display:none}
   .twait{font-size:.66rem}
   .subjtabs{gap:5px} .stab{padding:6px 8px; font-size:.86rem; min-height:40px; box-shadow:0 3px 0 var(--ink)} .stab.home{flex-basis:100%}
 }
@@ -695,8 +695,8 @@ body{word-break:keep-all; overflow-wrap:break-word}
 .hjrev:first-of-type{border-top:none}
 /* 독해: 한 쪽 글 */
 .rdbox{border:2px solid var(--u); border-radius:18px; background:var(--card); padding:14px 16px 6px; margin:12px 0; text-align:left}
-.rdtext p{position:relative; margin:0 0 12px; line-height:1.95; font-size:1.08rem; text-indent:.7em; text-align:justify; text-align-last:left; word-break:keep-all; overflow-wrap:break-word; border-radius:8px; transition:background .2s}
-.kpas,.talk .bub,.talk .bub .en,.talk .bub small{text-align:justify; text-align-last:left}
+.rdtext p{position:relative; margin:0 0 12px; line-height:1.95; font-size:1.08rem; text-indent:.7em; text-align:left; word-break:keep-all; overflow-wrap:break-word; border-radius:8px; transition:background .2s}
+.kpas,.talk .bub,.talk .bub .en,.talk .bub small{text-align:left}
 @media (max-width:560px){ .panel:has(.rdbox),.panel:has(.rdpas){padding-left:10px; padding-right:10px} .rdbox{padding:12px 10px 4px; border-width:1.5px} details.rdpas{padding:8px 8px} .rdtext p{font-size:1.02rem; letter-spacing:-.01em} }
 .rdtext p.on{background:color-mix(in srgb,var(--sun) 38%,transparent)}
 .rdhint{color:var(--soft); font-size:.95rem; line-height:1.7}
@@ -730,7 +730,7 @@ details.rdpas .rdtext p{font-size:1rem}
 html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
 button,summary,[role="button"],label.btn,.choice,.tile{touch-action:manipulation; -webkit-tap-highlight-color:transparent}
 .moodbar{max-width:100%; flex-wrap:nowrap}
-@media (max-width:380px){ .moodbar button{width:30px; height:30px; font-size:1.2rem} }
+@media (max-width:380px){ .moodbar button{width:38px; height:38px; font-size:1.3rem} }
 </style>
 </head>
 <body>
@@ -1767,7 +1767,7 @@ function erUsed(u){ const all=u.rp.ss.map(s=>s.en).join(' '), seen=new Set(); er
 function erBox(u,full){
   const P=u.rp, rows=P.ss.map(s=>'<p class="ers"><span class="en">'+erLine(u,s.en)+'</span> '+(canSpeak?'<button class="say ersay" data-say="'+rdQ(s.en)+'" aria-label="이 문장 듣기">🔊</button>':'')+'<small class="erko">'+s.ko+'</small></p>').join('');
   const used=erUsed(u);
-  return '<div class="rdbox erbox"><header class="hreadtop"><strong class="en">'+P.title+'</strong><span class="erbtns">'+(canSpeak?'<button class="say" data-say="'+rdQ(P.ss.map(s=>s.en).join(' '))+'">🔊 전체 듣기</button>':'')+'<button class="say erko-t" type="button" onclick="this.closest(\'.erbox\').classList.toggle(\'showko\');this.textContent=this.closest(\'.erbox\').classList.contains(\'showko\')?\'해석 숨기기\':\'해석 보기\'">해석 보기</button></span></header><div class="erd">'+rows+'</div>'
+  return '<div class="rdbox erbox"><header class="hreadtop"><strong class="en">'+P.title+'</strong><span class="erbtns">'+(canSpeak?'<button class="say" data-say="'+rdQ(P.ss.map(s=>s.en).join(' '))+'">🔊 전체 듣기</button><button class="say" type="button" onclick="SAYN++;try{speechSynthesis.cancel()}catch(e){}">⏹ 듣기 끄기</button>':'')+'<button class="say erko-t" type="button" onclick="this.closest(\'.erbox\').classList.toggle(\'showko\');this.textContent=this.closest(\'.erbox\').classList.contains(\'showko\')?\'해석 숨기기\':\'해석 보기\'">해석 보기</button></span></header><div class="erd">'+rows+'</div>'
     +(full&&used.length?'<div class="glbox"><b>📝 글에 나온 오늘의 낱말</b><ol>'+used.map(w=>'<li><b class="en">'+w.en+'</b> '+w.ko+'</li>').join('')+'</ol></div>':'')+'</div>';
 }
 function erIntro(u){
@@ -2638,6 +2638,7 @@ function korQuiz(u,l){
   const TERM=w=>({t:'w',exact:1,loose:1,nosay:1,inst:'뜻에 알맞은 낱말을 직접 써 보세요.',w:{en:w.en,ko:'<div class="mtxt">'+w.ko+'</div><div class="meter">초성: '+CHO(w.en)+'</div>',nopic:1,say:w.en},ex:w.en+' : '+w.ko});
   const SENT=t=>({t:'o',inst:'낱말을 순서대로 눌러 문장을 만드세요.',s:t,ex:t});
   const EX=n=>u.dic?pick(u.dic.filter(t=>t.split(' ').length>=3),n).map(SENT):pick(u.words,n).map(TERM);
+  if(u.hist&&l<2) return histQuiz(u,l);
   if(l===0) return shuffle(pick(u.c,5).map(s=>MCQ(s)).concat(pick(u.ox,3).map(OXQ)));
   if(l===1){ const x=EX(2), a=ap(8-x.length).concat(x); return a.length<8?a.concat(pick(u.ox,8-a.length).map(OXQ)):a; }
   if(l===2) return u.dic?u.dic.map(DIC):ap2(8);
@@ -3627,6 +3628,44 @@ function histIntro(u,l){
   h+='<div class="hgal">'+u.gal[l].map(s=>HFIG(s,u.icon)).join('')+'</div><p class="hsrc">사진을 누르면 크게 볼 수 있어요. 사진 출처: 위키백과·위키미디어 공용 (‘실제 사진 보러 가기’에서 사진 정보를 볼 수 있어요)</p>';
   return h;
 }
+/* 한국사 퀴즈: 1차시(흐름)와 2차시(인물과 사건)는 그 차시 글에 나온 것만 물어봐요.
+   문제마다 답이 어느 차시 글에 있는지 찾아 붙이고, 모자라면 그 글에서 빈칸 문제를 만들어 채워요.
+   어느 글에도 없는 문제는 마무리 도전에서만 나와요 */
+const hStrip=s=>String(s||'').replace(/<[^>]+>/g,'');
+const hBolds=h=>[...String(h||'').matchAll(/<b>(.*?)<\/b>/g)].map(m=>hStrip(m[1]).trim()).filter(x=>x.length>=2);
+function hHTML(u,l){ return [u.rule,u.how,u.how2][l]||''; }
+function hInfo(u){
+  if(u._hi) return u._hi;
+  const galTxt=u.gal[2].map(g=>g.split('|').slice(1).join(' ')).join(' '), galNames=u.gal[2].map(g=>g.split('|')[1]);
+  const T=[hStrip(u.rule),hStrip(u.how),hStrip(u.how2)+' '+galTxt], K=[hBolds(u.rule),hBolds(u.how),hBolds(u.how2).concat(galNames)];
+  const tag=(txt,ans)=>{ if(ans){ for(let l=0;l<3;l++) if(T[l].includes(ans)) return l; }
+    const sc=K.map(ks=>ks.filter(k=>txt.includes(k)).length), best=Math.max(...sc); return best>0?sc.indexOf(best):-1; };
+  const mc=u.c.map(s=>{ const a=s.split('|'); return {s,l:tag(a[0]+' '+a[1],a[1])}; });
+  const ox=u.ox.map(s=>({s,l:tag(s.split('|')[0])}));
+  return u._hi={T,K,mc,ox};
+}
+/* 글에서 답이 들어 있는 문장을 찾아요 (힌트로 보여 줘요) */
+function hSentence(u,l,keys){ const ss=hStrip(hHTML(u,l).replace(/<br>/g,'\n')).split(/\n|(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean);
+  for(const k of keys){ if(!k) continue; const s=ss.find(x=>x.includes(k)); if(s) return s; } return ''; }
+function histQuiz(u,l){
+  const I=hInfo(u), html=hHTML(u,l), REV='<details class="rdpas"><summary>📖 배운 내용 다시 보기</summary><div class="mtxt kpas hrev">'+html+'</div></details>';
+  const hintOf=keys=>{ const s=hSentence(u,l,keys); return s?'배운 글에서 이 부분을 다시 읽어 봐요. “'+s+'”':'‘배운 내용 다시 보기’를 눌러 글을 다시 읽어 봐요.'; };
+  const MC=s=>{ const a=s.split('|'), ex=a.pop(), q=a.shift(), ans=a[0]; return {t:'c',inst:'배운 내용을 떠올리며 알맞은 답을 고르세요.',stim:REV+MTX(q),ch:shuffle(a).map(o=>({h:'<span class="mth kch">'+o+'</span>',ok:o===ans})),ex,hint:hintOf([ans].concat(I.K[l].filter(k=>q.includes(k))))}; };
+  const OX=s=>{ const a=s.split('|'); return {t:'c',inst:'배운 내용과 맞으면 O, 틀리면 X를 고르세요.',stim:REV+MTX(a[0]),ch:[{h:'<span class="oxc">⭕</span>',ok:a[1]==='O'},{h:'<span class="oxc">❌</span>',ok:a[1]==='X'}],ex:a[2],hint:hintOf(I.K[l].filter(k=>a[0].includes(k)))}; };
+  /* 빈칸 문제: 글 속 굵은 낱말 하나를 가리고 고르게 해요 */
+  const own=I.K[l], other=I.K.flat().filter(k=>own.indexOf(k)<0);
+  const sents=html.split('<br>').flatMap(p=>p.split(/(?<=[.!?])\s+/)).filter(s=>/<b>/.test(s)&&hStrip(s).length>=8);
+  const BL=[]; sents.forEach(s=>{ hBolds(s).forEach(x=>{ if(/[:：]/.test(x)) return;
+    const pool=shuffle(own.filter(k=>k!==x&&!hStrip(s).includes(k))).concat(shuffle(other.filter(k=>k!==x&&!hStrip(s).includes(k))));
+    const ds=[...new Set(pool)].slice(0,2); if(ds.length<2) return;
+    const shown=s.replace('<b>'+x+'</b>','<span class="gap">&nbsp;?&nbsp;</span>').replace(/<\/?b>/g,'');
+    BL.push({t:'c',inst:'배운 글의 한 부분이에요. 빈칸에 들어갈 말을 고르세요.',stim:REV+MTX(shown),ch:shuffle([x,...ds]).map(o=>({h:'<span class="mth kch">'+o+'</span>',ok:o===x})),ex:hStrip(s),hint:'‘배운 내용 다시 보기’를 눌러 이 문장을 찾아봐요.'}); }); });
+  /* 8문제: 객관식 4개, OX 2개, 빈칸 2개를 기본으로 하고, 모자라면 다른 종류로 채워요 */
+  const M=shuffle(I.mc.filter(x=>x.l===l)).map(x=>MC(x.s)), O=shuffle(I.ox.filter(x=>x.l===l)).map(x=>OX(x.s)), B=shuffle(BL);
+  let qs=M.splice(0,4).concat(O.splice(0,2),B.splice(0,2)); const rest=M.concat(B,O);
+  while(qs.length<8&&rest.length) qs.push(rest.shift());
+  return shuffle(qs);
+}
 /* 읽어 주기: 한 줄씩 차례로 읽고, 읽는 줄에 색을 칠해요. 다시 누르면 멈춰요 */
 let HREAD=0;
 function koVoice(){ try{ const sc=v=>(/natural|neural|enhanced|premium|siri/i.test(v.name)?4:0)+(/online/i.test(v.name)?2:0)+(/google/i.test(v.name)?2:0); const vs=speechSynthesis.getVoices().filter(v=>v.lang.replace('_','-').slice(0,2)==='ko').sort((a,b)=>sc(b)-sc(a)); return vs[0]&&sc(vs[0])>0?vs[0]:null; }catch(e){ return null; } }
@@ -3728,7 +3767,7 @@ function setGrade(g){ if(GRADES[g]&&GRADES[g].units.length){ GRADE=+g; UNITS=GRA
 /* 과목: ready가 true인 과목만 내용이 있어요. 나머지는 자료가 올라오면 같은 틀에 채워 넣어요 */
 const SUBJ={
   kor:{name:'국어',title:'국어 공부',sub:'읽기, 쓰기, 높임 표현, 국어사전, 받아쓰기',mark:'가',color:'#D9534F',ready:true,pick:'학기를'},
-  read:{name:'독해',title:'독해 공부',sub:'ERI 3단계, 한 쪽 글을 읽고 문제 풀기',mark:'📖',color:'#0E9F8E',ready:true,pick:'단계를'},
+  read:{name:'국어독해',title:'국어 독해',sub:'ERI 3단계, 한 쪽 글을 읽고 문제 풀기',mark:'📖',color:'#0E9F8E',ready:true,pick:'단계를'},
   math:{name:'수학',title:'수학 공부',sub:'곱셈, 나눗셈, 원, 분수, 들이와 무게, 그림그래프',mark:'123',color:'#2FA36B',ready:true,pick:'학기를'},
   sci:{name:'과학',title:'과학 공부',sub:'물체와 물질, 지구와 바다, 소리, 감염병',mark:'🔬',color:'#1F9BB5',ready:true,pick:'학기를'},
   soc:{name:'사회',title:'사회 공부',sub:'사회 변화, 다양한 문화, 교통과 통신, 세시 풍속',mark:'🌏',color:'#F08A24',ready:true,pick:'학기를'},
@@ -3996,7 +4035,7 @@ function say(t){
     const lang=/[가-힣]/.test(t)?'ko-KR':'en-US', en=lang==='en-US', voice=pickVoice(lang), txt=sayNorm(t,en), n=++SAYN;
     /* 긴 글은 문장마다 나누어 읽어서 문장 사이에 자연스럽게 쉬어요. 물음표의 억양은 목소리가 스스로 내요 */
     const parts=en&&txt.length>80?(txt.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[txt]).map(s=>s.trim()).filter(Boolean):[txt];
-    const rate=en?(txt.split(' ').length<=2?.8:.9):.95;
+    const rate=en?(txt.split(' ').length<=2?.75:.8):.95;
     if(en&&!voice&&VOICES.length) noEnTip();
     speechSynthesis.cancel();
     const go=()=>{ if(n!==SAYN) return; parts.forEach(s=>{ const u=new SpeechSynthesisUtterance(s); u.lang=lang; u.rate=rate; u.pitch=1; if(voice) u.voice=voice; speechSynthesis.speak(u); }); };
