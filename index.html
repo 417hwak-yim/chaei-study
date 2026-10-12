@@ -303,6 +303,11 @@ input.type{font-family:'Andika',sans-serif; font-size:1.6rem; text-align:center;
 .mem{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; max-width:520px; margin:14px auto}
 .mcard{aspect-ratio:1; border:2px solid var(--ink); border-radius:14px; background:var(--u); box-shadow:0 3px 0 var(--ink); display:grid; place-items:center; font-size:clamp(.85rem,3.2vw,1.15rem); font-weight:700; padding:2px; overflow:hidden}
 .mcard .f{display:none}
+/* 긴 뜻은 글자를 줄이고 카드가 필요한 만큼 세로로 늘어나게 해서 잘리지 않아요 */
+.mcard{overflow:visible; min-width:0}
+.mcard .f{word-break:keep-all; overflow-wrap:anywhere; line-height:1.25; text-align:center}
+.mcard.long .f{font-size:.82em}
+.mcard.xlong .f{font-size:.7em}
 .mcard.up{background:var(--card)} .mcard.up .f{display:grid; place-items:center}
 .mcard.done{background:var(--okbg); border-color:var(--ok); box-shadow:0 3px 0 var(--ok)}
 .mcard .pic{font-size:clamp(1.8rem,8vw,2.8rem)}
@@ -319,7 +324,8 @@ input.type{font-family:'Andika',sans-serif; font-size:1.6rem; text-align:center;
 @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
 /* 줄바꿈: 낱말 중간이나 조사 앞에서 끊기지 않게, 띄어쓰기에서만 줄을 바꿔요 */
 body{word-break:keep-all; overflow-wrap:break-word; line-break:strict}
-p,li,.lead,.inst,.sit p,.fb p,.tip,.lesson span,.unit .ko,.gtxt span,.game span,.hinfo p,.sync,summary,td{text-wrap:pretty}
+/* 글은 줄 끝까지 채워서 써요 (pretty는 휴대폰에서 줄을 일찍 바꿔 오른쪽이 비어 보여요) */
+p,li,.lead,.inst,.sit p,.fb p,.tip,.lesson span,.unit .ko,.gtxt span,.game span,.hinfo p,.sync,summary,td{text-wrap:wrap}
 h1,h2,h3,.lesson b,.fb b,.mzq{text-wrap:balance}
 .nb,.stkline b,.result p b{white-space:nowrap!important; text-wrap:nowrap!important}
 .gtxt span .nb{display:inline}
@@ -463,6 +469,9 @@ h1,h2,h3,.lesson b,.fb b,.mzq{text-wrap:balance}
 .hjsen{border-left:4px solid var(--u); background:var(--card); border-radius:0 12px 12px 0; padding:10px 12px; margin:8px 0; font-size:1.12rem; line-height:1.9}
 .hjsen.q{font-size:1.25rem; text-align:left}
 .hjw{background:var(--sun); color:#1B2750; border-radius:8px; padding:1px 6px; white-space:nowrap} .hjw small{margin-left:3px; font-weight:700}
+.hjrd{margin-left:4px; padding:2px 8px; min-width:3.2em; min-height:30px; border:2px dashed #B5651D; border-radius:8px; background:#F3D9B8; color:transparent; font:inherit; font-weight:700; font-size:.95rem; cursor:pointer; vertical-align:middle; user-select:none}
+.hjrd::before{content:'(' } .hjrd::after{content:')'}
+.hjrd.open{background:#fff; color:#1B2750; border-style:solid}
 .hju{text-decoration-thickness:3px; text-underline-offset:6px; text-decoration-color:#E0457B} .hjblank{font-weight:700; white-space:nowrap}
 .hjscwrap{background:#F3E3C6; border:2px solid #C79A5E; border-radius:18px; padding:14px 10px}
 .hjboard{touch-action:manipulation; border-color:#8A5A2B; background:#FBF1DD; background-image:none; width:min(100%,330px)}
@@ -673,7 +682,7 @@ body{word-break:keep-all; overflow-wrap:break-word}
 .hfig figcaption{margin:0; padding:10px 12px 12px}
 .hfig figcaption b{display:block; font-family:'Jua',sans-serif; font-weight:400; font-size:1.1rem}
 .hfig figcaption span{color:var(--soft); font-size:.95rem; line-height:1.55; display:block; word-break:keep-all}
-.hlink{display:block; margin:0 12px 12px; font-size:.9rem; color:var(--u); text-decoration:underline}
+.hlink{display:block; margin:0 10px 12px; font-size:clamp(.72rem,3.2vw,.9rem); color:var(--u); text-decoration:underline; white-space:nowrap; overflow:hidden; text-overflow:clip; letter-spacing:-.02em}
 .hsrc{color:var(--soft); font-size:.85rem; margin:4px 0 0; text-align:right}
 .stim .hph{max-width:340px; margin:0 auto 4px; border:2px solid var(--line); border-radius:16px}
 #hbox{position:fixed; inset:0; z-index:90; background:rgba(12,18,40,.9); display:grid; place-items:center; align-content:center; gap:12px; padding:16px; cursor:zoom-out}
@@ -1966,11 +1975,11 @@ function MKH(tag,src,sens){
   const all=src.split('|').map((x,xi)=>{ const a=x.split('='), k=a[1].lastIndexOf(' '), h=a[2].split(':'); return {en:a[0],ko:a[1],hun:a[1].slice(0,k),eum:a[1].slice(k+1),hw:h[0],hr:h[1],hm:h[2],sen:SE[xi],nopic:1,say:a[1]}; });
   all.forEach(w=>{ w.more=(HJM[w.en]||[]).map(f=>({en:w.en,ko:w.ko,hun:w.hun,eum:w.eum,hw:f[0],hr:f[1],hm:f[2],sen:f[3],nopic:1,say:w.ko,x:1})); });
   const out=[]; let p=0;
-  /* 한 마당에 새 한자 6자(끝의 세 마당은 5자). 13마당 × 6자 안팎 = 75자 */
-  [6,6,6,6,6,6,6,6,6,6,5,5,5].forEach((n,i)=>{ const ws=all.slice(p,p+n); p+=n;
-    out.push({id:tag+'n-'+(i+1),hanja:1,cq:1,day:i+1,ul:(i+1)+'마당',sem:1,color:HCOL[i%HCOL.length],icon:'<span class="hj">'+ws[0].en+'</span>',title:ws.map(w=>w.en).join(' '),ko:'한자 '+n+'자 · 낱말 '+hjV(ws).length+'개 · '+ws.slice(0,3).map(w=>w.hr).join(', ')+' …',books:[],
+  /* 한 마당에 새 한자 4자(1차시 2자 + 2차시 2자, 마지막 마당은 3자). 19마당 = 75자 */
+  [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3].forEach((n,i)=>{ const ws=all.slice(p,p+n); p+=n;
+    out.push({id:tag+'m-'+(i+1),hanja:1,cq:1,day:i+1,ul:(i+1)+'마당',sem:1,color:HCOL[i%HCOL.length],icon:'<span class="hj">'+ws[0].en+'</span>',title:ws.map(w=>w.en).join(' '),ko:'한자 '+n+'자 · 낱말 '+hjV(ws).length+'개 · '+ws.slice(0,3).map(w=>w.hr).join(', ')+' …',books:[],
       note:'한자의 뜻(훈)과 소리(음)를 알면 처음 보는 낱말도 뜻을 짐작할 수 있어요.<br>① 뜻과 소리를 읽고<br>② 낱말과 문장으로 익히고<br>③ 획순대로 한 번 써 보면<br>오래 기억돼요.',tip2:'',tip3:'',
-      names:{0:['한자와 낱말 ①','앞의 세 글자와 그 글자가 들어간 낱말을 익혀요'],1:['한자와 낱말 ②','나머지 글자와 그 글자가 들어간 낱말을 익혀요'],2:['낱말과 문장','배운 한자어를 문장에서 읽고 풀어요'],3:['놀이 한마당','게임으로 배운 한자어를 다져요'],s:['마무리 도전','배운 한자어를 골고루 풀어요']},
+      names:{0:['한자와 낱말 ①','앞의 두 글자와 그 글자가 들어간 낱말을 익혀요'],1:['한자와 낱말 ②','나머지 글자와 그 글자가 들어간 낱말을 익혀요'],2:['낱말과 문장','배운 한자어를 문장에서 읽고 풀어요'],3:['놀이 한마당','게임으로 배운 한자어를 다져요'],s:['마무리 도전','배운 한자어를 골고루 풀어요']},
       words:ws,expr:[],mc:[],order:[]}); });
   return out;
 }
@@ -1994,8 +2003,8 @@ function hjGo(k){
   const c=document.querySelector('.hjcard[data-k="'+k+'"] .hjanim'); if(c) hjAnim(c);
   if(k===document.querySelectorAll('.hjcard').length-1){ const q=document.getElementById('hjquiz'), w=document.getElementById('hjwait'); if(q) q.hidden=false; if(w) w.hidden=true; }
 }
-/* 차시마다 익히는 글자: 1차시는 앞의 세 글자, 2차시는 나머지, 3차시부터는 모두 */
-const hjPart=(u,l)=>l===0?u.words.slice(0,3):l===1?u.words.slice(3):u.words;
+/* 차시마다 익히는 글자: 1차시는 앞의 두 글자, 2차시는 나머지, 3차시부터는 모두 */
+const hjPart=(u,l)=>l===0?u.words.slice(0,2):l===1?u.words.slice(2):u.words;
 const HJG='<g transform="translate(0,900) scale(1,-1)">';
 const hjNums=c=>HJS[c][1].map((m,i)=>'<g class="hjgn" transform="translate('+m[0][0]+','+m[0][1]+') scale(1,-1)"><circle r="34"/><text y="13" text-anchor="middle">'+(i+1)+'</text></g>').join('');
 const hjGlyph=(c,cls)=>'<svg class="'+cls+'" viewBox="0 0 1024 1024" aria-hidden="true">'+HJG+HJS[c][0].map(d=>'<path d="'+d+'"/>').join('')+hjNums(c)+'</g></svg>';
@@ -2101,7 +2110,9 @@ document.addEventListener('pointerdown',e=>{
   }
 });
 /* 문장에서 한자어를 보여 주기 */
-const hjSen=(w,mode)=>w.sen.replace(w.hr, mode==='blank'?'<span class="hjblank">( &nbsp; &nbsp; &nbsp; )</span>':mode==='u'?'<u class="hju">'+hj(w.hw,1.7)+'</u>':'<span class="hjw">'+hj(w.hw,1.5)+'<small>('+w.hr+')</small></span>');
+const hjSen=(w,mode)=>w.sen.replace(w.hr, mode==='blank'?'<span class="hjblank">( &nbsp; &nbsp; &nbsp; )</span>':mode==='u'?'<u class="hju">'+hj(w.hw,1.7)+'</u>':'<span class="hjw">'+hj(w.hw,1.5)+'<button type="button" class="hjrd" aria-label="읽는 소리 보기">'+w.hr+'</button></span>');
+/* 한자어의 한글 읽기는 네모로 가려 두고, 누르면 열려요. 다시 누르면 가려져요 */
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('.hjrd'); if(!b) return; const on=b.classList.toggle('open'); b.setAttribute('aria-label',on?'읽는 소리: '+b.textContent:'읽는 소리 보기'); if(on) try{ sfx('ok'); }catch(_){} });
 function hanjaIntro(u,l){
   let h='';
   if(l<2){
@@ -3619,7 +3630,7 @@ const HIMG={"주먹도끼":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2
 const HPH=(wp,ico)=>{ const k=String(wp).split('/')[0], a=HART[k], q=s=>String(s).replace(/"/g,'&quot;');
   if(HIMG[wp]) return '<span class="hph on" tabindex="0" role="button" aria-label="사진 크게 보기" data-k="'+q(k)+'" data-t="'+q(k)+'"><img alt="'+q(k)+' 사진" src="'+HIMG[wp]+'"></span>';
   return '<span class="hph'+(a?' art on" tabindex="0" role="button" aria-label="그림 크게 보기"':'"')+' data-k="'+q(k)+'" data-wp="'+q(wp)+'">'+(a?'<svg viewBox="0 0 200 150" aria-hidden="true">'+a+'</svg>':'<span class="hph0">'+(ico||'🖼️')+'</span>')+'</span>'; };
-const HFIG=(s,ico)=>{ const a=s.split('|'); return '<figure class="hfig">'+HPH(a[0],ico)+'<figcaption class="hline" data-t="'+a[1]+'. '+a[2]+'"><b>'+a[1]+'</b><span>'+a[2]+'</span></figcaption><a class="hlink" href="https://ko.wikipedia.org/wiki/'+encodeURIComponent(a[0].split('/')[0])+'" target="_blank" rel="noopener">실제 사진 보러 가기 ↗</a></figure>'; };
+const HFIG=(s,ico)=>{ const a=s.split('|'); return '<figure class="hfig">'+HPH(a[0],ico)+'<figcaption class="hline" data-t="'+a[1]+'. '+a[2]+'"><b>'+a[1]+'</b><span>'+a[2]+'</span></figcaption><a class="hlink" href="https://ko.wikipedia.org/wiki/'+encodeURIComponent(a[0].split('/')[0])+'" target="_blank" rel="noopener">실제 사진 보러 가기</a></figure>'; };
 function histIntro(u,l){
   const lines=[u.rule,u.how,u.how2][l].split('<br>');
   const lead=['먼저 큰 흐름을 알아봐요.','누가 무슨 일을 했는지 알아봐요.','사진으로 문화유산을 만나요.'][l];
@@ -3722,7 +3733,7 @@ document.addEventListener('click',e=>{
   const p=e.target.closest&&e.target.closest('.hph.on'); if(!p) return;
   const im=p.querySelector('img'), fig=p.closest('.hfig'), cap=fig&&fig.querySelector('figcaption');
   const d=document.createElement('div'); d.id='hbox'; d.setAttribute('role','dialog'); d.setAttribute('aria-label','사진 크게 보기');
-  d.innerHTML=(im?'<img alt="" src="'+im.src+'">':p.innerHTML)+(cap?'<div class="hboxcap">'+cap.innerHTML+'<a href="https://ko.wikipedia.org/wiki/'+encodeURIComponent(p.dataset.t||p.dataset.k)+'" target="_blank" rel="noopener">실제 사진 보러 가기 ↗</a></div>':'')+'<button class="btn">닫기</button>';
+  d.innerHTML=(im?'<img alt="" src="'+im.src+'">':p.innerHTML)+(cap?'<div class="hboxcap">'+cap.innerHTML+'<a href="https://ko.wikipedia.org/wiki/'+encodeURIComponent(p.dataset.t||p.dataset.k)+'" target="_blank" rel="noopener">실제 사진 보러 가기</a></div>':'')+'<button class="btn">닫기</button>';
   document.body.appendChild(d);
 });
 document.addEventListener('keydown',e=>{
@@ -3934,7 +3945,7 @@ function sprintQ(u,kind){
 }
 function sprint(u,kind){
   const ui=UNITS.indexOf(u), G=GAMES(u).find(g=>g[0]===kind)||GAMES(u)[0], T=60; let right=0, n=0, t0=0, timer=null, over=false, busy=false;
-  const end=()=>{ if(over) return; over=true; clearInterval(timer); resultScreen(u,3,right>=12?3:right>=6?2:1,'60초 동안 '+n+'문제 중 '+right+'개를 맞혔어요.','game:'+ui+':'+kind); };
+  const end=()=>{ if(over) return; over=true; clearInterval(timer); gameEnd(u,n>0&&right>n/2,right>=12?3:right>=6?2:1,'60초 동안 '+n+'문제 중 '+right+'개를 맞혔어요.','game:'+ui+':'+kind,'푼 문제의 절반 넘게 맞히면 도장이 찍혀요.'); };
   const left=()=>Math.max(0,T-Math.floor((Date.now()-t0)/1000));
   const draw=()=>{
     const q=sprintQ(u,kind); busy=false;
@@ -4087,6 +4098,23 @@ const prog=STATE.stamps;
       });
     });
     STATE.hjmig=1; if(ch) setTimeout(()=>{ try{persist()}catch(e){} },0);
+  }catch(e){}
+})();
+/* 13마당(한 마당 6자)에서 받은 한자 도장을 새 19마당(한 마당 4자)으로 옮겨요.
+   새 마당의 글자를 모두 예전에 끝낸 마당에서 배웠으면, 그 차시들을 끝낸 것으로 쳐요 */
+(function(){
+  try{
+    if(STATE.hjmig2) return; let ch=false;
+    [['h62',HANJA62],['h6',HANJA6]].forEach(([tag,units])=>{
+      const oldOf=[]; [6,6,6,6,6,6,6,6,6,6,5,5,5].forEach((n,i)=>{ for(let k=0;k<n;k++) oldOf.push(tag+'n-'+(i+1)); });
+      let p=0;
+      units.forEach(u=>{ const olds=[...new Set(oldOf.slice(p,p+u.words.length))]; p+=u.words.length;
+        const got=l=>Math.min(...olds.map(id=>prog[id+'-'+l]||0));
+        const put=(l,v)=>{ if(v>0&&(prog[u.id+'-'+l]||0)<v){ prog[u.id+'-'+l]=v; ch=true; } };
+        const w=Math.min(got(0),got(1)); put(0,w); put(1,w); put(2,got(2)); put(3,got(3)); put('s',got('s'));
+      });
+    });
+    STATE.hjmig2=1; if(ch) setTimeout(()=>{ try{persist()}catch(e){} },0);
   }catch(e){}
 })();
 let cloudRef=null, cloudBusy=false, cloudDirty=false, cloudState='checking';
@@ -4634,7 +4662,7 @@ function unitView(u){
   const gd=prog[u.id+'-g'];
   if(GRAM[u.id]) h+='<button class="lesson" data-go="gram:'+i+'" style="border-style:dashed"><span class="n">규칙</span><span><b>새로 배운 규칙</b><span>'+AP(GRAM[u.id].t)+(gd?' (받은 별 '+gd+'개)':'')+'</span></span><span class="go"><span class="stk'+(gd?'':' dim')+'" style="--bg:#DCEEFF;--rot:5deg" role="img" aria-label="규칙 배지'+(gd?'':', 아직 받지 않음')+'"><span>📘</span></span></span></button>';
   const md=prog[u.id+'-s'];
-  h+='<button class="lesson" data-go="say:'+i+'"><span class="n">마무리</span><span><b>'+(u.cq?'마무리 도전':'말하기 도전')+'</b><span>'+(u.cq?LN(u,'s')[1]:'상황을 읽고 배운 말을 영어로 말해요')+'</span></span><span class="go">'+sticker(u,'s','preview')+'</span></button>';
+  h+='<button class="lesson" data-go="say:'+i+'"><span class="n">마무리</span><span><b>'+(u.cq?'마무리 도전':'말하기 도전')+'</b><span>'+(u.cq?reviewLabel(u):'상황을 읽고 배운 말을 영어로 말해요')+'</span></span><span class="go">'+sticker(u,'s','preview')+'</span></button>';
   show(h+'</div>',u.color);
 }
 
@@ -4667,7 +4695,7 @@ function lessonIntro(u,l){
     u.order.forEach(s=>{h+='<div class="bub"><span class="en">'+s+'</span> '+sayBtn(s)+'</div>';});
     h+='</div><div class="tip"><b>이 단원 쓰기 비밀</b> '+u.tip3+'</div>';
   }else{
-    h+='<p class="lead">'+KID.name+'가 하고 싶은 놀이를 골라요. 하나만 끝내도 도장이 찍혀요.</p><div class="games">'
+    h+='<p class="lead">'+KID.name+'가 하고 싶은 놀이를 골라요. 놀이 하나에서 절반 넘게 맞히면 도장이 찍혀요.</p><div class="games">'
      +'<button class="game" data-go="game:'+i+':mem"><span class="pic">🃏</span><b>짝 맞추기</b><span>그림 카드와 낱말 카드를 짝지어요</span></button>'
      +(u.cq?'<button hidden>':'<button class="game" data-go="game:'+i+':mix">')+'<span class="pic">🔤</span><b>글자 섞기</b><span>뒤섞인 글자를 바르게 놓아요</span></button>'
      +'<button class="game" data-go="game:'+i+':ox"><span class="pic">⏱️</span><b>빨리 OX</b><span>그림과 낱말이 맞는지 빠르게 골라요</span></button>'+GAMES(u).map(g=>'<button class="game" data-go="game:'+i+':'+g[0]+'"><span class="pic">'+g[1]+'</span><b>'+g[2]+'</b><span>'+g[3]+'</span></button>').join('')+'</div>';
@@ -4768,7 +4796,7 @@ function drawQ(){
 function bindQ(q){
   { const hb=document.getElementById('budbtn'); let hs=0; if(hb) hb.onclick=()=>{ hs++; const m=document.getElementById('budmsg'); m.hidden=false; m.innerHTML='<b>'+BUDS.hint.n+'</b> '+hintFor(q,hs); if(hs>=2) hb.disabled=true; else hb.querySelector('span').textContent='힌트 하나 더!'; }; }
   const done=(ok,extra)=>{
-    if(ok) Q.right++; Q.streak=ok?(Q.streak||0)+1:0; { const hb=document.getElementById('budbtn'); if(hb) hb.disabled=true; }
+    if(ok) Q.right++; Q.streak=ok?(Q.streak||0)+1:0; noteWrong(q,ok); { const hb=document.getElementById('budbtn'); if(hb) hb.disabled=true; }
     if(typeof Q.l==='number'){ STATE.resume={uid:Q.u.id,l:Q.l,qs:Q.qs,i:Q.i+1,right:Q.right}; persist(); }
     const last=Q.i===Q.qs.length-1, st=q.t==='o'?(q.sep?'':q.s):(q.w?sp(q.w):(q.sayAns||q.listen||''));
     document.getElementById('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'" role="status"><span class="fbbud">'+BUD(ok?'cheer':'up',ok?'happy':'')+'<small>'+BUDS[ok?'cheer':'up'].n+'</small></span><div style="flex:1 1 12em">'+(ok&&Q.streak>=3?'<span class="streak">🎉 '+Q.streak+'문제 연속 정답!</span>':'')+'<b>'+(ok?pick([KID.ya+', 정답이야!','잘했어, '+KID.ya+'!',KID.ya+', 맞았어!'],1)[0]:'괜찮아 '+KID.ya+', 다시 보자.')+'</b><p>'+(extra||'')+'<span class="en">'+esc(q.ex)+'</span> '+(st?sayBtn(st):'')+'</p></div><button class="btn main" id="next">'+(last?'결과 보기':'다음 문제')+'</button></div>';
@@ -4858,6 +4886,12 @@ function resultScreen(u,l,stars,msg,again){
 }
 
 /* ---------- 놀이 ---------- */
+/* 놀이는 절반 넘게 맞혀야 도장이 찍혀요. 모자라면 도장 없이 다시 도전하게 해요 */
+function gameEnd(u,pass,stars,msg,again,need){
+  if(pass) return resultScreen(u,3,stars,msg,again);
+  const ui=UNITS.indexOf(u); sfx('done');
+  show('<section class="panel result"><div class="big" style="margin:8px 0 24px">💪</div><div class="budcheer">'+BUD('up')+'</div><h2>'+KID.ya+', 아쉽지만 한 번 더!</h2><p>'+msg+'<br>'+need+'<br><b>절반 넘게 맞히면 도장이 찍혀요.</b></p><div class="row center"><button class="btn main" data-go="'+again+'">다시 도전하기</button><button class="btn" data-go="lesson:'+ui+':3">다른 놀이 고르기</button><button class="btn" data-go="unit:'+ui+'">차시 목록</button></div></section>',u.color);
+}
 function gameHead(u,title,sub){
   return '<button class="back" data-go="lesson:'+UNITS.indexOf(u)+':3">← 놀이 고르기</button><section class="panel"><h2>'+title+'</h2><p class="lead">'+sub+'</p>';
 }
@@ -4865,9 +4899,9 @@ function startGame(u,kind){ sfx('start'); const f=({mem:gameMem,mix:gameMix,ox:g
 
 function gameMem(u){
   const ws=pick(POOL(u),6), ui=UNITS.indexOf(u);
-  const cards=shuffle(ws.flatMap(w=>[{w,h:face(w)},{w,h:'<span class="en"'+(u.abc?' style="font-size:2rem"':'')+'>'+w.en+'</span>'}]));
+  const cards=shuffle(ws.flatMap(w=>[{w,h:face(w)},{w,h:u.hanja?hj(w.en,w.en.length>1?1.6:2.4):'<span class="en"'+(u.abc?' style="font-size:2rem"':'')+'>'+w.en+'</span>'}]));
   let open=[], found=0, tries=0, lock=true;
-  show(gameHead(u,'짝 맞추기','시작을 누르면 카드를 3초 동안 보여 줘요. 자리를 잘 기억했다가 '+(u.abc?'대문자와 소문자를':'그림이나 뜻을 낱말과')+' 짝지어요.')+'<div class="row center"><button class="btn main" id="memgo">시작</button></div><div class="meter" id="mt">시작을 누르면 카드가 보여요</div><div class="mem">'+cards.map((c,k)=>'<button class="mcard" data-k="'+k+'" aria-label="카드"><span class="f">'+c.h+'</span></button>').join('')+'</div></section>',u.color);
+  show(gameHead(u,'짝 맞추기','시작을 누르면 카드를 3초 동안 보여 줘요. 자리를 잘 기억했다가 '+(u.abc?'대문자와 소문자를':'그림이나 뜻을 낱말과')+' 짝지어요.')+'<div class="row center"><button class="btn main" id="memgo">시작</button></div><div class="meter" id="mt">시작을 누르면 카드가 보여요</div><div class="mem">'+cards.map((c,k)=>'<button class="mcard'+((n=>n>9?' long xlong':n>5?' long':'')(c.h.replace(/<[^>]+>/g,'').length))+'" data-k="'+k+'" aria-label="카드"><span class="f">'+c.h+'</span></button>').join('')+'</div></section>',u.color);
   const mt=document.getElementById('mt'), goBtn=document.getElementById('memgo'), all=[...$app.querySelectorAll('.mcard')];
   goBtn.onclick=()=>{
     goBtn.disabled=true; all.forEach(c=>c.classList.add('up'));
@@ -4886,16 +4920,16 @@ function gameMem(u){
     tries++; mt.textContent='뒤집은 횟수 '+tries+'번';
     const [a,c]=open, wa=cards[+a.dataset.k].w, wc=cards[+c.dataset.k].w; open=[];
     if(wa===wc){ a.classList.add('done'); c.classList.add('done'); found++;
-      if(found===ws.length) setTimeout(()=>resultScreen(u,3,tries<=9?3:tries<=14?2:1,tries+'번 만에 짝을 모두 찾았어요.','game:'+ui+':mem'),700);
+      if(found===ws.length) setTimeout(()=>gameEnd(u,tries<=ws.length*2,tries<=9?3:tries<=10?2:1,tries+'번 만에 짝을 모두 찾았어요.','game:'+ui+':mem',ws.length*2+'번 안에 모두 찾으면 도장이 찍혀요.'),700);
     }else{ lock=true; setTimeout(()=>{a.classList.remove('up'); c.classList.remove('up'); lock=false},900); }
   };
 }
 
 function gameMix(u){
-  const ws=pick(u.words.filter(w=>w.en.length>2&&/^[A-Za-z ]+$/.test(w.en)&&w.en.replace(/ /g,'').length<=11),5), ui=UNITS.indexOf(u); let i=0, miss=0;
+  const ws=pick(u.words.filter(w=>w.en.length>2&&/^[A-Za-z ]+$/.test(w.en)&&w.en.replace(/ /g,'').length<=11),5), ui=UNITS.indexOf(u); let i=0, miss=0, first=0;
   const draw=()=>{
     const w=ws[i], letters=[...w.en.replace(/ /g,'')]; let sh=shuffle(letters); if(sh.join('')===letters.join('')) sh=sh.reverse();
-    let put=[];
+    let put=[], wrongHere=false;
     show(gameHead(u,'글자 섞기','글자를 순서대로 눌러 낱말을 만들어요. 다 놓으면 낱말을 읽어 줘요.')+'<div class="meter">'+(i+1)+' / '+ws.length+'</div><div class="stim">'+(w.nopic?'':pic(w))+'<div>'+w.ko+'</div></div><div class="slots en" id="slots"></div><div class="bank" id="bank">'+sh.map((t,k)=>'<button class="tile en" data-k="'+k+'">'+t+'</button>').join('')+'</div><div class="meter" id="msg">놓은 글자를 누르면 다시 내려가요.</div></section>',u.color);
     const slots=document.getElementById('slots'), bank=document.getElementById('bank'), msg=document.getElementById('msg');
     const redraw=()=>{
@@ -4904,10 +4938,10 @@ function gameMix(u){
       if(put.length===sh.length){
         const again=canSpeak?' <button class="say" data-say="'+w.en+'">🔊 다시 듣기</button>':'';
         say(w.en);
-        if(put.map(k=>sh[k]).join('')===letters.join('')){ bank.onclick=slots.onclick=null;
+        if(put.map(k=>sh[k]).join('')===letters.join('')){ bank.onclick=slots.onclick=null; if(!wrongHere) first++; wrongHere=true;
           msg.innerHTML='<b style="color:var(--ok)">'+KID.ya+', 맞았어!</b> <span class="en">'+w.en+'</span>'+again+'<div style="margin-top:12px"><button class="btn main" id="mixnext">'+(i<ws.length-1?'다음 낱말':'결과 보기')+'</button></div>';
-          document.getElementById('mixnext').onclick=()=>{i++; i<ws.length?draw():resultScreen(u,3,miss===0?3:miss<=2?2:1,'낱말 '+ws.length+'개를 모두 완성했어요.','game:'+ui+':mix')};
-        }else{ miss++; msg.innerHTML='<b style="color:var(--no)">순서가 달라요.</b> 소리를 잘 듣고 글자를 눌러 다시 놓아 보세요.'+again; }
+          document.getElementById('mixnext').onclick=()=>{i++; i<ws.length?draw():gameEnd(u,first>ws.length/2,miss===0?3:miss<=2?2:1,'낱말 '+ws.length+'개 가운데 '+first+'개를 한 번에 맞혔어요.','game:'+ui+':mix','낱말 '+(Math.floor(ws.length/2)+1)+'개 이상을 한 번에 맞히면 도장이 찍혀요.')};
+        }else{ miss++; wrongHere=true; msg.innerHTML='<b style="color:var(--no)">순서가 달라요.</b> 소리를 잘 듣고 글자를 눌러 다시 놓아 보세요.'+again; }
       }
     };
     bank.onclick=e=>{const b=e.target.closest('.tile'); if(b){put.push(+b.dataset.k); redraw()}};
@@ -4925,7 +4959,7 @@ function gameOx(u){
       const b=e.target.closest('button'); if(!b) return; $app.querySelector('.ox').onclick=null;
       const ok=(b.dataset.a==='1')===match; if(ok) right++;
       document.getElementById('msg').textContent=(ok?'맞았어요! ':'아쉬워요. ')+(u.abc?w.txt+' 의 짝은 '+w.en:'그림은 '+w.en+' ('+w.ko+')');
-      setTimeout(()=>{i++; if(i<N) draw(); else{const sec=Math.round((Date.now()-t0)/1000); resultScreen(u,3,right>=9?3:right>=6?2:1,N+'문제 중 '+right+'개를 '+sec+'초 만에 맞혔어요.','game:'+ui+':ox')}},ok?650:1500);
+      setTimeout(()=>{i++; if(i<N) draw(); else{const sec=Math.round((Date.now()-t0)/1000); gameEnd(u,right>N/2,right>=9?3:right>=7?2:1,N+'문제 중 '+right+'개를 '+sec+'초 만에 맞혔어요.','game:'+ui+':ox',N+'문제 중 '+(Math.floor(N/2)+1)+'개 이상 맞히면 도장이 찍혀요.')}},ok?650:1500);
     };
   };
   draw();
@@ -5001,8 +5035,32 @@ function sayMatch(heard,answers){
   const h=normSay(heard).split(' ');
   return answers.some(a=>{const w=normSay(a).split(' '); return w.filter(x=>h.includes(x)).length/w.length>=.7;});
 }
+/* ---------- 마무리 도전: 1~3차시에서 틀린 문제를 다시 풀어요 ----------
+   틀린 문제는 단원마다 모아 두었다가(최대 20개) 마무리 도전에 먼저 넣고, 남은 자리는 단원 전체 문제로 채워요.
+   다시 풀어서 맞히면 목록에서 빠져요. 사진은 HIMG 이름만 저장해서 저장 공간을 아껴요 */
+const WRONGMAX=20;
+function wkey(q){ return [q.t,q.inst,q.stim||'',q.s||'',q.w?q.w.en:'',q.listen||'',q.ex||''].join('|').slice(0,800); }
+let HIMGREV=null;
+function wPack(q){ let s; try{ const c=Object.assign({},q); delete c.toks; delete c.put; delete c.L; s=JSON.stringify(c); }catch(e){ return null; }
+  if(/data:image/.test(s)){ if(!HIMGREV){ HIMGREV=new Map(); try{ Object.keys(HIMG).forEach(k=>HIMGREV.set(HIMG[k],k)); }catch(e){} }
+    let fail=false; s=s.replace(/data:image\/[a-zA-Z+]+;base64,[A-Za-z0-9+\/=]+/g,m=>{ const k=HIMGREV.get(m); if(k==null){ fail=true; return m; } return '@@HIMG:'+encodeURIComponent(k)+'@@'; }); if(fail) return null; }
+  return s.length>15000?null:s; }
+function wUnpack(s){ return JSON.parse(s.replace(/@@HIMG:(.*?)@@/g,(m,k)=>HIMG[decodeURIComponent(k)]||'')); }
+function wrongList(u){ return ((STATE.wrong||{})[u.id])||[]; }
+function noteWrong(q,ok){ try{ const u=Q&&Q.u; if(!u||!u.cq||u.wrap||!u.id) return;
+  const W=(STATE.wrong=STATE.wrong||{}), list=W[u.id]||[], k=q._wk||wkey(q), i=list.findIndex(x=>x.k===k);
+  if(ok){ if(i>=0) list.splice(i,1); }
+  else if(typeof Q.l==='number'&&Q.l<3&&i<0){ const p=wPack(q); if(p){ list.push({k,p}); while(list.length>WRONGMAX) list.shift(); } }
+  if(list.length) W[u.id]=list; else delete W[u.id]; }catch(e){} }
+function reviewLabel(u){ const n=wrongList(u).length; return n?'앞 차시에서 틀린 문제 '+n+'개를 다시 풀고, 배운 것을 골고루 풀어요':'앞 차시에서 틀린 문제가 없어요! 배운 것을 골고루 풀어요'; }
+function startReview(u){
+  const rq=[]; wrongList(u).forEach(x=>{ try{ const q=wUnpack(x.p); q._wk=x.k; q.inst='🔁 <b>틀렸던 문제</b> · '+q.inst; if(q.t==='c'&&q.ch&&q.ch.length>2) q.ch=shuffle(q.ch); rq.push(q); }catch(e){} });
+  const N=10, mine=shuffle(rq).slice(0,N); let base=[]; try{ base=shuffle(buildQuiz(u,'s')); }catch(e){}
+  const qs=mine.concat(base.slice(0,Math.max(0,N-mine.length)));
+  Q={u,l:'s',qs,i:0,right:0}; saveResume(); drawQ(); sfx('start');
+}
 function sayChallenge(u){
-  if(u.cq) return startQuiz(u,'s');
+  if(u.cq) return startReview(u);
   const ui=UNITS.indexOf(u), items=sayItems(u); let i=0, good=0, noHint=0, pts=0, micOk=!!SR, rec=null;
   if(!items.length) return unitView(u);
   const draw=()=>{
