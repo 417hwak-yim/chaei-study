@@ -4233,7 +4233,7 @@ function hwSetup(){
     try{ inp.blur(); }catch(e){} if(row) row.style.display='none'; b.textContent='⌨️ 키보드로 쓰기';
     /* 손글씨 판이 쓰기 칸 자리에 오도록 버튼 줄보다 위로 옮겨요 */
     if(row&&area.previousElementSibling!==row) row.after(area);
-    area.innerHTML='<div class="hwbox"><p class="meter" style="margin:0 0 6px">✍️ 아래 칸에 손가락으로 답을 써요</p><canvas id="hwc" aria-label="손글씨 쓰는 판"></canvas><div class="row center"><button class="btn" id="hwclr" type="button">지우기</button><button class="btn main" id="hwok" type="button">다 썼어요</button></div><div id="hwres"></div></div>';
+    area.innerHTML='<div class="hwbox"><p class="meter" style="margin:0 0 6px">✍️ 아래 칸에 손가락으로 답을 써요 (자동 채점)</p><canvas id="hwc" aria-label="손글씨 쓰는 판"></canvas><div class="row center"><button class="btn" id="hwclr" type="button">지우기</button><button class="btn main" id="hwok" type="button">다 썼어요</button></div><div id="hwres"></div></div>';
     const c=document.getElementById('hwc'), dpr=window.devicePixelRatio||1, rc=c.getBoundingClientRect(); c.width=Math.round(rc.width*dpr); c.height=Math.round(rc.height*dpr);
     const g=c.getContext('2d'); g.scale(dpr,dpr); g.lineWidth=5; g.lineCap='round'; g.lineJoin='round'; g.strokeStyle='#1B2750';
     let strokes=[], cur=null; const t0=Date.now();
@@ -4247,18 +4247,32 @@ function hwSetup(){
       const res=document.getElementById('hwres'), kor=/[가-힣]/.test(q.w.en), okb=document.getElementById('hwok'); let cands=[];
       res.innerHTML='<p class="meter">✍️ 글씨를 알아보는 중이에요…</p>'; okb.disabled=true;
       /* 1) 기기에 손글씨 인식 기능이 있으면 그것을 써요 */
+      const within=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new Error('timeout')),ms))]);
       try{ if(navigator.createHandwritingRecognizer&&window.HandwritingStroke){
-        const rec=await navigator.createHandwritingRecognizer({languages:[kor?'ko':'en']}), d=rec.startDrawing({recognitionType:'text'});
+        const rec=await within(navigator.createHandwritingRecognizer({languages:[kor?'ko':'en']}),3000), d=rec.startDrawing({recognitionType:'text'});
         strokes.forEach(s=>{ const st=new HandwritingStroke(); s.forEach(p=>st.addPoint(p)); d.addStroke(st); });
-        const pr=await d.getPrediction(); cands=(pr||[]).map(p=>String(p.text||'').trim()).filter(Boolean); } }catch(e){ cands=[]; }
-      /* 2) 없으면(안드로이드 크롬) 구글 입력 도구의 손글씨 인식으로 알아봐요. 쓴 획의 좌표만 보내요 */
-      if(!cands.length){ try{
-        const r=c.getBoundingClientRect(), ac=window.AbortController?new AbortController():null, tm=setTimeout(()=>{ try{ ac&&ac.abort(); }catch(_){} },6000);
-        const ink=strokes.map(s=>[s.map(p=>Math.round(p.x)),s.map(p=>Math.round(p.y)),s.map(p=>p.t)]);
-        const rs=await fetch('https://inputtools.google.com/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8',{method:'POST',headers:{'Content-Type':'application/json'},signal:ac?ac.signal:undefined,
-          body:JSON.stringify({options:'enable_pre_space',requests:[{writing_guide:{writing_area_width:Math.round(r.width),writing_area_height:Math.round(r.height)},ink,language:kor?'ko':'en'}]})});
-        clearTimeout(tm); const j=await rs.json(); if(j&&j[0]==='SUCCESS') cands=(j[1][0][1]||[]).map(t=>String(t).trim()).filter(Boolean); }catch(e){ cands=[]; } }
+        const pr=await within(d.getPrediction(),3000); cands=(pr||[]).map(p=>String(p.text||'').trim()).filter(Boolean); } }catch(e){ cands=[]; }
+      /* 2) 없으면(안드로이드 크롬) 구글 입력 도구의 손글씨 인식으로 알아봐요. 쓴 획의 좌표만 보내요.
+            인터넷이 느릴 수 있어서 넉넉히 기다리고, 안 되면 다른 주소로 한 번 더 해 봐요 */
+      let why='';
+      if(!cands.length){
+        const r=c.getBoundingClientRect(), ink=strokes.map(s=>[s.map(p=>Math.round(p.x)),s.map(p=>Math.round(p.y)),s.map(p=>Math.round(p.t))]);
+        const body=JSON.stringify({options:'enable_pre_space',requests:[{writing_guide:{writing_area_width:Math.round(r.width),writing_area_height:Math.round(r.height)},ink,language:kor?'ko':'en'}]});
+        for(const url of ['https://inputtools.google.com/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8','https://www.google.com/inputtools/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8']){
+          try{ const rs=await within(fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body}),12000); const j=await rs.json();
+            if(j&&j[0]==='SUCCESS'){ cands=(j[1][0][1]||[]).map(t=>String(t).trim()).filter(Boolean); if(cands.length) break; why='글씨를 찾지 못했어요'; } else why='인식 서버가 거절했어요'; }
+          catch(e){ why=navigator.onLine===false?'인터넷이 끊겨 있어요':(e&&e.message==='timeout'?'인터넷이 느려요':'인식 서버에 연결하지 못했어요'); } } }
       okb.disabled=false;
+      const showSelf=()=>{
+        res.innerHTML='<div class="hwans">정답: <span class="'+(kor?'':'en')+'">'+esc(q.w.en)+'</span></div><p class="meter">내가 쓴 글씨와 똑같나요? 한 글자씩 비교해 봐요.</p><div class="row center"><button class="btn main" id="hwy" type="button">⭕ 똑같이 썼어요</button><button class="btn" id="hwn" type="button">❌ 달라요</button></div>';
+        const fin=v=>{ inp.value=v; document.getElementById('chk').click(); area.querySelectorAll('button').forEach(x=>x.disabled=true); };
+        document.getElementById('hwy').onclick=()=>fin(q.w.en); document.getElementById('hwn').onclick=()=>fin('✗'); };
+      /* 알아보지 못했으면 바로 스스로 확인으로 넘어가지 않고, 한 번 더 시도할 수 있게 해요 */
+      if(!cands.length&&!res.dataset.retried){ res.dataset.retried='1';
+        res.innerHTML='<p class="meter">자동 채점을 하지 못했어요. ('+why+')</p><div class="row center"><button class="btn main" id="hwre" type="button">🔄 다시 알아보기</button><button class="btn" id="hwself" type="button">스스로 확인하기</button></div>';
+        document.getElementById('hwre').onclick=()=>okb.click();
+        document.getElementById('hwself').onclick=showSelf;
+        return; }
       if(cands.length){
         /* 띄어쓰기·문장부호는 빼고 비교해요. 대문자가 중요한 문제(예: Monday)는 대소문자까지 맞아야 해요 */
         const cs=!(q.loose||q.ci)&&q.exact&&/[A-Z]/.test(q.w.en), N=t=>{ t=String(t).replace(/[\s.?!,’'-]/g,''); return cs?t:t.toLowerCase(); }, A=N(q.w.en);
@@ -4266,10 +4280,8 @@ function hwSetup(){
         if(hit1){ res.innerHTML='<p class="meter">알아본 글자: <b class="'+(kor?'':'en')+'">'+esc(first)+'</b></p>'; inp.value=q.w.en; document.getElementById('chk').click(); area.querySelectorAll('button').forEach(x=>x.disabled=true); return; }
         if(near){ res.innerHTML='<p class="meter">알아본 글자: <b class="'+(kor?'':'en')+'">'+esc(first)+'</b><br>글씨가 조금 헷갈려요. <b>지우기</b>를 누르고 한 글자씩 또박또박 다시 써 볼까요?</p>'; return; }
         res.innerHTML='<p class="meter">알아본 글자: <b class="'+(kor?'':'en')+'">'+esc(first)+'</b></p>'; inp.value=first; document.getElementById('chk').click(); area.querySelectorAll('button').forEach(x=>x.disabled=true); return; }
-      /* 3) 인터넷이 안 되는 등 알아보지 못하면, 정답을 보고 스스로 확인해요 */
-      res.innerHTML='<div class="hwans">정답: <span class="'+(kor?'':'en')+'">'+esc(q.w.en)+'</span></div><p class="meter">내가 쓴 글씨와 똑같나요? 한 글자씩 비교해 봐요.</p><div class="row center"><button class="btn main" id="hwy" type="button">⭕ 똑같이 썼어요</button><button class="btn" id="hwn" type="button">❌ 달라요</button></div>';
-      const fin=v=>{ inp.value=v; document.getElementById('chk').click(); area.querySelectorAll('button').forEach(x=>x.disabled=true); };
-      document.getElementById('hwy').onclick=()=>fin(q.w.en); document.getElementById('hwn').onclick=()=>fin('✗');
+      /* 3) 다시 해 봐도 알아보지 못하면, 정답을 보고 스스로 확인해요 */
+      showSelf();
     };
   };
   /* 쓰기 문제는 손글씨 판이 처음부터 열려 있어요 (키보드는 저절로 올라오지 않아요) */
