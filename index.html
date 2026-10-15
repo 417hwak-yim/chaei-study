@@ -858,6 +858,38 @@ button,summary,[role="button"],label.btn,.choice,.tile{touch-action:manipulation
 .tadvwait{margin:0; color:#6A4BD8}
 .tin.shake{animation:tshake .35s}
 @keyframes tshake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style><style>/* 오늘의 이슈 */
+.newsp{--u:#D9534F}
+.nwtop{display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; margin-bottom:6px}
+.nwkick{font-weight:800; color:#D9534F}
+.nwcat{font-size:.8rem; font-weight:700; color:#fff; background:#D9534F; border-radius:999px; padding:2px 10px}
+.nwdate{font-size:.85rem; opacity:.7; margin-left:auto}
+.nwtitle{font-size:1.3rem; line-height:1.45; word-break:keep-all; margin:4px 0 10px; text-wrap:balance}
+.nwic{font-size:1.4em}
+.nwbody{background:#FFFDF6; border:1.5px solid #E6D8B8; border-radius:14px; padding:14px 16px; color:#3a2c1c}
+.nwbody p{margin:0 0 12px; font-size:1.12rem; line-height:1.9; word-break:keep-all; text-indent:.6em}
+.nwbody p:last-child{margin-bottom:0}
+.nws{border-radius:5px; transition:background .2s}
+.nws.on{background:#FFE08A}
+.nwbox{margin-top:14px; border-radius:14px; padding:12px 14px}
+.nwbox h3{margin:0 0 8px; font-size:1.05rem}
+.nwwords{background:#EEF5FF; border:1.5px solid #C9DCF5}
+.nwwords dl{margin:0; display:grid; gap:6px}
+.nwwords dl div{display:grid; grid-template-columns:auto 1fr; gap:8px; align-items:baseline}
+.nwwords dt{font-weight:800; white-space:nowrap}
+.nwwords dd{margin:0; word-break:keep-all; line-height:1.5}
+.nwthink{background:#FFF3E6; border:1.5px solid #F2D2AE}
+.nwthink ol{margin:0; padding-left:1.3em; display:grid; gap:6px; line-height:1.55; word-break:keep-all}
+.nwtip{margin:8px 0 0; font-size:.88rem; opacity:.75}
+.nwsrc{font-size:.8rem; opacity:.65; margin:12px 0 4px; word-break:keep-all}
+.nwdone{font-weight:800; color:var(--ok,#2E8B57); padding:10px}
+.nwlist{margin-top:18px}
+.nwlist h3{font-size:1.05rem; margin:0 0 8px}
+.nwitem{width:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; text-align:left; background:var(--card,#fff); border:1.5px solid var(--line,#ddd); border-radius:12px; padding:10px 12px; margin-bottom:8px; color:inherit; font:inherit; touch-action:manipulation}
+.nwitem b{display:block; word-break:keep-all; line-height:1.4}
+.nwitem small{opacity:.65; font-size:.8rem}
+.nwitem.did{opacity:.75}
+.nwchk{font-size:1.1rem}
 </style></head>
 <body>
 <div id="app"></div>
@@ -6308,5 +6340,128 @@ window.topView=function(){
 { const _ri=routeInner; routeInner=function(v,a,b){ if(v==='top'){ if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} VIEW='top'; return topView(); } return _ri.apply(this,arguments); }; }
 try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v==='top') topView(); else if(VIEW==='start') start(CURSUBJ); }catch(e){}
 })();
-</script></body>
+</script><script>
+/* ================= 오늘의 이슈: 요즘 소식을 3학년 눈높이로 다시 쓴 읽을거리예요 (퀴즈 없이 읽고 생각해 봐요) =================
+   기사는 실제 보도를 바탕으로 새로 썼어요. 하루에 한 편씩 '오늘의 이슈'로 보여 주고, 지난 이슈도 언제든 읽을 수 있어요. */
+(function(){
+const NEWS=[
+ {id:'n261015a',d:'2026-10-15',c:'동물',i:'🦫',t:'에버랜드에 카피바라 세쌍둥이가 태어났어요',
+  p:['경기도 용인에 있는 놀이공원 에버랜드에서 카피바라 세쌍둥이가 태어났어요. 세쌍둥이는 9월 28일에 태어났고, 에버랜드는 10월 14일에 이 소식을 알렸어요. 아빠는 ‘도톰’, 엄마는 ‘두툼’이라는 이름의 카피바라예요.',
+     '갓 태어난 아기 카피바라는 한 마리의 몸무게가 1kg쯤이었어요. 지금은 사육사와 수의사의 돌봄을 받으며 건강하게 자라고 있어요. 10월 15일부터는 에버랜드의 ‘뿌빠타운’에서 세쌍둥이를 직접 만날 수 있어요.',
+     '카피바라는 남아메리카의 강이나 습지 근처에 사는 동물이에요. 쥐나 다람쥐 같은 설치류 가운데 몸집이 가장 커요. 동그란 귀와 뭉툭한 코, 느긋한 표정 덕분에 많은 사람에게 사랑받고 있어요.'],
+  w:[['세쌍둥이','한 엄마에게서 한꺼번에 태어난 세 아기'],['사육사','동물원에서 동물을 기르고 돌보는 사람'],['설치류','쥐, 다람쥐처럼 앞니가 계속 자라는 동물 무리'],['습지','물기가 많아 늘 축축한 땅']],
+  th:['아기 동물이 건강하게 자라도록 사육사와 수의사는 어떤 일을 해 줄까요?','내가 세쌍둥이에게 이름을 지어 준다면 어떤 이름이 좋을까요?'],
+  src:'소년한국일보 2026년 10월 15일 기사'},
+ {id:'n261015b',d:'2026-10-15',c:'우주',i:'🚙',t:'화성 로버 ‘퍼서비어런스’, 지구 밖에서 가장 멀리 달렸어요',
+  p:['미국 항공우주국(NASA)의 화성 탐사 로버 ‘퍼서비어런스’가 새 기록을 세웠어요. 화성에서 달린 거리를 모두 합하니 약 45.2km가 되어, 지구 밖에서 가장 멀리 달린 탐사 차가 되었어요. 2021년 2월 화성에 내린 지 약 5년 8개월 만이에요.',
+     '그전까지는 또 다른 화성 로버 ‘오퍼튜니티’가 약 45.16km로 1등이었어요. 사람이 달에서 탔던 월면차보다도 더 멀리 달린 거예요. 퍼서비어런스는 작은 자동차만 한 크기인데, 지구에서 길을 하나하나 알려 주지 않아도 스스로 장애물을 피해 갈 수 있어요.',
+     '사실 이 기록은 지난 8월쯤 나올 예정이었어요. 그런데 화성에서 지금까지 찾은 것 가운데 가장 오래되었을지도 모르는 밝은색 암석을 발견해서, 두 달 가까이 한자리에 머물며 조사했대요. NASA는 2028년 말까지 탐사를 이어 갈 계획이에요.'],
+  w:[['탐사','모르는 곳을 샅샅이 살펴 알아내는 일'],['로버','다른 행성이나 달의 땅 위를 달리며 조사하는 탐사 차'],['장애물','가는 길을 막는 물건'],['암석','크고 단단한 돌']],
+  th:['퍼서비어런스가 기록을 세우는 것보다 암석 조사를 먼저 한 까닭은 무엇일까요?','내가 화성 로버를 움직일 수 있다면 무엇을 가장 먼저 찾아보고 싶나요?'],
+  src:'소년한국일보 2026년 10월 15일 기사 (NASA 자료)'},
+ {id:'n261015c',d:'2026-10-15',c:'과학',i:'🦑',t:'몸에서 빛이 나는 갑오징어가 태어났어요',
+  p:['미국 컬럼비아대학교 연구팀이 몸에서 형광 빛을 내는 ‘왜소갑오징어’를 만드는 데 성공했어요. 갑오징어의 유전자를 바꾸어 빛을 내게 한 것은 세계에서 처음이에요. 이 갑오징어가 낳은 새끼도 빛을 내는 유전자를 그대로 물려받았어요.',
+     '갑오징어는 위장의 달인이에요. 약 1초 만에 피부의 색과 무늬를 바꿀 수 있어요. 피부에는 텔레비전 화면의 작은 점처럼 움직이는 색소 세포가 수백만 개나 있어요. 신기하게도 갑오징어는 색을 구별하지 못하지만, 바닥의 모래가 얼마나 거친지 같은 느낌을 살려 몸을 비슷하게 바꾼대요.',
+     '연구팀은 빛나는 갑오징어를 관찰해서, 갑오징어가 주변 모습을 어떻게 알아보고 피부에 나타내는지 밝혀내려고 해요.'],
+  w:[['유전자','생물의 생김새나 특징을 부모에게서 물려주는 정보'],['위장','들키지 않도록 주변과 비슷하게 모습을 바꾸는 것'],['형광','빛을 받으면 밝게 빛나 보이는 성질']],
+  th:['갑오징어가 몸 색을 바꿀 수 있으면 어떤 점이 좋을까요?','주변과 비슷하게 숨는 동물에는 또 무엇이 있을까요?'],
+  src:'소년한국일보 2026년 10월 15일 기사'},
+ {id:'n261014a',d:'2026-10-14',c:'문화',i:'🎎',t:'완주에서 인형극 축제가 열려요',
+  p:['전라북도 완주에서 인형극 축제인 ‘2026 완주인형극페스타’가 10월 14일에 막을 올렸어요. 축제는 5일 동안 완주향토예술문화회관과 야외광장에서 열려요.',
+     '극장에서는 ‘어둑시니’, ‘꼬마장승 가출기’ 같은 인형극을 볼 수 있어요. 야외광장에서는 ‘뼈다귀 도둑과 여우탐정’ 같은 공연이 펼쳐져요. 인형과 배우, 관객이 함께 걷는 퍼레이드도 열려요.',
+     '나무, 실, 종이로 인형을 만드는 과정을 보고, 인형이 어떻게 움직이는지 배우는 체험도 할 수 있어요. 인형극은 작은 인형에 목소리와 움직임을 불어넣어 이야기를 들려주는 공연이에요.'],
+  w:[['축제','여러 사람이 함께 즐기는 큰 잔치'],['퍼레이드','여럿이 줄지어 행진하며 보여 주는 행사'],['관객','공연을 보는 사람']],
+  th:['내가 인형극을 만든다면 어떤 인물이 나오는 이야기를 만들고 싶나요?','집에 있는 물건으로 인형을 만든다면 무엇을 쓸 수 있을까요?'],
+  src:'소년한국일보 2026년 10월 14일 기사'},
+ {id:'n261014b',d:'2026-10-14',c:'환경',i:'🌾',t:'바닷가 갯벌에도 단풍이 들어요',
+  p:['가을이 되면 산의 나뭇잎만 물드는 게 아니에요. 바닷가 갯벌에서 자라는 ‘염생식물’도 붉게 물들어요. 이것을 ‘갯벌 단풍’이라고 불러요. 10월 초부터 11월 초까지가 가장 보기 좋은 때예요.',
+     '염생식물은 소금기가 많은 땅과 센 바닷바람을 견디며 자라는 식물이에요. 우리나라에는 약 130종이 있어요. 그중 ‘칠면초’는 1년 동안 색이 일곱 번이나 바뀐다고 해서 이런 이름이 붙었어요. 가을이 되면 초록색을 내는 성분이 줄어들어 붉은색이 드러나요.',
+     '염생식물은 공기 속의 이산화탄소를 빨리 빨아들여서 지구를 지키는 데에도 도움이 돼요. 바다와 갯벌이 빨아들이는 이런 탄소를 ‘블루카본’이라고 불러요. 전남 순천만이나 인천 소래습지생태공원 같은 곳에서 갯벌 단풍을 볼 수 있어요.'],
+  w:[['갯벌','밀물 때는 물에 잠기고 썰물 때는 드러나는 바닷가의 넓은 땅'],['염생식물','소금기가 많은 땅에서 자라는 식물'],['이산화탄소','숨을 내쉬거나 물건이 탈 때 나오는 기체. 많아지면 지구가 더워져요']],
+  th:['산의 단풍과 갯벌 단풍은 어떤 점이 비슷하고, 어떤 점이 다를까요?','갯벌을 지키려면 우리가 할 수 있는 일은 무엇일까요?'],
+  src:'소년한국일보 2026년 10월 14일 기사'},
+ {id:'n261014c',d:'2026-10-14',c:'날씨',i:'🌼',t:'경포호에 보랏빛 해국이 피었어요',
+  p:['강원도 강릉의 경포호 주변에 가을꽃 ‘해국’이 활짝 피었어요. 해국은 바닷가에 피는 보라색 국화예요.',
+     '국화를 닮은 우리나라 꽃은 사는 곳에 따라 이름이 달라요. 바닷가에 피면 해국, 산에 피면 산국이라고 해요. 감국이라는 꽃도 있어요. 이렇게 국화를 닮은 토종 꽃을 모두 ‘들국화’라고 불러요.',
+     '이날은 아침 기온이 크게 떨어져 쌀쌀했어요. 아침과 낮의 기온 차이가 15℃ 안팎이나 되었어요. 이렇게 하루 동안 기온 차이가 클 때에는 얇은 옷을 여러 겹 입고, 더우면 하나씩 벗는 것이 좋아요.'],
+  w:[['토종','원래부터 그 땅에서 나고 자란 것'],['일교차','하루 동안 가장 높은 기온과 가장 낮은 기온의 차이'],['쌀쌀하다','날씨가 조금 춥다']],
+  th:['아침저녁으로 쌀쌀할 때 감기에 걸리지 않으려면 어떻게 하면 좋을까요?','우리 동네에서는 요즘 어떤 가을꽃을 볼 수 있나요?'],
+  src:'소년한국일보 2026년 10월 14일 기사 (연합뉴스)'},
+ {id:'n261014d',d:'2026-10-14',c:'환경',i:'🐢',t:'바다 환경 수업이 학교로 찾아가요',
+  p:['해양수산부는 10월 27일부터 ‘해양환경 이동교실’을 연다고 발표했어요. 바다를 직접 보기 어려운 대전, 세종, 충북 같은 중부 내륙 지역의 학교를 찾아가는 수업이에요.',
+     '수업은 초등학교 1~4학년 어린이를 위해 준비되었어요. 학교가 국가해양환경 온라인 교육센터 누리집에서 신청하면 참여할 수 있어요.',
+     '바다에 버려진 쓰레기는 물고기와 바다새, 바다거북을 위험하게 만들어요. 바다에서 멀리 사는 사람이 버린 쓰레기도 강을 따라 흘러가 결국 바다에 닿을 수 있어요. 그래서 바다를 지키는 일은 바닷가에 사는 사람만의 일이 아니에요.'],
+  w:[['해양','넓고 큰 바다'],['내륙','바다에서 멀리 떨어진 땅'],['누리집','인터넷 홈페이지를 우리말로 이르는 말']],
+  th:['바다에서 먼 곳에 사는 우리가 바다를 지키려면 무엇을 할 수 있을까요?','일회용품을 덜 쓰는 방법을 하나 생각해 봐요.'],
+  src:'소년한국일보 2026년 10월 14일 기사'},
+ {id:'n261008a',d:'2026-10-08',c:'우주',i:'👩‍🚀',t:'우주정거장에서 230일 넘게 지낸 우주 비행사들이 돌아왔어요',
+  p:['국제우주정거장에서 지내던 우주 비행사 네 명이 10월 8일 지구로 돌아왔어요. 이들은 ‘크루-12’ 팀으로, 미국 항공우주국(NASA)의 제시카 메이어와 잭 해서웨이, 유럽우주국의 소피 아드노, 러시아의 안드레이 페댜예프예요.',
+     '네 사람은 올해 2월 13일 미국 플로리다에서 출발했어요. 우주정거장에서 230일 넘게 지내며 여러 가지 과학 실험을 하고, 정거장을 고치고 돌보는 일을 했어요.',
+     '우주선 ‘드래건’은 낙하산을 펼치고 미국 캘리포니아 앞바다에 내려앉았어요. 이렇게 바다에 내려앉는 것을 ‘스플래시다운’이라고 해요. 이들이 떠나기 전인 10월 1일에는 새 팀인 ‘크루-13’이 우주정거장에 도착해 일을 이어받았어요.'],
+  w:[['우주정거장','사람이 오래 머물며 일할 수 있게 우주에 띄워 놓은 큰 시설'],['낙하산','높은 곳에서 천천히 내려오게 해 주는 커다란 천'],['실험','어떤 것을 알아보려고 직접 해 보는 일']],
+  th:['우주정거장에서 230일 넘게 산다면 무엇이 가장 그리울까요?','우주에서 오래 지내다 돌아온 사람은 왜 처음에 걷기 힘들어할까요?'],
+  src:'NASA 크루-12 귀환 보도 (2026년 10월 8일)'},
+ {id:'n261002a',d:'2026-10-02',c:'역사',i:'🏯',t:'궁궐에서 가을 궁중문화축전이 열렸어요',
+  p:['서울의 네 궁궐인 경복궁, 창덕궁, 덕수궁, 창경궁과 종묘에서 10월 7일부터 11일까지 ‘가을 궁중문화축전’이 열렸어요. 궁중문화축전은 봄과 가을, 1년에 두 번 열리는 국가유산 축제예요.',
+     '창경궁에서는 조선 왕실 사람들이 어떻게 살았는지 여러 곳을 돌아다니며 체험하는 ‘창경궁 시간여행’이 열렸어요. 종묘와 경복궁에서는 궁궐과 성문을 지키던 수문장과 순라군의 모습을 다시 보여 주었어요. 덕수궁에서는 대한제국 황실이 나라의 독립을 지키려고 애쓴 이야기를 전시했어요.',
+     '올해는 예약하지 않아도 그 자리에서 바로 참여할 수 있는 프로그램도 있었어요. 축제는 끝났지만, 궁궐은 언제든 찾아가 옛사람들의 생활을 떠올려 볼 수 있는 곳이에요.'],
+  w:[['궁궐','임금이 살던 큰 집'],['수문장','궁궐이나 성의 문을 지키던 장수'],['국가유산','나라가 소중히 지키고 물려주려고 정한 문화재와 자연']],
+  th:['조선 시대 궁궐에서 하루를 지낸다면 무엇을 해 보고 싶나요?','옛 건물을 오래 지키려면 구경할 때 무엇을 조심해야 할까요?'],
+  src:'소년한국일보 2026년 10월 2일 기사'},
+ {id:'n261001a',d:'2026-10-01',c:'생활',i:'🌷',t:'서울에서 국제정원박람회가 열려요',
+  p:['서울 매헌시민의숲 일대에서 10월 1일부터 27일까지 ‘서울국제정원박람회’가 열려요. 여러 사람이 공모에 참여해 직접 꾸민 정원들을 구경할 수 있어요.',
+     '박람회에서는 정원을 가꾸는 도구와 식물을 소개하는 정원산업전과 정원에 관한 여러 문화 프로그램도 열려요. 도시 한가운데에서 나무와 꽃을 보며 쉬어 갈 수 있는 자리예요.',
+     '또 10월 17일과 18일에는 서울시청 본청 로비에서 어린이의 체력을 재 보는 ‘찾아가는 서울체력장’도 열려요. 내 몸이 얼마나 튼튼한지 알아보고, 알맞은 운동 방법도 상담받을 수 있어요.'],
+  w:[['박람회','여러 물건이나 작품을 한곳에 모아 보여 주는 큰 행사'],['정원','나무와 꽃을 가꾸어 놓은 뜰'],['체력','몸을 움직이고 버티는 힘']],
+  th:['내가 작은 정원을 꾸민다면 어떤 꽃과 나무를 심고 싶나요?','튼튼한 몸을 위해 매일 할 수 있는 운동은 무엇일까요?'],
+  src:'서울시 2026년 10월 주요 시민 안내 사항'}
+];
+const NCOL='#D9534F';
+const day0=new Date(2026,9,15);
+const dayIdx=()=>{ const n=new Date(); const t=new Date(n.getFullYear(),n.getMonth(),n.getDate()); return Math.max(0,Math.round((t-day0)/864e5)); };
+const todayN=()=>NEWS[dayIdx()%NEWS.length];
+const readSet=()=>(STATE.news=STATE.news||{});
+const fmt=d=>{ const a=d.split('-'); return (+a[1])+'월 '+(+a[2])+'일'; };
+const sents=t=>t.split(/(?<=[.?!])\s+/).filter(Boolean);
+function newsView(id){
+  const N=NEWS.find(x=>x.id===id)||todayN(), isToday=N===todayN(), R=readSet(); let k=0;
+  let h='<button class="back" data-go="start">← 처음 화면</button><section class="panel newsp"><div class="nwtop"><span class="nwkick">📰 '+(isToday?'오늘의 이슈':'지난 이슈')+'</span><span class="nwcat">'+N.c+'</span><span class="nwdate">'+fmt(N.d)+' 소식</span></div>';
+  h+='<h2 class="nwtitle"><span class="nwic">'+N.i+'</span> '+esc(N.t)+'</h2>';
+  h+='<article class="nwbody">'+N.p.map(p=>'<p>'+sents(p).map(s=>'<span class="nws" data-s="'+(k++)+'">'+esc(s)+'</span>').join(' ')+'</p>').join('')+'</article>';
+  if(canSpeak) h+='<div class="row center"><button class="btn sun" type="button" id="nwread">🔊 읽어 주기</button></div>';
+  h+='<div class="nwbox nwwords"><h3>📘 낱말 풀이</h3><dl>'+N.w.map(w=>'<div><dt>'+w[0]+'</dt><dd>'+w[1]+'</dd></div>').join('')+'</dl></div>';
+  h+='<div class="nwbox nwthink"><h3>💭 생각해 볼 거리</h3><ol>'+N.th.map(t=>'<li>'+t+'</li>').join('')+'</ol><p class="nwtip">정답은 없어요. 엄마 아빠와 이야기해 봐요.</p></div>';
+  h+='<p class="nwsrc">이 글은 '+N.src+'를 바탕으로 '+KID.name+'의 눈높이에 맞게 다시 썼어요.</p>';
+  h+='<div class="row center">'+(R[N.id]?'<span class="nwdone">✅ 읽었어요</span>':'<button class="btn main" type="button" id="nwok">✔ 다 읽었어요</button>')+'</div></section>';
+  const others=NEWS.filter(x=>x!==N);
+  h+='<section class="nwlist"><h3>다른 이슈도 읽어 봐요</h3>'+others.map(x=>'<button class="nwitem'+(R[x.id]?' did':'')+'" data-go="news:'+x.id+'"><span class="nwic">'+x.i+'</span><span><b>'+esc(x.t)+'</b><small>'+x.c+' · '+fmt(x.d)+(x===todayN()?' · 오늘의 이슈':'')+'</small></span><span class="nwchk">'+(R[x.id]?'✅':'›')+'</span></button>').join('')+'</section>';
+  show(h,NCOL);
+  const ok=document.getElementById('nwok'); if(ok) ok.onclick=()=>{ R[N.id]=dkeyN(); persist(); try{ sfx('done'); }catch(e){} ok.outerHTML='<span class="nwdone">✅ 읽었어요</span>'; };
+  const rb=document.getElementById('nwread'); if(rb) rb.onclick=()=>newsRead(rb);
+}
+const dkeyN=()=>{ const n=new Date(); return n.getFullYear()+'-'+(n.getMonth()+1)+'-'+n.getDate(); };
+/* 읽어 주기: 한 문장씩 읽으며 읽는 문장을 노랗게 표시해요 */
+let NRUN=0;
+function newsRead(btn){
+  if(btn.dataset.on){ NRUN++; SAYN++; try{ speechSynthesis.cancel(); }catch(e){} btn.textContent='🔊 다시 읽어 주기'; delete btn.dataset.on; document.querySelectorAll('.nws.on').forEach(x=>x.classList.remove('on')); return; }
+  const ss=[...document.querySelectorAll('.nws')], my=++NRUN; try{ speechSynthesis.cancel(); }catch(e){} const n=++SAYN, v=pickVoice('ko-KR'); btn.textContent='⏹ 그만 읽기'; btn.dataset.on='1';
+  const done=()=>{ ss.forEach(x=>x.classList.remove('on')); if(btn.isConnected){ btn.textContent='🔊 다시 읽어 주기'; delete btn.dataset.on; } };
+  const go=k=>{ if(my!==NRUN||n!==SAYN||!btn.isConnected||k>=ss.length) return done();
+    ss.forEach((x,j)=>x.classList.toggle('on',j===k)); try{ ss[k].scrollIntoView({block:'nearest',behavior:'smooth'}); }catch(e){}
+    const u=new SpeechSynthesisUtterance(ss[k].textContent.replace(/[‘’“”]/g,'')); u.lang='ko-KR'; u.rate=.95; if(v) u.voice=v;
+    let moved=false; const nx=()=>{ if(moved) return; moved=true; setTimeout(()=>go(k+1),200); }; u.onend=nx; u.onerror=nx; speechSynthesis.speak(u);
+    setTimeout(()=>{ if(!moved&&my===NRUN&&!speechSynthesis.speaking) nx(); },1500+ss[k].textContent.length*230); };
+  if(ISAND) setTimeout(()=>go(0),150); else go(0);
+}
+/* 처음 화면: 책장·최상위 수학 아래에 오늘의 이슈 카드를 놓아요 */
+{ const _st=start; start=function(subj){ const r=_st.apply(this,arguments);
+  try{ if(!SUBJ[subj]){ const N=todayN(), did=!!readSet()[N.id], at=$app.querySelector('.lesson[data-go="top"]')||$app.querySelector('.lesson[data-go="read"]');
+    if(at) at.insertAdjacentHTML('afterend','<button class="lesson" style="--u:'+NCOL+';width:100%;margin-top:12px" data-go="news:'+N.id+'"><span class="n">오늘의 이슈</span><span><b>'+N.i+' '+esc(N.t)+'</b><span>'+N.c+' 소식 · 퀴즈 없이 읽고 생각해 봐요'+(did?' · 읽었어요 ✅':'')+'</span></span><span class="go pic" style="font-size:1.8rem">📰</span></button>'); } }catch(e){}
+  return r; }; }
+{ const _ri=routeInner; routeInner=function(v,a,b){ if(v==='news'){ if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} NRUN++; VIEW='news'; return newsView(a); } if(NRUN) NRUN++; return _ri.apply(this,arguments); }; }
+window.__news={NEWS,todayN,newsView};
+try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v==='news') newsView(o.a); else if(VIEW==='start') start(CURSUBJ); }catch(e){}
+})();
+</script>
+</body>
 </html>
