@@ -8218,5 +8218,257 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
 }
 </script>
 <!-- ===== 오늘의 왜 끝 ===== -->
+<!-- ===== 복습 상자 시작 ===== -->
+<script>
+/* ===== 복습 상자 (채이): 배운 것을 잊기 전에 다시 만나요 =====
+   1) 🔤 영어 낱말 복습: '낱말 만나기'를 끝낸 Day·단원의 낱말만 모아, 1·3·7·14·30일 간격으로 다시 물어요(간격 반복).
+   2) 🔁 틀린 문제 다시 풀기: 모든 과목에서 틀린 문제를 모아 다음 날 → 3일 뒤 → 7일 뒤에 다시 내요. 수학은 숫자를 바꿔 새로 내요.
+   3) 📝 주말 누적 평가: 토·일요일에 그 주에 끝낸 단원을 섞어 15문제. 단원마다 튼튼/다시 보기를 알려 줘요.
+   4) 💬 설명해 보기: 차시를 끝낸 화면에서 배운 것을 자기 말로 말하거나 쓰고, 핵심 낱말을 몇 개 썼는지 확인해요.
+   5) 🧮 풀이 과정: 수학 문장제를 '식 세우기 → 계산 과정 → 답' 단계로 골라요. 틀린 단계를 짚어 줘요.
+   6) 👪 부모님 리포트: 최근 7일 공부한 날, 과목별 정답률, 약한 단원, 낱말·오답 현황, 설명해 보기 기록.
+   기록은 STATE.rv에 모여요. 복습을 끝내면 학습 하나로 쳐서 게임 열림 규칙(학습 2개마다)에도 들어가요. */
+(function(){
+  const DAY=d=>{ d=d||new Date(); return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5); };
+  const TODAY=()=>DAY();
+  const RV=()=>{ const R=STATE.rv=STATE.rv||{}; R.w=R.w||{}; R.wr=R.wr||[]; R.log=R.log||[]; R.st=R.st||{}; R.us=R.us||{}; R.wk=R.wk||{}; R.xp=R.xp||[]; R.dn=R.dn||{}; R.grad=R.grad||0; return R; };
+  const E=s=>esc(String(s));
+  const mix=a=>shuffle(a.slice());
+  const dstr=n=>{ const d=new Date(n*864e5); return (d.getUTCMonth()+1)+'월 '+d.getUTCDate()+'일'; };
+  const unitById=id=>{ for(const g of Object.keys(GRADES)){ const u=GRADES[g].units.find(x=>x.id===id); if(u) return u; } return null; };
+  const subjOf=u=>{ try{ return GS(u.g!=null?u.g:GRADE); }catch(e){ return ''; } };
+  const sname=k=>(SUBJ[k]&&SUBJ[k].name)||k||'기타';
+  const credit=()=>{ try{ const k=dkey(new Date()); STATE.days[k]=(STATE.days[k]||0)+1; grantGame(); }catch(e){} };
+  const INT=[1,3,7,14,30,60];
+
+  /* ---------- 기록: 차시를 끝낸 날, 문제마다 맞고 틀림 ---------- */
+  { const _ss=saveStamp; saveStamp=function(u,l,stars){ try{ const R=RV(); R.log.push({id:u.id,l,d:TODAY()}); if(R.log.length>400) R.log=R.log.slice(-400); }catch(e){} return _ss.apply(this,arguments); }; }
+  { const _nw=noteWrong; noteWrong=function(q,ok){
+      try{ const u=Q&&Q.u, R=RV(), d=TODAY();
+        if(u){ const sj=u.rv?(q._sj||''):subjOf(u), uid=u.rv?(q._u||''):u.id;
+          if(sj&&u.rv!=='voca'){ const S=R.st[d]=R.st[d]||{}; const a=S[sj]=S[sj]||[0,0]; a[1]++; if(ok) a[0]++; }
+          if(uid){ const U=R.us[d]=R.us[d]||{}; const b=U[uid]=U[uid]||[0,0]; b[1]++; if(ok) b[0]++; }
+          if(u.rv==='voca'&&q._rv) vocaMark(q._rv,ok);
+          else if(u.rv==='wrong'&&q._wr) wrongMark(q._wr,ok);
+          else if(u.rv==='week'){ if(q._u){ const T=Q.tally=Q.tally||{}; const t=T[q._u]=T[q._u]||[0,0]; t[1]++; if(ok) t[0]++; } if(!ok) wrongAdd(q,unitById(q._u),q._l); }
+          else if(!u.rv&&!ok) wrongAdd(q,u,Q.l); }
+        /* 오래된 하루 기록은 지워요 (40일) */
+        Object.keys(R.st).forEach(k=>{ if(+k<d-40) delete R.st[k]; }); Object.keys(R.us).forEach(k=>{ if(+k<d-40) delete R.us[k]; });
+      }catch(e){}
+      if(Q&&Q.u&&Q.u.rv) return; return _nw.apply(this,arguments); }; }
+
+  /* ---------- 1) 영어 낱말 복습 ---------- */
+  const VG=[3,7,8];   /* 영어 3학년 단원, 영어독해 Level 1·2 */
+  function learnedWords(){ const out=[], seen={};
+    VG.forEach(g=>{ const G=GRADES[g]; if(!G) return; G.units.forEach(u=>{ if(!prog[u.id+'-0']||!u.words) return; u.words.forEach(w=>{ const k=String(w.en).toLowerCase().trim(); if(!k||seen[k]) return; seen[k]=1; out.push({k,w,u}); }); }); });
+    return out; }
+  function vocaSync(){ const R=RV(), L=learnedWords(), d=TODAY(); L.forEach(x=>{ if(!R.w[x.k]) R.w[x.k]={b:0,d:d+1,n:0,s:x.u.id}; }); return L; }
+  /* 처음 복습 상자를 열기 전에 이미 배운 낱말이 많으면, 한꺼번에 몰리지 않게 날짜를 나눠 둬요 */
+  function vocaSpread(){ const R=RV(); if(R.spread) return; const L=vocaSync(), d=TODAY(); L.forEach((x,i)=>{ R.w[x.k].d=d+Math.floor(i/10); }); R.spread=1; }
+  const vocaDue=()=>{ const R=RV(), d=TODAY(); return vocaSync().filter(x=>R.w[x.k].d<=d).sort((a,b)=>(R.w[a.k].d-R.w[b.k].d)||(R.w[a.k].b-R.w[b.k].b)); };
+  function vocaMark(k,ok){ const R=RV(), x=R.w[k]; if(!x) return; const d=TODAY(); x.n++; if(ok){ x.b=Math.min(5,x.b+1); x.d=d+INT[Math.min(INT.length-1,x.b-1)]; } else { x.b=0; x.d=d+1; } x.last=d; }
+  const stage=b=>b>=4?'🌳':b>=2?'🌿':'🌱';
+  function vocaQ(x,pool){ const w=x.w, R=RV(), b=(R.w[x.k]||{}).b||0, others=n=>mix(pool.filter(y=>y.k!==x.k)).slice(0,n).map(y=>y.w);
+    const big=t=>'<span class="en" style="font-size:1.6rem;font-weight:700">'+E(t)+'</span>', ex=w.en+' : '+w.ko;
+    const sent=(x.u.sents||[]).find(s=>String(s.ans||'').toLowerCase()===x.k&&s.gap);
+    let kinds=b<=1?['listen','ko2en','en2ko']:['spell','ko2en','listen','sent','spell']; if(!canSpeak) kinds=kinds.filter(t=>t!=='listen'); if(!sent) kinds=kinds.filter(t=>t!=='sent'); if(!kinds.length) kinds=['ko2en'];
+    const t=kinds[Math.floor(Math.random()*kinds.length)], o3=others(3);
+    let q;
+    if(t==='listen') q={t:'c',inst:'🔊 소리를 듣고 알맞은 낱말을 고르세요.',listen:w.say||w.en,ch:mix([w,...o3]).map(y=>({h:big(y.en),ok:y===w})),ex};
+    else if(t==='en2ko') q={t:'c',inst:'영어 낱말의 뜻을 고르세요.',stim:'<div class="line en" style="font-size:2.2rem">'+E(w.en)+'</div>',say:w.say||w.en,ch:mix([w,...o3]).map(y=>({h:E(y.ko),ok:y===w})),ex};
+    else if(t==='spell') q={t:'w',inst:'뜻을 보고 영어 낱말을 만들어 보세요.',w:{en:w.en,ko:'뜻: '+w.ko,p:w.p,nopic:!w.p,say:w.say||w.en},ex};
+    else if(t==='sent') q={t:'c',inst:'문장의 빈칸에 알맞은 낱말을 고르세요.',stim:'<div class="line en">'+E(sent.gap).replace('___','<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>')+'</div><div style="margin-top:4px">'+E(sent.ko||'')+'</div>',ch:mix([w,...o3]).map(y=>({h:big(y.en),ok:y===w})),ex:sent.en};
+    else q={t:'c',inst:'뜻에 알맞은 영어 낱말을 고르세요.',stim:(w.p?'<div style="font-size:3rem">'+w.p+'</div>':'')+'<div class="line" style="font-size:1.6rem">'+E(w.ko)+'</div>',ch:mix([w,...o3]).map(y=>({h:big(y.en),ok:y===w})),ex};
+    q._rv=x.k; q._sj='eng'; q.inst=stage(b)+' '+q.inst; return q; }
+  const FU=(rv,title,color)=>({id:'rv-'+rv,rv,title,color,ul:'복습',words:[],books:[],g:GRADE});
+  function runQ(rv,title,color,qs){ if(!qs.length) return false; Q={u:FU(rv,title,color),l:'rv',qs,i:0,right:0}; drawQ(); try{ sfx('start'); }catch(e){} return true; }
+  { const _dq=drawQ; drawQ=function(){ const r=_dq.apply(this,arguments); try{ if(Q&&Q.u&&Q.u.rv){ const b=$app.querySelector('button.back'); if(b){ b.dataset.go='rv:box'; b.textContent='← 복습 상자'; } } }catch(e){} return r; }; }
+  function startVoca(){ vocaSpread(); const pool=vocaSync(), due=vocaDue().slice(0,10); if(!due.length) return boxView('오늘 복습할 낱말이 없어요! 🎉');
+    runQ('voca','영어 낱말 복습','#E0457B',due.map(x=>vocaQ(x,pool.length>=4?pool:learnedWordsAll()))); }
+  function learnedWordsAll(){ const out=[]; VG.forEach(g=>{ const G=GRADES[g]; if(G) G.units.forEach(u=>(u.words||[]).forEach(w=>out.push({k:String(w.en).toLowerCase(),w,u}))); }); return out; }
+  function bookView(){ const R=RV(), L=vocaSync(), d=TODAY();
+    const grp={'🌳':[],'🌿':[],'🌱':[]}; L.forEach(x=>grp[stage(R.w[x.k].b)].push(x));
+    let h='<button class="back" data-go="rv:box">← 복습 상자</button><section class="panel rvp"><h2>📒 내 낱말장</h2><p class="lead">배운 낱말 <b>'+L.length+'개</b> · 🌳 완전히 내 것 '+grp['🌳'].length+' · 🌿 자라는 중 '+grp['🌿'].length+' · 🌱 새싹 '+grp['🌱'].length+'</p>'
+      +'<p class="rvnote">맞힐수록 1일 → 3일 → 7일 → 14일 → 30일 뒤에 다시 만나요. 틀리면 다음 날 다시 나와요.</p>';
+    ['🌱','🌿','🌳'].forEach(s=>{ if(!grp[s].length) return; h+='<h3 class="rvh">'+s+' '+({'🌱':'새싹','🌿':'자라는 중','🌳':'완전히 내 것'})[s]+'</h3><div class="rvwords">'+grp[s].map(x=>{ const v=R.w[x.k], due=v.d<=d; return '<button class="rvword'+(due?' due':'')+'" type="button" data-say="'+E(x.w.say||x.w.en)+'"><b class="en">'+E(x.w.en)+'</b><small>'+E(x.w.ko)+'</small><i>'+(due?'오늘 복습':dstr(v.d))+'</i></button>'; }).join('')+'</div>'; });
+    if(!L.length) h+='<p>아직 배운 낱말이 없어요. 영어독해나 영어의 ‘낱말 만나기’ 차시를 끝내면 여기에 모여요.</p>';
+    show(h+'</section>','#E0457B'); }
+
+  /* ---------- 2) 틀린 문제 다시 풀기 ---------- */
+  const WMAX=80, WINT=[1,3,7];
+  function wrongAdd(q,u,l){ try{ if(!u||!u.id||q.t==='pz'||q._rv) return; const R=RV(), k=u.id+'#'+(q._wk||wkey(q)); if(R.wr.some(x=>x.k===k)) { const x=R.wr.find(x=>x.k===k); x.b=0; x.d=TODAY()+1; return; }
+      const p=wPack(Object.assign({},q,{_wr:undefined,_u:undefined,_l:undefined,_sj:undefined})); if(!p) return;
+      R.wr.push({k,p,uid:u.id,l,inst:q.inst,b:0,d:TODAY()+1,a:TODAY()}); while(R.wr.length>WMAX) R.wr.shift(); }catch(e){} }
+  function wrongMark(k,ok){ const R=RV(), i=R.wr.findIndex(x=>x.k===k); if(i<0) return; const x=R.wr[i];
+    if(ok){ x.b++; if(x.b>=WINT.length){ R.wr.splice(i,1); R.grad=(R.grad||0)+1; } else x.d=TODAY()+WINT[x.b]; } else { x.b=0; x.d=TODAY()+1; } }
+  const wrongDue=()=>RV().wr.filter(x=>x.d<=TODAY());
+  function wrongQ(x){ const u=unitById(x.uid); let q=null;
+    /* 수학은 같은 종류의 문제를 숫자만 바꿔 새로 만들어요 */
+    if(u&&u.math&&typeof x.l==='number'){ try{ const fresh=buildQuiz(u,x.l).filter(y=>y.inst===x.inst&&y.t==='c'); if(fresh.length) q=fresh[Math.floor(Math.random()*fresh.length)]; }catch(e){} }
+    if(!q){ try{ q=wUnpack(x.p); if(q.t==='c'&&q.ch&&q.ch.length>2) q.ch=mix(q.ch); }catch(e){ return null; } }
+    q._wr=x.k; q._u=x.uid; q._sj=u?subjOf(u):''; q.inst='🔁 <b>'+(u?E(u.title):'틀렸던 문제')+'</b> · '+(['처음','두 번째','마지막'][x.b]||'')+' 다시 풀기 · '+q.inst; return q; }
+  function startWrong(){ const qs=mix(wrongDue()).slice(0,10).map(wrongQ).filter(Boolean); if(!qs.length) return boxView('오늘 다시 풀 문제가 없어요! 🎉'); runQ('wrong','틀린 문제 다시 풀기','#D9534F',qs); }
+
+  /* ---------- 3) 주말 누적 평가 ---------- */
+  const wkKey=()=>{ const d=TODAY(), wd=new Date().getDay(); return 'w'+(d-((wd+6)%7)); };   /* 그 주 월요일 */
+  const isWeekend=()=>{ const wd=new Date().getDay(); return wd===0||wd===6; };
+  function weekUnits(){ const R=RV(), d=TODAY(), ids=[]; R.log.filter(x=>x.d>d-7&&typeof x.l==='number').forEach(x=>{ if(ids.indexOf(x.id)<0) ids.push(x.id); });
+    if(ids.length<3){ /* 기록이 적으면 가장 최근에 공부한 단원으로 채워요 */ Object.keys(GRADES).forEach(g=>GRADES[g].units.forEach(u=>{ if(ids.length<6&&ids.indexOf(u.id)<0&&[0,1,2,3].some(l=>prog[u.id+'-'+l])&&[0,1,2,3].some(l=>!prog[u.id+'-'+l])) ids.push(u.id); })); }
+    return ids.map(unitById).filter(u=>u&&!u.puz&&u.id.indexOf('rv-')!==0); }
+  function startWeek(){ const us=mix(weekUnits()).slice(0,6); let qs=[];
+    const per=us.length?Math.max(2,Math.ceil(15/us.length)):0;
+    us.forEach(u=>{ const done=[0,1,2,3].filter(l=>prog[u.id+'-'+l]); const ls=done.length?done:[0]; let got=[]; for(const l of mix(ls)){ try{ got=got.concat(buildQuiz(u,l).filter(q=>q.t!=='pz').map(q=>(q._l=l,q))); }catch(e){} if(got.length>=per*2) break; }
+      mix(got).slice(0,per).forEach(q=>{ q._u=u.id; q._sj=subjOf(u); q.inst='📝 <b>'+E(sname(subjOf(u)))+' · '+E(u.title)+'</b> · '+q.inst; qs.push(q); }); });
+    qs=mix(qs).slice(0,15); if(!qs.length) return boxView('이번 주에 끝낸 단원이 없어서 평가를 만들 수 없어요. 공부를 조금 더 하고 와요!'); runQ('week','주말 누적 평가','#8A5CF0',qs); }
+
+  /* ---------- 끝난 화면 ---------- */
+  { const _fin=finish; finish=function(){ if(!(Q&&Q.u&&Q.u.rv)) return _fin.apply(this,arguments);
+      const {u,qs,right}=Q, R=RV(); let h='<section class="panel result rvp"><div class="big">'+({voca:'🔤',wrong:'🔁',week:'📝'})[u.rv]+'</div><h2>'+E(u.title)+' 끝!</h2><p>'+qs.length+'문제 중 <b>'+right+'문제</b>를 맞혔어요.</p>';
+      if(u.rv==='voca'){ const L=vocaSync(), m=L.filter(x=>R.w[x.k].b>=4).length; h+='<p class="rvnote">맞힌 낱말은 다음 복습 날짜가 뒤로 미뤄지고, 틀린 낱말은 내일 다시 만나요.<br>🌳 완전히 내 것이 된 낱말: <b>'+m+'개</b></p><div class="row center"><button class="btn" data-go="rv:book">📒 내 낱말장</button></div>'; }
+      if(u.rv==='wrong') h+='<p class="rvnote">세 번(다음 날·3일 뒤·7일 뒤) 연달아 맞히면 노트에서 ‘졸업’해요. 지금까지 졸업한 문제: <b>'+(R.grad||0)+'개</b></p>';
+      if(u.rv==='week'){ const T=Q.tally||{}, rows=Object.keys(T).map(id=>{ const un=unitById(id), t=T[id], r=t[0]/t[1]; return {id,un,t,r}; }).sort((a,b)=>a.r-b.r);
+        R.wk[wkKey()]={d:TODAY(),r:right,n:qs.length,u:rows.map(x=>[x.id,x.t[0],x.t[1]])};
+        h+='<div class="rvweek">'+rows.map(x=>'<div class="rvwrow '+(x.r>=.67?'ok':'no')+'"><span>'+(x.r>=.67?'💪 튼튼':'🔎 다시 보기')+'</span><b>'+E(sname(subjOf(x.un)))+' · '+E(x.un.title)+'</b><em>'+x.t[0]+' / '+x.t[1]+'</em>'+(x.r<.67?'<button class="btn" type="button" data-rvunit="'+x.id+'">단원 다시 보기</button>':'')+'</div>').join('')+'</div>'; }
+      h+='<div class="row center"><button class="btn main" data-go="rv:box">복습 상자로</button><button class="btn" data-go="start">처음 화면</button></div></section>';
+      persist(); show(h,u.color); try{ sfx('done'); }catch(e){} R.dn[u.rv]=TODAY(); persist(); credit();
+      $app.querySelectorAll('[data-rvunit]').forEach(b=>b.onclick=()=>goUnit(b.dataset.rvunit)); }; }
+  function goUnit(id){ const u=unitById(id); if(!u) return; try{ setGrade(u.g); route('unit',UNITS.indexOf(u)); }catch(e){ route('start'); } }
+
+  /* ---------- 4) 설명해 보기: 차시를 끝낸 화면 아래에 붙어요 ---------- */
+  function tipOf(u,l){ try{ const box=document.createElement('div'); box.innerHTML=korIntro(u,l); const t=box.querySelector('.tip'); if(!t) return null; t.querySelectorAll('br').forEach(b=>b.replaceWith(' ')); const bs=[...t.querySelectorAll('b')]; const title=bs.length?bs[0].textContent.trim():''; const keys=[...new Set(bs.slice(1).map(b=>b.textContent.replace(/[:：]/g,'').trim()).filter(s=>s.length>=1&&s.length<=10))].slice(0,8);
+      let text=t.textContent.replace(title,'').replace(/\s+/g,' ').trim(); if(text.length>260) text=text.slice(0,260)+'…'; return keys.length?{title,keys,text}:null; }catch(e){ return null; } }
+  { const _rs=resultScreen; resultScreen=function(u,l,stars,msg,again){ const r=_rs.apply(this,arguments);
+      try{ if(u&&u.cq&&typeof l==='number'&&l<=3){ const T=tipOf(u,l); const pnl=$app.querySelector('.panel.result'); if(T&&pnl){ pnl.insertAdjacentHTML('afterend','<section class="panel xpbox"><h3>💬 설명해 보기</h3><p class="lead">오늘 배운 <b>‘'+E(T.title||u.title)+'’</b>을 동생에게 알려 주듯 내 말로 설명해 봐요. 말해도 되고 써도 돼요.</p><textarea class="xpin" rows="4" placeholder="예) '+E(T.keys[0])+'은(는) …"></textarea><div class="row center">'+(SR?'<button class="btn sun" type="button" id="xpmic">🎤 말로 설명하기</button>':'')+'<button class="btn main" type="button" id="xpok">다 설명했어요</button></div><div id="xpres"></div></section>'); xpBind(u,l,T); } } }catch(e){}
+      return r; }; }
+  function xpBind(u,l,T){ const ta=$app.querySelector('.xpin'), ok=document.getElementById('xpok'), mic=document.getElementById('xpmic'), res=document.getElementById('xpres'); let rec=null;
+    if(mic) mic.onclick=()=>{ if(rec){ try{ rec.stop(); }catch(e){} return; } try{ rec=new SR(); rec.lang='ko-KR'; rec.interimResults=true; rec.continuous=true; const base=ta.value?ta.value+' ':''; let fin='';
+        rec.onresult=ev=>{ let tmp=''; for(let k=ev.resultIndex;k<ev.results.length;k++){ ev.results[k].isFinal?(fin+=ev.results[k][0].transcript+' '):(tmp+=ev.results[k][0].transcript); } ta.value=base+fin+tmp; };
+        rec.onend=()=>{ rec=null; mic.textContent='🎤 말로 설명하기'; }; rec.onerror=()=>{ rec=null; mic.textContent='🎤 말로 설명하기'; };
+        rec.start(); mic.textContent='⏹ 말하기 끝'; }catch(e){ rec=null; } };
+    ok.onclick=()=>{ try{ if(rec) rec.stop(); }catch(e){} const v=ta.value.trim(); if(v.length<5){ res.innerHTML='<p class="rvnote">조금만 더 길게 설명해 볼까요? 한두 문장이면 돼요.</p>'; return; }
+      const nv=v.replace(/\s/g,''), used=T.keys.filter(k=>nv.indexOf(k.replace(/\s/g,''))>=0);
+      res.innerHTML='<div class="xpchk"><p><b>핵심 낱말 '+T.keys.length+'개 가운데 '+used.length+'개</b>를 썼어요! '+(used.length>=Math.ceil(T.keys.length/2)?'🌟 아주 잘 설명했어요.':'💡 빠진 낱말을 넣어 한 번 더 말해 봐요.')+'</p><div class="xpkeys">'+T.keys.map(k=>'<span class="'+(used.indexOf(k)>=0?'on':'')+'">'+(used.indexOf(k)>=0?'✔ ':'')+E(k)+'</span>').join('')+'</div><div class="xpmodel"><b>🦉 부엉 박사의 설명</b><p>'+E(T.text)+'</p></div></div>';
+      const R=RV(); R.xp.push({d:TODAY(),uid:u.id,l,t:v.slice(0,300),k:[used.length,T.keys.length]}); if(R.xp.length>40) R.xp=R.xp.slice(-40); persist(); try{ sfx('ok'); }catch(e){} }; }
+
+  /* ---------- 5) 수학 풀이 과정 ---------- */
+  const R_=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  const STEPGEN={
+    mul(){ const a=R_(112,489), b=R_(3,9), p=a*b, h=Math.floor(a/100)*100, t=Math.floor(a%100/10)*10, o=a%10, nm=pick(['연필','사탕','구슬','스티커'],1)[0];
+      return {s:'한 상자에 '+nm+'이 '+a+'개씩 들어 있어요. '+b+'상자에 들어 있는 '+nm+'은 모두 몇 개일까요?',st:[
+        ['어떤 식을 세워야 할까요?',[a+' × '+b,'✔ 같은 수가 여러 번이면 곱셈이에요.'],[[a+' + '+b,'상자 수를 그냥 더하면 안 돼요. '+a+'개씩 '+b+'번 있으니 곱해야 해요.'],[a+' − '+b,'빼는 문제가 아니에요.'],[a+' ÷ '+b,'나누는 문제가 아니에요. 모두 몇 개인지 물었어요.']]],
+        ['어떻게 계산할까요?',[h+'×'+b+' + '+t+'×'+b+' + '+o+'×'+b,'✔ 백의 자리, 십의 자리, 일의 자리를 각각 곱해서 더해요.'],[[h+'×'+b+' + '+t+' + '+o,'십의 자리와 일의 자리에도 '+b+'를 곱해야 해요.'],[h+' + '+t+'×'+b+' + '+o+'×'+b,'백의 자리에도 '+b+'를 곱해야 해요.']]],
+        ['답은 몇 개일까요?',[p+'개','✔ '+h*b+' + '+t*b+' + '+o*b+' = '+p],[[(p+10)+'개','받아올림을 한 번 더 했어요.'],[(p-10)+'개','받아올림을 빠뜨렸어요.'],[(a+b)+'개','더하기로 계산했어요.']]]]}; },
+    div(){ const b=R_(3,9), q=R_(4,12), r=R_(1,b-1), n=b*q+r;
+      return {s:'구슬 '+n+'개를 '+b+'명에게 똑같이 나누어 주려고 해요. 한 명에게 몇 개씩 주고, 몇 개가 남을까요?',st:[
+        ['어떤 식을 세워야 할까요?',[n+' ÷ '+b,'✔ 똑같이 나누어 주니까 나눗셈이에요.'],[[n+' × '+b,'곱하면 더 많아져요. 나누어 주는 문제예요.'],[n+' − '+b,'한 번만 빼면 안 돼요.'],[b+' ÷ '+n,'나누어지는 수와 나누는 수가 바뀌었어요.']]],
+        ['몫을 어떻게 찾을까요?',[b+' × '+q+' = '+b*q+' 이고, '+n+' − '+b*q+' = '+r,'✔ '+b+'단 곱셈에서 '+n+'을 넘지 않는 가장 큰 수를 찾아요.'],[[b+' × '+(q-1)+' = '+b*(q-1)+' 이고, 남는 것은 '+(r+b),'남은 '+(r+b)+'개로 한 번 더 나누어 줄 수 있어요. 나머지는 나누는 수보다 작아야 해요.'],[b+' × '+(q+1)+' = '+b*(q+1),b*(q+1)+'은 '+n+'보다 커서 줄 수 없어요.']]],
+        ['답은 무엇일까요?',['한 명에게 '+q+'개, 남는 것 '+r+'개','✔ '+n+' ÷ '+b+' = '+q+' … '+r],[['한 명에게 '+(q-1)+'개, 남는 것 '+(r+b)+'개','나머지가 나누는 수보다 커요.'],['한 명에게 '+(q+1)+'개, 남는 것 0개','구슬이 모자라요.']]]]}; },
+    frac(){ const b=pick([3,4,5,6],1)[0], a=R_(2,b-1), k=R_(2,5), n=b*k, nm=pick(['사탕','딸기','쿠키'],1)[0];
+      return {s:nm+' '+n+'개의 '+a+'/'+b+'은 몇 개일까요?',st:[
+        ['먼저 몇 묶음으로 똑같이 나눌까요?',[b+'묶음','✔ 분모만큼 똑같이 나눠요.'],[[a+'묶음','분자가 아니라 분모만큼 나눠요.'],[n+'묶음','한 개씩 나누는 게 아니에요.']]],
+        ['한 묶음에는 몇 개일까요?',[k+'개','✔ '+n+' ÷ '+b+' = '+k],[[(n/a===Math.floor(n/a)&&n/a!==k?n/a:k+1)+'개','분모 '+b+'로 나누어야 해요.'],[(n-b)+'개','빼는 게 아니라 나누어야 해요.']]],
+        [a+'/'+b+'은 몇 개일까요?',[(a*k)+'개','✔ 한 묶음 '+k+'개가 '+a+'묶음이니 '+k+' × '+a+' = '+a*k],[[k+'개','한 묶음만 셌어요. '+a+'묶음이에요.'],[(k+a)+'개',''+a+'묶음은 곱해야 해요.']]]]}; },
+    cap(){ const L1=R_(1,4), m1=R_(3,9)*100, L2=R_(1,4), m2=R_(2,9)*100, s=m1+m2, cL=L1+L2+(s>=1000?1:0), cm=s%1000;
+      return {s:'물이 '+L1+' L '+m1+' mL 있는 통에 '+L2+' L '+m2+' mL를 더 부었어요. 물은 모두 얼마일까요?',st:[
+        ['어떻게 더할까요?',['L는 L끼리, mL는 mL끼리 더해요','✔ 같은 단위끼리 더해요.'],[['모든 수를 한꺼번에 더해요','L와 mL는 단위가 달라서 그냥 더할 수 없어요.'],['L만 더해요','mL도 더해야 해요.']]],
+        [m1+' mL + '+m2+' mL = '+s+' mL. 다음은?',[s>=1000?'1000 mL를 1 L로 바꿔 올려요':'1000 mL보다 작으니 그대로 둬요','✔ 1000 mL = 1 L예요.'],[[s>=1000?'그대로 '+s+' mL로 써요':'1 L를 만들어 올려요',s>=1000?'1000 mL가 넘으면 1 L로 올려야 해요.':'아직 1000 mL가 안 돼요.']]],
+        ['답은 무엇일까요?',[cL+' L '+cm+' mL','✔ '+cL+' L '+cm+' mL'],[[(L1+L2)+' L '+s+' mL','1000 mL를 1 L로 올리지 않았어요.'],[(cL+1)+' L '+cm+' mL','1 L를 두 번 올렸어요.']]]]}; },
+    big(){ const a=R_(2,9), b=R_(1,9), c=R_(1,9), v=a*10000+b*1000+c*100;
+      return {s:'만 원짜리 '+a+'장, 천 원짜리 '+b+'장, 백 원짜리 동전 '+c+'개가 있어요. 모두 얼마일까요?',st:[
+        ['만 원짜리 '+a+'장은 얼마일까요?',[(a*10000)+'원','✔ 10000 × '+a],[[(a*1000)+'원','만 원짜리예요. 천 원이 아니에요.'],[(a*100000)+'원','0이 하나 더 붙었어요.']]],
+        ['모두 더하면?',[a*10000+' + '+b*1000+' + '+c*100,'✔ 각각의 금액을 더해요.'],[[a+' + '+b+' + '+c,'장 수만 더하면 안 돼요.']]],
+        ['답은 얼마일까요?',[v+'원 ('+a+'만 '+b+'천 '+c+'백 원)','✔ '+v+'원'],[[(a*10000+b*100+c*10)+'원','자리를 하나씩 잘못 맞췄어요.'],[(a*1000+b*100+c*10)+'원','만의 자리를 빠뜨렸어요.']]]]}; },
+    muldiv(){ const a=R_(112,368), b=R_(12,39), p=a*b, t=Math.floor(b/10), o=b%10;
+      return {s:'한 봉지에 사탕이 '+a+'개씩 들어 있어요. '+b+'봉지에 들어 있는 사탕은 모두 몇 개일까요?',st:[
+        ['어떤 식을 세워야 할까요?',[a+' × '+b,'✔ '+a+'개씩 '+b+'봉지니까 곱셈이에요.'],[[a+' + '+b,'더하기가 아니라 곱하기예요.'],[a+' ÷ '+b,'나누는 문제가 아니에요.']]],
+        ['어떻게 계산할까요?',[a+'×'+o+' + '+a+'×'+(t*10),'✔ 일의 자리와 십의 자리로 나누어 곱해요.'],[[a+'×'+o+' + '+a+'×'+t,'십의 자리 '+t+'은 '+(t*10)+'이에요. 0을 빠뜨렸어요.'],[a+'×'+(o+t),'자리를 무시하고 더했어요.']]],
+        ['답은 몇 개일까요?',[p+'개','✔ '+a*o+' + '+a*t*10+' = '+p],[[(a*o+a*t)+'개','십의 자리를 '+t+'로 계산했어요.'],[(p+100)+'개','받아올림을 한 번 더 했어요.']]]]}; },
+    ang(){ const A=R_(35,85), B=R_(30,140-A), C=180-A-B;
+      return {s:'삼각형의 두 각이 '+A+'°와 '+B+'°예요. 나머지 한 각은 몇 도일까요?',st:[
+        ['삼각형 세 각의 크기를 모두 더하면?',['180°','✔ 삼각형 세 각의 합은 언제나 180°예요.'],[['360°','360°는 사각형 네 각의 합이에요.'],['90°','90°는 직각 하나예요.']]],
+        ['어떤 식을 세울까요?',['180 − '+A+' − '+B,'✔ 전체에서 아는 두 각을 빼요.'],[['180 − '+A+' + '+B,'두 각 모두 빼야 해요.'],[A+' + '+B,'두 각을 더하기만 하면 나머지 각이 안 나와요.']]],
+        ['답은 몇 도일까요?',[C+'°','✔ 180 − '+A+' − '+B+' = '+C],[[(A+B)+'°','더한 값은 두 각의 합이에요.'],[(360-A-B)+'°','360°에서 뺐어요.']]]]}; }
+  };
+  const TOPIC=[['곱셈과 나눗셈','muldiv'],['곱셈','mul'],['나눗셈','div'],['분수','frac'],['들이','cap'],['큰 수','big'],['각도','ang']];
+  function curMathTopics(){ const G=GRADES[11]; if(!G) return ['mul','div']; const us=G.units.slice().sort((a,b)=>(a.sem-b.sem)||(a.num-b.num));
+    const cur=us.find(u=>SLOTS.some(l=>!prog[u.id+'-'+l]))||us[us.length-1], done=us.filter(u=>SLOTS.some(l=>prog[u.id+'-'+l]));
+    const tk=u=>{ const t=TOPIC.find(x=>u.title.indexOf(x[0])>=0); return t?t[1]:null; };
+    const list=[]; [cur,...done.reverse()].forEach(u=>{ const t=u&&tk(u); if(t&&list.indexOf(t)<0) list.push(t); }); if(!list.length) list.push('mul','div'); return list; }
+  function startSteps(){ const tp=curMathTopics(), probs=[0,1,2].map(i=>STEPGEN[tp[i%Math.min(tp.length,2)]]()); let pi=0, si=0, firstTry=0, total=0, miss=[];
+    const paint=()=>{ const P=probs[pi], S=P.st[si], seen={}, opts=mix([S[1]].concat(S[2]).filter(o=>{ if(seen[o[0]]) return false; seen[o[0]]=1; return true; }));
+      if(opts.length<2){ const alt=S[1][0].replace(/\d+/,m=>String(+m+1)); if(alt!==S[1][0]) opts.push([alt,'숫자를 다시 한 번 확인해 봐요.']); }
+      let h='<button class="back" data-go="rv:box">← 복습 상자</button><div class="meter">'+(pi+1)+' / '+probs.length+'</div><section class="panel rvp"><p class="inst">🧮 단계를 하나씩 골라 풀어요</p><div class="stp-q">'+E(P.s)+'</div><ol class="stp-steps">'+P.st.map((x,k)=>'<li class="'+(k<si?'done':k===si?'cur':'')+'">'+(k<si?'✔ '+E(x[1][0]):k===si?E(x[0]):'…')+'</li>').join('')+'</ol>'
+        +'<p class="stp-ask">'+E(S[0])+'</p><div class="stp-opts">'+opts.map((o,j)=>'<button class="choice" type="button" data-j="'+j+'">'+E(o[0])+'</button>').join('')+'</div><div id="stpfb"></div></section>';
+      show(h,'#2FA36B'); let tried=false;
+      $app.querySelectorAll('.stp-opts .choice').forEach(b=>b.onclick=()=>{ const o=opts[+b.dataset.j], ok=o===S[1]; const fb=document.getElementById('stpfb');
+        if(!ok){ b.disabled=true; b.classList.add('no'); if(!tried){ miss.push((si+1)+'단계: '+S[0]); } tried=true; fb.innerHTML='<div class="fb no"><b>앗, 여기서 실수!</b><p>'+E(o[1])+'</p></div>'; try{ sfx('no'); }catch(e){} return; }
+        if(!tried) firstTry++; total++; b.classList.add('ok'); $app.querySelectorAll('.stp-opts .choice').forEach(x=>x.disabled=true);
+        fb.innerHTML='<div class="fb ok"><b>'+E(o[1])+'</b></div><div class="row center"><button class="btn main" id="stpnx">'+(si<P.st.length-1?'다음 단계':pi<probs.length-1?'다음 문제':'끝내기')+'</button></div>'; try{ sfx('ok'); }catch(e){}
+        document.getElementById('stpnx').onclick=()=>{ if(si<P.st.length-1){ si++; } else { si=0; pi++; } if(pi>=probs.length) return end(); paint(); }; }); };
+    const end=()=>{ const R=RV(); R.dn.steps=TODAY(); const d=TODAY(); const S=R.st[d]=R.st[d]||{}; const a=S.math=S.math||[0,0]; a[0]+=firstTry; a[1]+=total; persist();
+      show('<section class="panel result rvp"><div class="big">🧮</div><h2>풀이 과정 연습 끝!</h2><p>'+total+'단계 가운데 <b>'+firstTry+'단계</b>를 한 번에 맞혔어요.</p>'+(miss.length?'<p class="rvnote">헷갈렸던 단계: '+miss.map(E).join(' · ')+'</p>':'<p class="rvnote">모든 단계를 한 번에 맞혔어요! 🌟</p>')+'<div class="row center"><button class="btn main" data-go="rv:box">복습 상자로</button><button class="btn" data-go="start">처음 화면</button></div></section>','#2FA36B'); try{ sfx('done'); }catch(e){} credit(); };
+    paint(); }
+
+  /* ---------- 6) 부모님 리포트 ---------- */
+  function report(){ const R=RV(), d=TODAY(), days=[]; for(let i=6;i>=0;i--) days.push(d-i);
+    const studied=days.filter(x=>{ const t=new Date(x*864e5); const k=t.getUTCFullYear()+'-'+String(t.getUTCMonth()+1).padStart(2,'0')+'-'+String(t.getUTCDate()).padStart(2,'0'); return STATE.days[k]; }).length;
+    const lessons=R.log.filter(x=>x.d>d-7).length, bySj={}, byU={};
+    days.forEach(x=>{ Object.entries(R.st[x]||{}).forEach(([k,a])=>{ const b=bySj[k]=bySj[k]||[0,0]; b[0]+=a[0]; b[1]+=a[1]; }); Object.entries(R.us[x]||{}).forEach(([k,a])=>{ const b=byU[k]=byU[k]||[0,0]; b[0]+=a[0]; b[1]+=a[1]; }); });
+    const tot=Object.values(bySj).reduce((s,a)=>[s[0]+a[0],s[1]+a[1]],[0,0]);
+    const weak=Object.entries(byU).filter(([k,a])=>a[1]>=5&&unitById(k)).map(([k,a])=>({u:unitById(k),r:a[0]/a[1],a})).sort((x,y)=>x.r-y.r).slice(0,3);
+    const L=vocaSync(), due=L.filter(x=>R.w[x.k].d<=d).length, tree=L.filter(x=>R.w[x.k].b>=4).length, sprout=L.filter(x=>R.w[x.k].b<2).length;
+    const wk=Object.values(R.wk).sort((a,b)=>b.d-a.d)[0];
+    let h='<button class="back" data-go="rv:box">← 복습 상자</button><section class="panel rvp rvrep"><h2>👪 부모님 리포트</h2><p class="rvnote">최근 7일 ('+dstr(d-6)+' ~ '+dstr(d)+') · 문제별 기록은 복습 상자를 만든 날부터 쌓여요.</p>'
+      +'<div class="rvtiles"><div><b>'+studied+'일</b><span>공부한 날</span></div><div><b>'+lessons+'개</b><span>끝낸 차시</span></div><div><b>'+tot[1]+'문제</b><span>푼 문제</span></div><div><b>'+(tot[1]?Math.round(tot[0]/tot[1]*100):0)+'%</b><span>정답률</span></div></div>'
+      +'<h3 class="rvh">과목별 정답률</h3>'+(Object.keys(bySj).length?'<div class="rvbars">'+Object.entries(bySj).sort((a,b)=>b[1][1]-a[1][1]).map(([k,a])=>{ const p=Math.round(a[0]/a[1]*100); return '<div class="rvbar"><span>'+E(sname(k))+'</span><i><em style="width:'+p+'%;background:'+(p>=80?'#2E8B57':p>=60?'#E0A800':'#D9534F')+'"></em></i><b>'+p+'%</b><small>'+a[1]+'문제</small></div>'; }).join('')+'</div>':'<p>아직 기록이 없어요.</p>')
+      +'<h3 class="rvh">함께 봐 주면 좋은 단원</h3>'+(weak.length?weak.map(x=>'<div class="rvwrow no"><b>'+E(sname(subjOf(x.u)))+' · '+E(x.u.title)+'</b><em>'+Math.round(x.r*100)+'% ('+x.a[0]+'/'+x.a[1]+')</em><button class="btn" type="button" data-rvunit="'+x.u.id+'">단원 보기</button></div>').join(''):'<p>5문제 넘게 푼 단원 가운데 약한 단원이 아직 없어요. 👍</p>')
+      +'<h3 class="rvh">영어 낱말</h3><p>배운 낱말 <b>'+L.length+'개</b> · 🌳 완전히 내 것 '+tree+'개 · 🌱 새싹 '+sprout+'개 · 오늘 복습할 낱말 <b>'+due+'개</b></p>'
+      +'<h3 class="rvh">틀린 문제 노트</h3><p>다시 풀 문제 <b>'+R.wr.length+'개</b> (오늘 '+wrongDue().length+'개) · 졸업한 문제 '+(R.grad||0)+'개</p>'
+      +'<h3 class="rvh">주말 누적 평가</h3>'+(wk?'<p>'+dstr(wk.d)+' · '+wk.r+' / '+wk.n+'</p>'+wk.u.map(x=>{ const un=unitById(x[0]); return un?'<div class="rvwrow '+(x[1]/x[2]>=.67?'ok':'no')+'"><b>'+E(un.title)+'</b><em>'+x[1]+' / '+x[2]+'</em></div>':''; }).join(''):'<p>아직 본 평가가 없어요. 토·일요일에 열려요.</p>')
+      +'<h3 class="rvh">💬 설명해 보기 기록</h3>'+(R.xp.length?R.xp.slice(-3).reverse().map(x=>{ const un=unitById(x.uid); return '<div class="xprec"><small>'+dstr(x.d)+' · '+(un?E(un.title):'')+' · 핵심 낱말 '+x.k[0]+'/'+x.k[1]+'</small><p>“'+E(x.t)+'”</p></div>'; }).join(''):'<p>아직 기록이 없어요. 국어·수학·과학·사회 차시를 끝낸 화면에서 할 수 있어요.</p>')
+      +'</section>';
+    show(h,'#1B2750'); $app.querySelectorAll('[data-rvunit]').forEach(b=>b.onclick=()=>goUnit(b.dataset.rvunit)); }
+
+  /* ---------- 복습 상자 화면과 처음 화면 카드 ---------- */
+  function counts(){ vocaSpread(); const R=RV(), d=TODAY(); return {v:vocaDue().length, vl:vocaSync().length, w:wrongDue().length, wa:R.wr.length, st:R.dn.steps===d, wk:!!R.wk[wkKey()], we:isWeekend(), vd:R.dn.voca===d, wd:R.dn.wrong===d}; }
+  function items(){ const c=counts();
+    return [['voca','🔤','영어 낱말 복습',c.vl?(c.v?'오늘 '+Math.min(10,c.v)+'개 · 배운 낱말 '+c.vl+'개':'오늘 복습 끝! · 배운 낱말 '+c.vl+'개'):'낱말 만나기를 끝내면 열려요',c.v>0,'#E0457B'],
+      ['wrong','🔁','틀린 문제 다시 풀기',c.wa?(c.w?'오늘 '+Math.min(10,c.w)+'개 · 노트에 '+c.wa+'개':'오늘 다시 풀 문제 없음 · 노트에 '+c.wa+'개'):'틀린 문제가 생기면 여기에 모여요',c.w>0,'#D9534F'],
+      ['steps','🧮','수학 풀이 과정',c.st?'오늘 연습 끝! ✅':'식 세우기부터 답까지 3문제',!c.st,'#2FA36B'],
+      ['week','📝','주말 누적 평가',c.wk?'이번 주 평가 끝! ✅':c.we?'이번 주에 배운 것 15문제':'토·일요일에 열려요',c.we&&!c.wk,'#8A5CF0'],
+      ['rep','👪','부모님 리포트','최근 7일 공부 기록',false,'#1B2750']]; }
+  function boxView(msg){ VIEW='rv'; const it=items();
+    let h='<button class="back" data-go="start">← 처음 화면</button><section class="panel rvp"><h2>🧰 복습 상자</h2><p class="lead">배운 것을 잊기 전에 다시 만나요. 반짝이는 칸이 오늘 할 복습이에요.</p>'+(msg?'<p class="rvmsg">'+E(msg)+'</p>':'')
+      +'<div class="rvgrid">'+it.map(x=>'<button class="rvitem'+(x[4]?' due':'')+'" style="--k:'+x[5]+'" data-go="rv:'+x[0]+'"'+(x[0]==='week'&&!counts().we?' disabled':'')+'><span class="rvic">'+x[1]+'</span><span><b>'+x[2]+'</b><small>'+x[3]+'</small></span></button>').join('')+'</div>'
+      +'<div class="row center" style="margin-top:12px"><button class="btn" data-go="rv:book">📒 내 낱말장</button></div></section>';
+    show(h,'#3D7BF2'); }
+  function homeCard(){ const it=items(), n=it.filter(x=>x[4]).length;
+    return '<section class="rvhome"><button class="rvhead" data-go="rv:box"><span>🧰 <b>복습 상자</b></span><small>'+(n?'오늘 할 복습 '+n+'개':'오늘 복습 끝! ✅')+'</small><span class="rvgo">›</span></button><div class="rvchips">'+it.slice(0,4).map(x=>'<button class="rvchip'+(x[4]?' due':'')+'" style="--k:'+x[5]+'" data-go="rv:'+x[0]+'"'+(x[0]==='week'&&!counts().we?' disabled':'')+'>'+x[1]+' '+x[2].replace('영어 낱말 ','낱말 ').replace('틀린 문제 다시 풀기','틀린 문제').replace('수학 ','').replace('주말 누적 ','주말 ')+'</button>').join('')+'</div></section>'; }
+
+  const css=document.createElement('style');
+  css.textContent='.rvhome{margin:12px 0;border:2px solid #3D7BF2;border-radius:16px;background:#F3F7FF;padding:10px 12px;box-shadow:0 3px 0 #3D7BF2}.rvhead{width:100%;display:flex;align-items:center;gap:8px;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left}.rvhead small{opacity:.7;margin-left:auto}.rvgo{font-size:1.4rem;color:#3D7BF2;font-weight:800}'
+   +'.rvchips{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.rvchip{font:inherit;font-size:.9rem;font-weight:700;padding:9px 6px;border-radius:12px;border:1.5px solid #D5DEEF;background:#fff;color:#3a4256}.rvchip.due{border-color:var(--k);color:var(--k);box-shadow:0 0 0 2px color-mix(in srgb,var(--k) 20%,transparent)}.rvchip[disabled]{opacity:.45}'
+   +'.rvgrid{display:grid;gap:10px;margin-top:12px}.rvitem{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;text-align:left;font:inherit;color:inherit;background:#fff;border:2px solid #E3E7EF;border-radius:16px;padding:12px 14px}.rvitem b{display:block;font-size:1.08rem}.rvitem small{opacity:.7}.rvitem.due{border-color:var(--k);box-shadow:0 3px 0 var(--k)}.rvitem[disabled]{opacity:.5}.rvic{font-size:2rem}'
+   +'.rvmsg{background:#E3F6EA;border-radius:12px;padding:10px 12px;font-weight:700}.rvnote{opacity:.8;line-height:1.6;word-break:keep-all}.rvh{margin:16px 0 6px;font-size:1.05rem}'
+   +'.rvwords{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}.rvword{display:grid;gap:1px;text-align:left;font:inherit;background:#fff;border:1.5px solid #E3E7EF;border-radius:12px;padding:8px 10px;color:inherit}.rvword b{font-size:1.05rem}.rvword small{opacity:.75}.rvword i{font-style:normal;font-size:.75rem;opacity:.55}.rvword.due{border-color:#E0457B}.rvword.due i{color:#E0457B;opacity:1;font-weight:700}'
+   +'.rvweek{display:grid;gap:6px;margin:10px 0}.rvwrow{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;background:#fff;border:1.5px solid #E3E7EF;border-radius:12px;padding:8px 10px;text-align:left}.rvwrow.ok{border-color:#9ED5B3}.rvwrow.no{border-color:#F0B4B2}.rvwrow em{font-style:normal;font-weight:800}.rvwrow .btn{grid-column:1/-1;margin:0}'
+   +'.rvtiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}.rvtiles div{background:#F3F7FF;border-radius:12px;padding:10px;text-align:center}.rvtiles b{display:block;font-size:1.4rem}.rvtiles span{font-size:.8rem;opacity:.7}'
+   +'.rvbars{display:grid;gap:6px}.rvbar{display:grid;grid-template-columns:5.5em 1fr 3em;gap:6px;align-items:center}.rvbar i{height:12px;border-radius:6px;background:#EEF0F4;overflow:hidden}.rvbar i em{display:block;height:100%}.rvbar small{grid-column:2/-1;font-size:.72rem;opacity:.55;margin-top:-4px}'
+   +'.xprec{background:#fff;border:1.5px solid #E3E7EF;border-radius:12px;padding:8px 10px;margin-bottom:6px}.xprec p{margin:4px 0 0;line-height:1.6;word-break:keep-all}'
+   +'.xpbox{margin-top:14px}.xpbox h3{margin:0 0 6px}.xpin{width:100%;box-sizing:border-box;font:inherit;font-size:1.05rem;line-height:1.6;border:2px solid #E3E7EF;border-radius:12px;padding:10px}.xpchk{margin-top:10px}.xpkeys{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.xpkeys span{border:1.5px dashed #C9CFDB;border-radius:999px;padding:3px 10px;font-weight:700;opacity:.7}.xpkeys span.on{border-style:solid;border-color:#2E8B57;background:#E3F6EA;opacity:1}.xpmodel{background:#FFF8E6;border-radius:12px;padding:10px 12px;margin-top:8px}.xpmodel p{margin:4px 0 0;line-height:1.7;word-break:keep-all}'
+   +'.stp-q{font-size:1.12rem;line-height:1.7;font-weight:700;background:#F2FAF5;border:2px solid #BFE3CC;border-radius:14px;padding:12px 14px;word-break:keep-all}.stp-steps{margin:10px 0;padding-left:1.4em;line-height:1.7}.stp-steps li{opacity:.45}.stp-steps li.done{opacity:1;color:#2E8B57;font-weight:700}.stp-steps li.cur{opacity:1;font-weight:800}.stp-ask{font-weight:800;font-size:1.05rem}.stp-opts{display:grid;gap:8px}.stp-opts .choice{text-align:left}';
+  document.head.appendChild(css);
+
+  /* 처음 화면: 오늘의 학습 바로 아래에 복습 상자 */
+  { const _st=start; start=function(){ const r=_st.apply(this,arguments); try{ if(!CURSUBJ&&!$app.querySelector('.rvhome')){ const at=$app.querySelector('.todaybox'); if(at) at.insertAdjacentHTML('afterend',homeCard()); } }catch(e){} return r; }; }
+  { const _ri=routeInner; routeInner=function(v,a,b){ if(v==='rv'){ VIEW='rv';
+      if(a==='voca') return startVoca(); if(a==='wrong') return startWrong(); if(a==='steps') return startSteps(); if(a==='week') return isWeekend()?startWeek():boxView('주말 누적 평가는 토·일요일에 열려요.'); if(a==='rep') return report(); if(a==='book') return bookView(); return boxView(); }
+      return _ri.apply(this,arguments); }; }
+  window.__rv={RV,vocaSync,vocaDue,wrongDue,startVoca,startWrong,startWeek,startSteps,report,boxView,STEPGEN,weekUnits,curMathTopics,tipOf};
+  try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v==='rv'&&(o.a==='box'||o.a==='rep'||o.a==='book')) routeInner('rv',o.a); else if(VIEW==='start') start(CURSUBJ); }catch(e){}
+})();
+
+</script>
+<!-- ===== 복습 상자 끝 ===== -->
 </body>
 </html>
