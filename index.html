@@ -942,15 +942,18 @@ button,summary,[role="button"],label.btn,.choice,.tile{touch-action:manipulation
 </style><style id="justify-text">
 /* 문장으로 된 지문과 설명은 양쪽 정렬: 낱말이 줄 끝에서 잘리지 않게(keep-all) 하고, 줄마다 낱말 사이를 고르게 벌려 양쪽 끝을 맞춰요.
    보기 단추·낱말 카드·영어 낱말 설명처럼 짧은 글은 그대로 두어요. */
-.kpas,.kpas p,.sit p,.rdtext p,.rdpara,.wtext,.nwbody p,.tqtext,.thint,.tsol li,.tback li,.tip,.hjsen,.glbox,.mtxt,.fb p,.rdnote,.cbsum,.rdsum,
+.kpas,.kpas p,.sit p,.rdtext p,.rdpara,.wtext,.nwbody p,.tqtext,.thint,.tsol li,.tback li,.hjsen,.glbox,.mtxt,.fb p,.rdnote,.cbsum,.rdsum,
 .wtx p,.wbub p,.wsum p,.wfun p,.xpmodel p,.stp-q,.whyp p,.newsp .nwbody p{
   text-align:justify!important;text-justify:inter-word;word-break:keep-all;overflow-wrap:break-word;hyphens:none}
 .rdtext p,.rdpara,.nwbody p{text-align-last:left}
+/* 개념 상자(.tip)는 칸이 좁고 가려진 낱말·굵은 낱말이 많아 양쪽 정렬을 하면 띄어쓰기가 크게 벌어져요. 왼쪽 정렬로 둬요 (양쪽 정렬 목록에서 뺐어요) */
+.tip{text-align:left}
 /* 안드로이드: 두 번 눌러 확대되거나 눌린 자국이 남지 않게, 글자 크기가 저절로 바뀌지 않게 */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,.btn,[data-go],.choice,.tile,a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 input,textarea,select{font-size:max(16px,1em)}
 </style><style id="tbar-css">/* 오늘의 학습 진행: 동그라미 대신 막대 하나로 한눈에 */ .todaybox h2{display:flex; align-items:center; justify-content:space-between; gap:8px} .tcount{display:inline-flex!important; align-items:baseline; gap:3px; padding:3px 12px; border-radius:999px; background:var(--paper); border:2px solid var(--ink); font-size:.95rem; color:var(--soft)} .tcount i{display:none} .tcount b{font-size:1.15rem!important; margin:0!important; color:var(--ok)} .tbar{position:relative; height:22px; margin:6px 0 2px; border-radius:999px; background:var(--paper); border:2px solid var(--ink); overflow:hidden} .tbar i{position:absolute; inset:0 auto 0 0; background:var(--ok); border-radius:0; transition:width .5s} .tbar::after{content:""; position:absolute; inset:0; background:linear-gradient(to right,transparent calc(100% - 2px),rgba(27,39,80,.28) 0) 0 0/calc(100% / var(--n,15)) 100% repeat-x; pointer-events:none} .tbar span{position:relative; z-index:1; display:block; text-align:center; font-size:.8rem; line-height:18px; font-weight:700; color:var(--ink)}</style>
+<style id="rdmulti-css">.rdcrect{transition:left .25s,top .25s,width .25s,height .25s}.rdcrect.pick{box-shadow:0 0 0 4px #FFC83A,0 0 0 9999px rgba(0,0,0,.35)}.rdprevbtn .btn.sun{font-size:.9rem;padding:8px 12px;min-height:40px}</style>
 </head>
 <body>
 <div id="app"></div>
@@ -5768,7 +5771,7 @@ function rvSetup(root){
 /* 'in ~ 안에 · on ~ 위에'처럼 낱말 뒤에 짧은 뜻이 붙으면, 낱말과 뜻이 다른 줄로 갈라지지 않게 묶어요 */
 function rvPairs(box){
   box.querySelectorAll('b.rvw').forEach(b=>{ const t=b.nextSibling; if(!t||t.nodeType!==3) return;
-    const s=t.nodeValue, k=s.indexOf('·'), head=k>=0?s.slice(0,k):s; if(!head.trim()||head.trim().length>12||/[.!?]/.test(head)) return;
+    const s=t.nodeValue, k=s.indexOf('·'), head=k>=0?s.slice(0,k):s; if(k<0) return;   /* '낱말 · 뜻'처럼 가운뎃점이 있을 때만 묶어요 (보통 문장은 자연스럽게 줄바꿈) */ if(!head.trim()||head.trim().length>12||/[.!?]/.test(head)) return;
     const w=document.createElement('span'); w.className='rvpair'; b.parentNode.insertBefore(w,b); w.appendChild(b); w.appendChild(document.createTextNode(head.replace(/\s+$/,'')));
     t.nodeValue=(head.match(/\s+$/)||[''])[0]+(k>=0?s.slice(k):''); });
 }
@@ -6784,12 +6787,12 @@ try{ const M0=STATE.mg; if(M0){ if(M0.pend&&!MGAMES[M0.pend.k]) M0.pend=null; M0
 function mgState(){ const k=dkey(new Date()); let M=STATE.mg; if(!M||M.d!==k) M=STATE.mg={d:k,n:0,open:[],pend:null}; return M; }
 function grantGame(){
   const M=mgState(); M.n++; (STATE.bp=STATE.bp||{}).tix=0;
-  /* 차시 두 개를 끝낼 때마다 일곱 게임 가운데 하나를 무작위로 60초 동안 열어요. 일곱 게임을 한 번씩 다 하면 다시 처음부터 골라요 */
-  if(M.n%2===0&&!M.pend){ let pool=Object.keys(MGAMES).filter(k=>M.open.indexOf(k)<0); if(!pool.length){ const lastK=M.open[M.open.length-1]; M.open=[]; pool=Object.keys(MGAMES).filter(k=>k!==lastK); }
+  /* 차시 두 개를 끝낼 때마다 일곱 게임 가운데 하나를 무작위로 60초 동안 열어요. 오늘 아직 안 연 게임 가운데서만 골라요 */
+  if(M.n%2===0&&!M.pend){ let pool=Object.keys(MGAMES).filter(k=>M.open.indexOf(k)<0); if(!pool.length) return;   /* 오늘 모든 게임을 한 번씩 열었으면, 학습을 더 해도 오늘은 게임이 더 열리지 않아요 (내일 다시 처음부터) */
     const k=pool[Math.floor(Math.random()*pool.length)]; M.open.push(k); M.pend={k,sec:60}; setTimeout(mgOffer,1100); }
 }
 function gameBtn(){ const M=mgState(); if(M.pend) return '<button class="btn sun" data-go="mg">'+MGAMES[M.pend.k][0]+' 게임 시간! '+M.pend.sec+'초</button>';
-  const left=2-M.n%2; return true?'<p class="mgnext">🎮 차시를 '+left+'개 더 끝내면 게임이 열려요.</p>':''; }
+  if(!M.pend&&Object.keys(MGAMES).every(k=>M.open.indexOf(k)>=0)) return '<p class="mgnext">🎮 오늘 게임을 모두 한 번씩 열었어요! 내일 또 만나요.</p>'; const left=2-M.n%2; return true?'<p class="mgnext">🎮 차시를 '+left+'개 더 끝내면 게임이 열려요.</p>':''; }
 function mgHas(k){ try{ if(k==='bubble') return !!(STATE.bp&&STATE.bp.board&&STATE.bp.board.length); if(k==='arrow') return !!localStorage.getItem('mg-arrow')||(+localStorage.getItem('arrowUnlocked')||1)>1; if(k==='screw') return (+localStorage.getItem('screwUnlocked')||1)>1; return !!localStorage.getItem('mg-'+k); }catch(e){ return false; } }
 function mgOffer(){
   const M=mgState(), p=M.pend; if(!p||document.getElementById('mg-modal')||document.getElementById('bp-modal')) return;
@@ -6804,7 +6807,7 @@ function mgOffer(){
   document.body.appendChild(modal); document.body.style.overflow='hidden'; paint();
 }
 const MGGUARD="\u003cscript\u003e/* 게임 부드럽게: 휴대폰에서는 흐림 효과를 끄고, 화면이 자주 끊기면 빛 번짐(shadowBlur)도 꺼요 */\n(function(){ var low=false, coarse=false; try{ coarse=matchMedia(\u0027(pointer:coarse)\u0027).matches; }catch(e){}\n if(coarse){ var st=document.createElement(\u0027style\u0027); st.textContent=\u0027*{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}\u0027; (document.head||document.documentElement).appendChild(st); }\n try{ var P=CanvasRenderingContext2D.prototype, D=Object.getOwnPropertyDescriptor(P,\u0027shadowBlur\u0027);\n  Object.defineProperty(P,\u0027shadowBlur\u0027,{configurable:true,get:function(){ return D.get.call(this); },set:function(v){ D.set.call(this,low?0:v); }}); }catch(e){}\n var last=0, n=0, slow=0; function f(t){ if(last\u0026\u0026!document.hidden){ var dt=t-last; if(dt\u003c250){ n++; if(dt\u003e26) slow++; } } last=t;\n  if(n\u003e=150){ if(slow/n\u003e0.2) low=true; n=0; slow=0; } if(!low) requestAnimationFrame(f); }\n requestAnimationFrame(f); window.__lowfx=function(){ return low; }; })();\n\u003c/script\u003e";
-const MGEXT={hidden:'mg-hidden.html?v=2610171027',spot:'mg-spot.html?v=2610171027'};   /* 따로 뺀 큰 게임 파일 (index.html 옆에 함께 올려요) */
+const MGEXT={hidden:'mg-hidden.html?v=2610171728',spot:'mg-spot.html?v=2610171728'};   /* 따로 뺀 큰 게임 파일 (index.html 옆에 함께 올려요) */
 const MGSD=k=>{ const s=MGSRC[k], m=/<head[^>]*>/i.exec(s); return m?s.slice(0,m.index+m[0].length)+MGGUARD+s.slice(m.index+m[0].length):MGGUARD+s; };
 function mgPlay(k,sec){
   if(k==='bubble'){ const B=STATE.bp=STATE.bp||{}; B.tix=0; B.left=sec; persist(); return bubbleGame(); }
@@ -6823,7 +6826,7 @@ function mgPlay(k,sec){
     if(left<=0&&!ended){ ended=true; kill(); document.getElementById('mg-over').hidden=false; sfx('done'); } };
   const begin=()=>{ if(on) return; on=true; last=performance.now(); };
   fr.addEventListener('load',()=>{ try{ ['pointerdown','touchstart','mousedown','keydown'].forEach(ev=>fr.contentWindow.addEventListener(ev,begin,true)); }catch(e){ begin(); } });
-  if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else fr.srcdoc=MGSD(k); last=performance.now(); timer=setInterval(tick,200);
+  if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else if(MGEXT[k]) fr.src=MGEXT[k]; else fr.srcdoc=MGSD(k); last=performance.now(); timer=setInterval(tick,200);
   document.getElementById('mg-x').onclick=close; document.getElementById('mg-done').onclick=close;
 }
 function bubbleGame(){
@@ -7126,16 +7129,32 @@ function findEdges(cv) { const E = edgeMap(cv), w = E.w, h = E.h;
 function edgeScore(cv, r) { const E = edgeMap(cv), w = E.w, h = E.h, X0 = Math.round(r.x * w), X1 = Math.min(w - 1, Math.round((r.x + r.w) * w)), Y0 = Math.round(r.y * h), Y1 = Math.min(h - 1, Math.round((r.y + r.h) * h));
   if (r.w > 0.97 && r.h > 0.97) return 0.2;   /* 사진 전체는 마지막 수단 */
   return (lineV(E, Math.max(0, X0), Y0, Y1) + lineV(E, X1, Y0, Y1) + lineH(E, Math.max(0, Y0), X0, X1) + lineH(E, Y1, X0, X1)) / 4; }
+/* 여러 권이 찍힌 사진: 누른 자리에서 왼쪽·오른쪽·위·아래로 가며 가장 가까운 '길고 곧은 테두리'를 찾아 그 책의 네모를 만들어요 */
+function findAt(cv, u, v) { const E = edgeMap(cv), w = E.w, h = E.h, tx = Math.round(u * w), ty = Math.round(v * h);
+  const cl = (a, lo, hi) => Math.max(lo, Math.min(hi, a));
+  const scan = (from, to, step, f) => { let mx = 0; const sc = []; for (let i = from; step > 0 ? i <= to : i >= to; i += step) { const s = f(i); sc.push([i, s]); if (s > mx) mx = s; }
+    const need = Math.max(0.42, mx * 0.93);   /* 가장 뚜렷한 선에 가까운 것만(책 안쪽 무늬 선은 빼요) */ const hit = sc.find(p => p[1] >= need); return hit ? hit[0] : null; };
+  let x0 = null, x1 = null, y0 = null, y1 = null, Y0 = cl(ty - Math.round(h * 0.15), 0, h - 1), Y1 = cl(ty + Math.round(h * 0.15), 0, h - 1), X0, X1;
+  for (let round = 0; round < 2; round++) {
+    const gx = Math.round(w * 0.05), gy = Math.round(h * 0.05);
+    x0 = scan(tx - gx, 1, -1, x => lineV(E, x, Y0, Y1)); x1 = scan(tx + gx, w - 2, 1, x => lineV(E, x, Y0, Y1));
+    X0 = x0 == null ? cl(tx - Math.round(w * 0.2), 0, w - 1) : x0; X1 = x1 == null ? cl(tx + Math.round(w * 0.2), 0, w - 1) : x1;
+    const ix = Math.round((X1 - X0) * 0.02), a = X0 + ix, b = X1 - ix;   /* 책 너비 전체에 걸친 가로선이 책의 위·아래 끝이에요 */
+    y0 = scan(ty - gy, 1, -1, y => lineH(E, y, a, b)); y1 = scan(ty + gy, h - 2, 1, y => lineH(E, y, a, b));
+    const nY0 = y0 == null ? cl(ty - Math.round(h * 0.25), 0, h - 1) : y0, nY1 = y1 == null ? cl(ty + Math.round(h * 0.25), 0, h - 1) : y1, iy = Math.round((nY1 - nY0) * 0.03);
+    Y0 = nY0 + iy; Y1 = nY1 - iy; if (round === 1) { Y0 = nY0; Y1 = nY1; } }
+  const m = 0.006, r = { x: X0 / w - m, y: Y0 / h - m, w: (X1 - X0) / w + 2 * m, h: (Y1 - Y0) / h + 2 * m };
+  r.x = cl(r.x, 0, 1); r.y = cl(r.y, 0, 1); r.w = Math.min(1 - r.x, Math.max(0.12, r.w)); r.h = Math.min(1 - r.y, Math.max(0.12, r.h)); return r; }
 function cropThumb(cv, r, max) { const sx = r.x * cv.width, sy = r.y * cv.height, sw = r.w * cv.width, sh = r.h * cv.height, k = Math.min(1, max / Math.max(sw, sh)), c = document.createElement('canvas');
   c.width = Math.max(1, Math.round(sw * k)); c.height = Math.max(1, Math.round(sh * k)); c.getContext('2d').drawImage(cv, sx, sy, sw, sh, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', 0.72); }
 /* 자른 결과를 작게 먼저 보여 주고, 필요할 때만 '직접 맞추기'로 크게 열어요 */
 function cropUI(host, cv, r) {
   const preview = () => { host.innerHTML = '<div class="rdprev"><img src="' + cropThumb(cv, r, 360) + '" alt="자른 책 표지"><div class="rdprevtxt"><b>✂️ 책 표지만 잘랐어요</b><span>이대로 책장에 꽂혀요.</span>'
-      + '<div class="rdprevbtn"><button class="back" type="button" data-cr="edit">✂️ 직접 맞추기</button><button class="back" type="button" data-cr="all">사진 전체 쓰기</button></div></div></div>';
-    host.querySelector('[data-cr="edit"]').onclick = editor; host.querySelector('[data-cr="all"]').onclick = () => { Object.assign(r, { x: 0, y: 0, w: 1, h: 1 }); preview(); }; };
-  const editor = () => {
+      + '<div class="rdprevbtn"><button class="btn sun" type="button" data-cr="multi">📚 여러 권 중에서 고르기</button><button class="back" type="button" data-cr="edit">✂️ 직접 맞추기</button><button class="back" type="button" data-cr="all">사진 전체 쓰기</button></div></div></div>';
+    host.querySelector('[data-cr="edit"]').onclick = () => editor(false); host.querySelector('[data-cr="multi"]').onclick = () => editor(true); host.querySelector('[data-cr="all"]').onclick = () => { Object.assign(r, { x: 0, y: 0, w: 1, h: 1 }); preview(); }; };
+  const editor = multi => {
   host.innerHTML = '<div class="rdcrop"><img src="' + cv.toDataURL('image/jpeg', 0.85) + '" alt="찍은 사진"><div class="rdcrect"><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div></div>'
-    + '<p class="rdcrophint">모서리를 끌어 책 표지에 맞춰요.</p><div class="row center rdcropbtn"><button class="btn main" type="button" data-cr="ok">✔ 다 맞췄어요</button><button class="back" type="button" data-cr="auto">자동으로 맞추기</button><button class="back" type="button" data-cr="all">사진 전체 쓰기</button></div>';
+    + '<p class="rdcrophint">' + (multi ? '📚 <b>읽은 책을 톡!</b> 누르면 그 책에 네모가 맞춰져요. 모서리를 끌어 고칠 수도 있어요.' : '모서리를 끌어 책 표지에 맞춰요. 여러 권이면 읽은 책을 톡 눌러도 돼요.') + '</p><div class="row center rdcropbtn"><button class="btn main" type="button" data-cr="ok">✔ 다 맞췄어요</button><button class="back" type="button" data-cr="auto">자동으로 맞추기</button><button class="back" type="button" data-cr="all">사진 전체 쓰기</button></div>';
   const box = host.querySelector('.rdcrop'), R = host.querySelector('.rdcrect');
   host.querySelector('[data-cr="ok"]').onclick = preview;
   const put = () => { R.style.left = r.x * 100 + '%'; R.style.top = r.y * 100 + '%'; R.style.width = r.w * 100 + '%'; R.style.height = r.h * 100 + '%'; };
@@ -7148,6 +7167,9 @@ function cropUI(host, cv, r) {
     r.x = x0; r.y = y0; r.w = x1 - x0; r.h = y1 - y0; put(); });
   const up = () => { drag = null; }; R.addEventListener('pointerup', up); R.addEventListener('pointercancel', up);
   host.querySelector('[data-cr="auto"]').onclick = () => { Object.assign(r, findBook(cv)); put(); };
+  /* 네모 밖(사진)을 톡 누르면 그 자리의 책을 찾아 네모를 옮겨요 */
+  box.addEventListener('click', e => { if (e.target.closest('.rdcrect')) return; const b = box.getBoundingClientRect(); Object.assign(r, findAt(cv, (e.clientX - b.left) / b.width, (e.clientY - b.top) / b.height)); put(); R.classList.add('pick'); setTimeout(() => R.classList.remove('pick'), 500); });
+  if (multi) { R.style.opacity = '.35'; box.addEventListener('click', () => { R.style.opacity = ''; }, { once: true }); }
   host.querySelector('[data-cr="all"]').onclick = () => { Object.assign(r, { x: 0, y: 0, w: 1, h: 1 }); put(); };
   put(); };
   preview(); }
@@ -7167,7 +7189,8 @@ readForm = function (box, file, thumb0, speak) {
     S.textContent = '🔎 ' + BNga + ' 책을 알아보는 중이에요…';
     try { const prompt = (useImg ? '첨부한 사진은 어린이가 다 읽은 책의 표지입니다. 표지에 적힌 제목과 지은이를 읽어 주세요.' : '어린이가 다 읽은 책의 제목은 「' + title.slice(0, 80) + '」입니다.')
         + ' 이 책을 알고 있다면 ' + AGE + ' 어린이가 이해할 쉬운 한국어 존댓말로 줄거리를 두 문장 이하로 짧게 소개해 주세요(결말은 밝히지 않기). 확실히 아는 책이 아니면 summary는 빈 문자열로 두고 지어내지 마세요. 반드시 JSON 하나로만 답하세요: {"title":"책 제목","author":"지은이","summary":"줄거리 또는 빈 문자열"}';
-      const r = await sm.json(prompt, useImg ? { images: [file] } : { modelTier: 'quick' });
+      const img = (useImg && CV && !(CR.x === 0 && CR.y === 0 && CR.w === 1 && CR.h === 1)) ? await (await fetch(cropThumb(CV, CR, 900))).blob() : file;   /* 여러 권 사진이면 고른 책만 보내요 */
+      const r = await sm.json(prompt, useImg ? { images: [img] } : { modelTier: 'quick' });
       if (r && typeof r === 'object') { if (useImg && r.title && !T.value) T.value = String(r.title).slice(0, 80); info = { author: String(r.author || '').slice(0, 60), sum: String(r.summary || '').slice(0, 400) }; }
       S.textContent = info.sum ? BNga + ' 알려 준 줄거리예요. 책과 조금 다를 수 있어요.' : (T.value ? '줄거리는 찾지 못했어요. 그래도 책장에 꽂을 수 있어요.' : '제목을 읽지 못했어요. 말하거나 적어 주세요.'); showSum();
     } catch (e) { S.textContent = T.value ? '' : '책 제목을 말하거나 적어 주세요.'; } };
@@ -8225,7 +8248,7 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
   function tipOf(u,l){ try{ const box=document.createElement('div'); box.innerHTML=korIntro(u,l); const t=box.querySelector('.tip'); if(!t) return null; t.querySelectorAll('br').forEach(b=>b.replaceWith(' ')); const bs=[...t.querySelectorAll('b')]; const title=bs.length?bs[0].textContent.trim():''; const keys=[...new Set(bs.slice(1).map(b=>b.textContent.replace(/[:：]/g,'').trim()).filter(s=>s.length>=1&&s.length<=10))].slice(0,8);
       let text=t.textContent.replace(title,'').replace(/\s+/g,' ').trim(); if(text.length>260) text=text.slice(0,260)+'…'; return keys.length?{title,keys,text}:null; }catch(e){ return null; } }
   { const _rs=resultScreen; resultScreen=function(u,l,stars,msg,again){ const r=_rs.apply(this,arguments);
-      try{ if(u&&u.cq&&typeof l==='number'&&l<=3){ const T=tipOf(u,l); const pnl=$app.querySelector('.panel.result'); if(T&&pnl){ pnl.insertAdjacentHTML('afterend','<section class="panel xpbox"><h3>💬 설명해 보기</h3><p class="lead">오늘 배운 <b>‘'+E(T.title||u.title)+'’</b>'+(J(T.title||u.title,'을','를').slice(-1))+' 동생에게 알려 주듯 내 말로 설명해 봐요. 말해도 되고 써도 돼요.</p><textarea class="xpin" rows="4" placeholder="예) '+E(T.keys[0])+'은(는) …"></textarea><div class="row center">'+(SR?'<button class="btn sun" type="button" id="xpmic">🎤 말로 설명하기</button>':'')+'<button class="btn main" type="button" id="xpok">다 설명했어요</button></div><div id="xpres"></div></section>'); xpBind(u,l,T); } } }catch(e){}
+      try{ if(u&&u.cq&&typeof l==='number'&&l<=3&&['kor','math','sci','soc'].indexOf(GS(u.g))>=0){ const T=tipOf(u,l);   /* 설명해 보기는 국어·수학·과학·사회에서만 (코딩·경제 등은 빼요) */ const pnl=$app.querySelector('.panel.result'); if(T&&pnl){ pnl.insertAdjacentHTML('afterend','<section class="panel xpbox"><h3>💬 설명해 보기</h3><p class="lead">오늘 배운 <b>‘'+E(T.title||u.title)+'’</b>'+(J(T.title||u.title,'을','를').slice(-1))+' 동생에게 알려 주듯 내 말로 설명해 봐요. 말해도 되고 써도 돼요.</p><textarea class="xpin" rows="4" placeholder="예) '+E(J(T.keys[0],'은','는'))+' …"></textarea><div class="row center">'+(SR?'<button class="btn sun" type="button" id="xpmic">🎤 말로 설명하기</button>':'')+'<button class="btn main" type="button" id="xpok">다 설명했어요</button></div><div id="xpres"></div></section>'); xpBind(u,l,T); } } }catch(e){}
       return r; }; }
   function xpBind(u,l,T){ const ta=$app.querySelector('.xpin'), ok=document.getElementById('xpok'), mic=document.getElementById('xpmic'), res=document.getElementById('xpres'); let rec=null;
     if(mic) mic.onclick=()=>{ if(rec){ try{ rec.stop(); }catch(e){} return; } try{ rec=new SR(); rec.lang='ko-KR'; rec.interimResults=true; rec.continuous=true; const base=ta.value?ta.value+' ':''; let fin='';
@@ -8727,7 +8750,7 @@ const BDSIB={call:'서이',m:2,d:26};
     document.getElementById('bdsong').onclick=()=>{ song(); };
     const gb=document.getElementById('bdgift'); if(gb) gb.onclick=()=>{ ac(); S.gift=today(); try{ persist(); }catch(e){} close(); giftGame(); }; }
   /* 생일 선물: 게임을 바로 열어요 (다른 게임으로 바꿀 수도 있어요) */
-  function giftGame(){ try{ const M=mgState(); const ks=Object.keys(MGAMES); const k=ks[Math.floor(Math.random()*ks.length)]; M.pend={k,sec:SEC}; persist(); mgOffer(); }catch(e){} }
+  function giftGame(){ try{ const M=mgState(); const all=Object.keys(MGAMES), left=all.filter(x=>M.open.indexOf(x)<0), ks=left.length?left:all; const k=ks[Math.floor(Math.random()*ks.length)]; if(M.open.indexOf(k)<0) M.open.push(k); M.pend={k,sec:SEC}; persist(); mgOffer(); }catch(e){} }
 
   /* 생일에는 게임 시간이 100초 */
   { const _mp=mgPlay; mgPlay=function(k,sec){ return _mp.call(this,k,isBday()?Math.max(sec||0,SEC):sec); }; }
