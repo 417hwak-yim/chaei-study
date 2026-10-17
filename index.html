@@ -940,11 +940,13 @@ button,summary,[role="button"],label.btn,.choice,.tile{touch-action:manipulation
 .tin.shake{animation:tshake .35s}
 @keyframes tshake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 </style><style id="justify-text">
-/* 문장으로 된 지문과 설명은 양쪽 정렬: 낱말이 줄 끝에서 잘리지 않게(keep-all) 하고, 줄마다 낱말 사이를 고르게 벌려 양쪽 끝을 맞춰요.
+/* 문장으로 된 지문과 설명은 양쪽 정렬: 한글 책처럼 글자 단위로 줄 끝까지 채워서(낱말 사이가 크게 벌어지지 않게) 양쪽 끝을 맞춰요. 영어 낱말은 중간에서 끊지 않아요.
    보기 단추·낱말 카드·영어 낱말 설명처럼 짧은 글은 그대로 두어요. */
 .kpas,.kpas p,.sit p,.rdtext p,.rdpara,.wtext,.nwbody p,.tqtext,.thint,.tsol li,.tback li,.hjsen,.glbox,.mtxt,.fb p,.rdnote,.cbsum,.rdsum,
 .wtx p,.wbub p,.wsum p,.wfun p,.xpmodel p,.stp-q,.whyp p,.newsp .nwbody p{
-  text-align:justify!important;text-justify:inter-word;word-break:keep-all;overflow-wrap:break-word;hyphens:none}
+  text-align:justify!important;text-justify:inter-word;word-break:normal!important;line-break:strict;overflow-wrap:break-word;hyphens:none}
+/* 위 글들의 안쪽 글자(문장 조각 span 등)도 같은 방식으로 줄을 채워요 */
+.kpas *,.rdtext p *,.wtext *,.nwbody p *,.wtx p *,.wbub p *,.whyp p *,.mtxt *,.tqtext *{word-break:normal!important}
 .rdtext p,.rdpara,.nwbody p{text-align-last:left}
 /* 개념 상자(.tip)는 칸이 좁고 가려진 낱말·굵은 낱말이 많아 양쪽 정렬을 하면 띄어쓰기가 크게 벌어져요. 왼쪽 정렬로 둬요 (양쪽 정렬 목록에서 뺐어요) */
 .tip{text-align:left}
@@ -5844,6 +5846,9 @@ function restoreView(){
   let o=null; try{ o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); }catch(e){}
   if(!o||!o.v||o.v==='start') return start('');
   if(o.v==='subj') return routeInner('subj',o.a);
+  if(o.v==='read') return routeInner('read');
+  /* 과목·단원 화면이 아닌 곳(책장, 아빠와 복습, 오늘의 왜, 최상위 수학 등)은 처음 화면에서 다시 열어요. 예전에는 영어 과목 화면으로 잘못 넘어갔어요 */
+  if(['grade','home','quiz','resume','game','unit','lesson','gram','say','wrap'].indexOf(o.v)<0) return start('');
   try{
     setGrade(o.g); const u=UNITS[+o.a], rs=resumeInfo();
     if(o.v==='grade'||o.v==='home') return route('home');
@@ -9050,15 +9055,16 @@ const DADREV = [
 
   const css = document.createElement('style');
   css.textContent = '.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.duo>button{margin:0!important;min-width:0;grid-template-columns:1fr!important;align-content:start;gap:6px!important;padding:8px 8px 10px!important;position:relative}'
-    + '.duo .nwthumb,.duo .whythumb{width:100%!important;height:auto!important;aspect-ratio:21/8;border-radius:8px!important}.duo .whystamp{display:none}.duo .nwbs,.duo .whybs,.duo .nwgo,.duo .whygo{display:none}.duo .nwbk,.duo .whybk{font-size:.7rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.duo b{font-size:.86rem!important;line-height:1.3!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}.duo .whybanner{padding-left:14px!important}'
-    + '.pairrow{margin-top:0!important}.pairrow .lesson{padding:8px 10px 10px!important;gap:3px!important;min-height:0}.pairrow .lesson .n{padding:2px 8px!important;font-size:.68rem!important}.pairrow .lesson b{font-size:.9rem!important}.pairrow .lesson>span:nth-child(2)>span{font-size:.74rem!important}.pairrow .lesson .go{font-size:1.1rem!important;top:6px!important}.dadcard{width:100%;display:flex;align-items:center;gap:10px;margin:12px 0 4px;padding:12px 14px;border-radius:16px;border:2px solid #1B2750;background:linear-gradient(135deg,#FFF4D6,#FFE3EC);box-shadow:0 4px 0 #1B2750;font:inherit;color:inherit;text-align:left;cursor:pointer;touch-action:manipulation;position:relative}'
+    + '.duo .nwthumb,.duo .whythumb{width:100%!important;height:auto!important;aspect-ratio:21/8;border-radius:8px!important}.duo .whystamp{display:none}.duo .nwbs,.duo .whybs,.duo .nwgo,.duo .whygo{display:none}.duo .nwbk,.duo .whybk{font-size:.7rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.duo b{font-size:.86rem!important;line-height:1.3!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}.duo .whybanner{padding-left:8px!important;border-radius:16px!important;box-shadow:0 3px 0 var(--k)!important}.duo .whybanner:active{box-shadow:0 1px 0 var(--k)!important}'
+    + '.pairrow{margin-top:0!important;margin-bottom:18px!important}.duo{margin-bottom:12px!important}.pairrow .lesson{padding:8px 10px 10px!important;gap:3px!important;min-height:0}.pairrow .lesson .n{padding:2px 8px!important;font-size:.68rem!important}.pairrow .lesson b{font-size:.9rem!important}.pairrow .lesson>span:nth-child(2)>span{font-size:.74rem!important}.pairrow .lesson .go{font-size:1.1rem!important;top:6px!important}.dadcard{width:100%;display:flex;align-items:center;gap:10px;margin:12px 0 4px;padding:12px 14px;border-radius:16px;border:2px solid #1B2750;background:linear-gradient(135deg,#FFF4D6,#FFE3EC);box-shadow:0 4px 0 #1B2750;font:inherit;color:inherit;text-align:left;cursor:pointer;touch-action:manipulation;position:relative}'
     + '.dadcard:active{transform:translateY(2px);box-shadow:0 2px 0 #1B2750}.dadic{font-size:2rem}.dadtt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.dadtt b{font-size:1.05rem}.dadtt>span,.dadtt small{font-size:.8rem;color:#5b6378;line-height:1.4}.dadnew{position:absolute;top:-8px;right:10px;background:#E5533D;color:#fff;border-radius:999px;padding:2px 9px;font-size:.8rem;font-weight:800}.dadgo{color:#1B2750;font-weight:900}'
     + '.dadempty{margin:14px 0;padding:18px;border-radius:14px;background:#F4F6FB;text-align:center;line-height:1.7}.dadlist{display:grid;gap:10px;margin-top:12px}.dadset{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border-radius:14px;border:2px solid var(--u);background:#fff;box-shadow:0 3px 0 var(--u);font:inherit;color:inherit;text-align:left;cursor:pointer}'
     + '.dadset.done{opacity:.8}.dadset.new{background:#FFFBEA}.dadmk{min-width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--u);color:#fff;font-weight:900;font-size:.85rem}.dadst{font-weight:700;color:var(--u)!important}'
     + '.dadtag{font-size:.82rem;font-weight:800;color:var(--u);margin:0 0 6px}.dadqt{font-size:1.15rem;line-height:1.7;word-break:keep-all}.dadimg{display:block;max-width:100%;margin:10px auto;border-radius:10px}.dadin{display:flex;gap:8px;margin-top:14px}.dadin input{flex:1;min-width:0;font-size:1.15rem}'
     + '.dadch .choice.ok{background:#E3F6EA;border-color:#2FA36B}.dadch .choice.no{background:#FDE7E4;border-color:#E5533D}.dadfb{margin-top:12px;padding:12px;border-radius:12px;line-height:1.6}.dadfb.ok{background:#E3F6EA}.dadfb.no{background:#FDE7E4}.dadfb p{margin:6px 0 0}';
   document.head.appendChild(css);
-  try { if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
+  /* 새로 고침: 아빠와 복습을 보고 있었으면 복습 목록으로 */
+  try { const o = JSON.parse(sessionStorage.getItem('e3-view') || 'null'); if (o && o.v === 'dad') listView(); else if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
 })();
 </script>
 <!-- ===== 아빠와 복습 끝 ===== -->
