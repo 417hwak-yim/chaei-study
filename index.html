@@ -10493,12 +10493,13 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
 <!-- ===== 읽을거리 묶기 시작 ===== -->
 <script>
 /* ===== 채이 첫 화면: 읽을거리와 문제 풀기를 나눠요 =====
-   📖 읽을거리(오늘의 이슈 · 오늘의 왜 · 읽은 책 꽂기) → 오늘의 학습 → ✏️ 문제 풀기(최상위 수학 하루 두 문제 · 복습 상자) */
+   📖 읽을거리(오늘의 이슈 · 오늘의 왜 · 읽은 책 꽂기) → 오늘의 학습 → 복습 상자
+   최상위 수학 하루 두 문제는 아래 '과목 살펴보기' 묶음 안에 들어가요. */
 (function () {
   const css = document.createElement('style');
   css.textContent = '.hgrp{margin:12px 0;padding:10px 10px 12px;border-radius:18px}.hgrp.read{background:#EEF8F1;border:1.5px solid #BFE3CC}.hgrp.solve{background:#F3F0FF;border:1.5px solid #D6CCF7}'
     + '.hgrpt{margin:0 2px 8px;font-weight:800;font-size:.98rem;display:flex;align-items:center;gap:6px}.hgrp.read .hgrpt{color:#2E7D4F}.hgrp.solve .hgrpt{color:#5B3FB8}'
-    + '.hgrp .duo{margin:0}.hgrp>.lesson{margin:10px 0 0!important;width:100%}.hgrp>.lesson b{white-space:nowrap}.hgrp .rvhome{margin:10px 0 0}';
+    + '.hgrp .duo{margin:0}.hgrp>.lesson{margin:10px 0 0!important;width:100%}.hgrp>.lesson b{white-space:nowrap}.hgrp .rvhome{margin:10px 0 0}.subjfold>.lesson.infold{margin:0 0 12px!important;width:100%}.subjfold>.lesson.infold b{white-space:nowrap}';
   document.head.appendChild(css);
   function group() {
     const tw = document.querySelector('#app .todaywrap'); if (!tw || tw.querySelector('.hgrp')) return;
@@ -10506,8 +10507,11 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
     const pr = tw.querySelector(':scope > .pairrow'), shelf = pr && pr.querySelector('[data-go="read"]'), top = pr && pr.querySelector('[data-go="top"]'), rv = tw.querySelector(':scope > .rvhome');
     const read = document.createElement('div'); read.className = 'hgrp read'; read.innerHTML = '<p class="hgrpt">📖 읽을거리</p>';
     tb.before(read); read.appendChild(duo); if (shelf) read.appendChild(shelf);
-    const solve = document.createElement('div'); solve.className = 'hgrp solve'; solve.innerHTML = '<p class="hgrpt">✏️ 문제 풀기</p>';
-    tb.after(solve); if (top) solve.appendChild(top); if (rv) solve.appendChild(rv);
+    /* 최상위 수학은 아래 과목 살펴보기 묶음 안 맨 위로 */
+    const fold = document.querySelector('#app .subjfold');
+    if (top && fold) { top.classList.add('infold'); fold.querySelector('summary').after(top); }
+    else if (top) tb.after(top);
+    if (rv) (top && !fold ? top : tb).after(rv);
     if (pr && !pr.children.length) pr.remove();
   }
   { const _st = start; start = function () { const r = _st.apply(this, arguments); try { if (!CURSUBJ) group(); } catch (e) {} return r; }; }
