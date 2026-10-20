@@ -9385,120 +9385,222 @@ const BDSIB={call:'서이',m:2,d:26};
 <script>
 /* ===== 아빠와 복습 문제 =====
    아빠가 보내 준 '채이가 오프라인으로 공부한 내용'을 여기에 한 묶음씩 더해요 (새 묶음은 맨 아래에).
-   묶음: {id, d:'날짜', subj:'math|sci|soc|kor|eng', title, src:'어디서 공부했는지', items:[...]}
-   문제: {q:'문제', a:'정답' 또는 ['정답','같은 답'], ch:['보기'...](있으면 고르기, 없으면 직접 쓰기), ox:true(OX 문제), ex:'풀이', img:'그림(선택)',
-          sim:[비슷한 문제...],                       ← 똑같은 문제 다음에 이어서 풀어요
-          gen:{q:'{a} × {b} = □', v:{a:[12,99],b:[2,9]}, ans:'a*b', ex:'…', n:2}}   ← 숫자를 바꿔 비슷한 문제를 매번 새로 만들어요 */
+   묶음: {id, d:'올려 준 날 YYYY-MM-DD', subj:'math|sci|soc|kor|eng', title, src:'어디서 공부했는지',
+          concept:[{t:'개념 제목', h:'설명'}],          ← ① 개념 확인 (날마다 맨 처음)
+          day1:{p:[문제…], z:[퀴즈…]},                  ← 올려 준 다음 날: ② 학습지와 거의 똑같은 문제 → ③ 그 문제와 관련된 퀴즈
+          day2:{p:[문제…], z:[퀴즈…]}}                  ← 그다음 날: ② 숫자를 바꾼 문제 → ③ 개념을 확인하는 퀴즈
+   하루 양: 문제 14~15개 + 퀴즈 5개 정도. 문제 중간에 퀴즈를 섞지 않아요.
+   문제: {q:'문제', a:'정답', ch:['보기'...](있으면 고르기, 없으면 직접 쓰기), ox:true(OX), ex:'풀이',
+          gen:{q:'…{w}…', v:{w:[2,5]}, qv:{t:'w*n+p'}, ok:'조건', ans:'식' 또는 a:'{=식}', chs:['보기 틀'…], ex:'…', n:만들 개수}}
+   글 속 표시: [f:3/5] 분수, [f:2 3/5] 대분수, [f:□/5] 빈칸 분수, [[bar 5 13]] 5칸 막대에 13칸 색칠,
+               [[group 9 3 6]] 9개를 3개씩 묶고 6개 색칠, [[pie 3 2]] 3조각 중 2조각, [[line 3 4 가:7 나:11]] 0~3 수직선(1을 4칸) */
 const DADREV = [
+ {id:'frac-2', d:'2026-10-20', subj:'math', title:'분수 탐험 2차시 · 대분수와 가분수', src:'아빠와 학습지',
+  concept:[
+   {t:'분모와 분자는 같은 것으로 세요', h:'조각으로 셌으면 분모도 분자도 조각, 묶음이면 둘 다 묶음, 낱개면 둘 다 낱개!\n[[group 9 3 6]]\n사탕 9개를 3개씩 묶으면 3묶음, 색칠한 것은 2묶음 → [f:2/3]'},
+   {t:'1은 단위분수 몇 개?', h:'막대 1개를 똑같이 5칸으로 나누면 한 칸은 [f:1/5]이에요.\n[[bar 5 5]]\n1은 [f:1/5]이 5개 → 1 = [f:5/5]\n그러니까 2는 [f:1/5]이 10개, 3은 [f:1/5]이 15개예요.'},
+   {t:'대분수 → 가분수', h:'[f:2 3/5]은 [f:1/5]이 몇 개일까요?\n[[bar 5 13]]\n1이 2개라서 [f:1/5]이 5 + 5 = 10개, 남은 3개를 더해 모두 13개 → [f:13/5]\n형·언니들은 2 × 5 + 3 = 13 이라고 계산해요.'},
+   {t:'가분수 → 대분수', h:'[f:11/4]은 [f:1/4]이 11개예요. [f:1/4]이 4개 모이면 1이니까 4개씩 묶어요.\n11 ÷ 4 = 2 … 3 → [f:2 3/4]\n몫은 자연수, 나머지는 분자!'}],
+  day1:{
+   p:[
+    {q:'[f:2 3/5]만큼 색칠했어요. 색칠한 칸은 [f:1/5]이 모두 몇 개일까요?\n[[bar 5 13]]', a:'13', ex:'막대 ① 5칸 + 막대 ② 5칸 + 막대 ③ 3칸 = 13칸 → [f:2 3/5] = [f:13/5]'},
+    {q:'1은 [f:1/5]이 5개예요. 2는 [f:1/5]이 몇 개일까요?', a:'10', ex:'5 + 5 = 10개예요. 3은 15개!'},
+    {q:'[f:1 3/4]만큼 색칠했어요. 가분수로 나타내면?\n[[bar 4 7]]', ch:['[f:7/4]','[f:4/4]','[f:13/4]','[f:3/4]'], a:'[f:7/4]', ex:'1은 [f:1/4]이 4개, [f:3/4]은 3개 → 모두 7개 → [f:7/4]'},
+    {q:'[f:11/4]을 [f:1/4]씩 4개로 묶었어요. 4개씩 묶음은 몇 개일까요?\n[[group 11 4 11]]', a:'2', ex:'4개씩 2묶음, 3개가 남아요. 묶음 수가 자연수 부분이에요.'},
+    {q:'그래서 [f:11/4]을 대분수로 나타내면?', ch:['[f:2 3/4]','[f:3 2/4]','[f:2 1/4]','[f:1 3/4]'], a:'[f:2 3/4]', ex:'11 ÷ 4 = 2 … 3 → 몫 2는 자연수, 나머지 3은 분자 → [f:2 3/4]'},
+    {q:'[f:2 1/3]만큼 색칠했어요. [f:2 1/3] = [f:□/3] 에서 □는?\n[[bar 3 7]]', a:'7', ex:'3 + 3 + 1 = 7 → [f:7/3]'},
+    {q:'[f:3 2/5] = [f:□/5] 에서 □는?', a:'17', ex:'1은 [f:1/5]이 5개 → 3은 15개, 2개를 더해 17개 → [f:17/5]'},
+    {q:'[f:4 1/6] = [f:□/6] 에서 □는?', a:'25', ex:'4 × 6 = 24, 24 + 1 = 25 → [f:25/6]'},
+    {q:'14 ÷ 3 = 4 … 2 예요. [f:14/3]을 대분수로 나타내면?', ch:['[f:4 2/3]','[f:3 2/3]','[f:4 1/3]','[f:2 4/3]'], a:'[f:4 2/3]', ex:'몫 4는 자연수, 나머지 2는 분자 → [f:4 2/3]'},
+    {q:'[f:17/5]을 대분수로 나타내면?', ch:['[f:3 2/5]','[f:2 3/5]','[f:4 2/5]','[f:3 5/2]'], a:'[f:3 2/5]', ex:'17 ÷ 5 = 3 … 2 → [f:3 2/5]'},
+    {q:'○ 안에 알맞은 것을 골라요.\n[f:2 3/5] ○ [f:12/5]', ch:['>','=','<'], a:'>', ex:'[f:2 3/5] = [f:13/5]이고 13 > 12 이니까 [f:2 3/5] > [f:12/5]'},
+    {q:'○ 안에 알맞은 것을 골라요.\n[f:9/4] ○ [f:2 1/4]', ch:['>','=','<'], a:'=', ex:'[f:2 1/4] = [f:9/4] (4 + 4 + 1 = 9) 이라서 같아요.'},
+    {q:'수직선에서 0과 1 사이를 4칸으로 나누었어요. 가가 가리키는 수를 가분수로 쓰면?\n[[line 3 4 가:7 나:11]]', ch:['[f:7/4]','[f:3/4]','[f:7/3]','[f:11/4]'], a:'[f:7/4]', ex:'한 칸이 [f:1/4]이고 가는 7번째 칸 → [f:7/4] = [f:1 3/4]'},
+    {q:'같은 수직선에서 나가 가리키는 수를 대분수로 쓰면?\n[[line 3 4 가:7 나:11]]', ch:['[f:2 3/4]','[f:3 2/4]','[f:2 1/4]','[f:1 3/4]'], a:'[f:2 3/4]', ex:'나는 11번째 칸 → [f:11/4] = [f:2 3/4]'},
+    {q:'도전! [f:4 □/7] = [f:31/7] 에서 □는?', a:'3', ex:'4는 [f:1/7]이 28개, 31 − 28 = 3 → [f:4 3/7]'}],
+   z:[
+    {q:'사탕 9개를 3개씩 묶었어요. 색칠한 사탕 6개는 9의 얼마일까요?\n[[group 9 3 6]]', ch:['[f:2/3]','[f:1/3]','[f:3/2]','[f:2/6]'], a:'[f:2/3]', ex:'전체 3묶음 중 2묶음이라서 [f:2/3]이에요. 묶음으로 셌으니 분모도 분자도 묶음!'},
+    {q:'[f:2/3]으로 나타냈어요. 분모와 분자를 셀 때 무엇을 세었을까요?\n[[group 12 4 8]]', ch:['조각','묶음','낱개'], a:'묶음', ex:'4개씩 3묶음 중 2묶음을 색칠했어요. 묶음을 셌어요.'},
+    {q:'친구가 "[f:2 3/5] = [f:6/5]" 이라고 했어요. 2에 3을 곱했대요. 바른 답은?', ch:['[f:13/5]','[f:6/5]','[f:5/5]','[f:10/5]'], a:'[f:13/5]', ex:'1은 [f:1/5]이 5개라서 2는 10개, 3개를 더해 13개 → [f:13/5]'},
+    {q:'[f:2 3/5] = (2 × 5 + 3) / 5 에서 곱하는 5는 무엇을 뜻할까요?', ch:['1 안에 들어 있는 [f:1/5]의 개수','1이 몇 개 있는지 (자연수 부분)','1을 다 채우고 남은 [f:1/5]의 개수'], a:'1 안에 들어 있는 [f:1/5]의 개수', ex:'2는 1이 몇 개인지, 5는 1 안의 [f:1/5] 개수, 3은 남은 [f:1/5] 개수예요.'},
+    {q:'한 줄 정리! 1은 [f:1/8]이 몇 개일까요?', a:'8', ex:'1을 8칸으로 나누면 [f:1/8]이 8개예요. 1 = [f:8/8]'}]},
+  day2:{
+   p:[
+    {gen:{q:'1은 [f:1/{n}]이 몇 개일까요?', v:{n:[3,9]}, ans:'n', ex:'1을 {n}칸으로 나누면 [f:1/{n}]이 {n}개예요.', n:1}},
+    {gen:{q:'{w}{=[1,3,6,7,8,0].includes(w%10)?"은":"는"} [f:1/{n}]이 몇 개일까요?', v:{w:[2,4],n:[3,8]}, ans:'w*n', ex:'1은 [f:1/{n}]이 {n}개 → {w}{=[1,3,6,7,8,0].includes(w%10)?"은":"는"} {n} × {w} = {ans}개', n:1}},
+    {gen:{q:'그림만큼 색칠했어요. 대분수로 나타내면?\n[[bar {n} {=w*n+p}]]', v:{w:[1,3],n:[3,6],p:[1,5]}, ok:'p<n', a:'[f:{w} {p}/{n}]', chs:['[f:{p} {w}/{n}]','[f:{=w+1} {p}/{n}]','[f:{w} {p}/{=n+1}]'], ex:'막대 {w}개가 다 차고 {p}칸이 더 있어요 → [f:{w} {p}/{n}]', n:1}},
+    {gen:{q:'[f:{w} {p}/{n}] = [f:□/{n}] 에서 □는?', v:{w:[2,5],n:[3,9],p:[1,8]}, ok:'p<n', ans:'w*n+p', ex:'1은 [f:1/{n}]이 {n}개 → {w}는 {=w*n}개, {p}개를 더해 {ans}개 → [f:{ans}/{n}]', n:3}},
+    {gen:{q:'{t} ÷ {n} = {w} … {p} 예요. [f:{t}/{n}]을 대분수로 나타내면?', v:{w:[2,5],n:[3,8],p:[1,7]}, ok:'p<n', qv:{t:'w*n+p'}, a:'[f:{w} {p}/{n}]', chs:['[f:{p} {w}/{n}]','[f:{=w+1} {p}/{n}]','[f:{w} {p}/{t}]'], ex:'몫 {w}는 자연수, 나머지 {p}는 분자 → [f:{w} {p}/{n}]', n:1}},
+    {gen:{q:'[f:{t}/{n}]을 대분수로 나타내면?', v:{w:[2,5],n:[3,8],p:[1,7]}, ok:'p<n', qv:{t:'w*n+p'}, a:'[f:{w} {p}/{n}]', chs:['[f:{p} {w}/{n}]','[f:{=w-1} {=p+n}/{n}]','[f:{=w+1} {p}/{n}]'], ex:'{t} ÷ {n} = {w} … {p} → 몫은 자연수, 나머지는 분자 → [f:{w} {p}/{n}]', n:2}},
+    {gen:{q:'○ 안에 알맞은 것을 골라요.\n[f:{w} {p}/{n}] ○ [f:{t}/{n}]', v:{w:[1,4],n:[3,8],p:[1,7],d:[-2,2]}, ok:'p<n&&w*n+p+d>0', qv:{t:'w*n+p+d'}, a:'{=d>0?"<":d<0?">":"="}', chs:['>','=','<'], ex:'[f:{w} {p}/{n}] = [f:{=w*n+p}/{n}] 이에요. [f:{t}/{n}]와 분자를 비교해요.', n:3}},
+    {gen:{q:'수직선에서 0과 1 사이를 {n}칸으로 나누었어요. 가가 가리키는 수를 가분수로 쓰면?\n[[line 3 {n} 가:{t}]]', v:{n:[3,5],t:[4,14]}, ok:'t%n!==0&&t<3*n', a:'[f:{t}/{n}]', chs:['[f:{n}/{t}]','[f:{=t+1}/{n}]','[f:{=t-1}/{n}]'], ex:'한 칸이 [f:1/{n}]이고 가는 {t}번째 칸 → [f:{t}/{n}]', n:1}},
+    {gen:{q:'도전! [f:{w} □/{n}] = [f:{t}/{n}] 에서 □는?', v:{w:[2,6],n:[4,9],p:[1,8]}, ok:'p<n', qv:{t:'w*n+p'}, ans:'p', ex:'{w}는 [f:1/{n}]이 {=w*n}개, {t} − {=w*n} = {p}', n:1}}],
+   z:[
+    {q:'친구가 "[f:3 1/4] = [f:3/4]" 이라고 했어요. 3과 1을 곱했대요. 바른 답은?', ch:['[f:13/4]','[f:3/4]','[f:4/4]','[f:7/4]'], a:'[f:13/4]', ex:'3은 [f:1/4]이 12개, 1개를 더해 13개 → [f:13/4]'},
+    {q:'[f:5/5]과 1은 같을까요?', ox:true, a:'O', ex:'1을 5칸으로 나눈 것 5칸 → 1 = [f:5/5]'},
+    {q:'분모를 조각으로 셌으면 분자는 낱개로 세어도 될까요?', ox:true, a:'X', ex:'분모와 분자는 같은 것으로 세요. 조각이면 둘 다 조각!'},
+    {q:'가분수를 대분수로 바꿀 때 나눗셈의 나머지는 대분수의 어디가 될까요?', ch:['분자','자연수 부분','분모'], a:'분자', ex:'몫은 자연수 부분, 나머지는 분자, 분모는 그대로예요.'},
+    {q:'[f:2/3]으로 나타냈어요. 무엇을 세었을까요?\n[[pie 3 2]]', ch:['조각','묶음','낱개'], a:'조각', ex:'원을 3조각으로 나누고 2조각을 색칠했어요. 조각을 셌어요.'}]}}
 ];
 
-/* ===== 처음 화면 배치 + 아빠와 복습 =====
-   1) 오늘의 이슈와 오늘의 왜?를 한 줄에 반씩 나란히 놓고, 그 아래에 책장·최상위 수학 줄과 '아빠와 복습' 카드를 놓아요.
-   2) 아빠와 복습: 아빠가 보내 준 오프라인 공부 내용(DADREV)으로, 공부한 문제 그대로 → 비슷한 문제 순서로 풀어요.
-      틀린 문제는 끝에 한 번 더 나오고, 다음에 ‘틀린 문제만 다시’로 또 풀 수 있어요. gen이 있는 문제는 숫자를 바꿔 매번 새 문제를 만들어요. */
+/* ===== 아빠와 복습 (하루 흐름) =====
+   아빠가 공부 내용을 올린 다음 날부터 오늘의 학습에 올라와요.
+   · 1일차(다음 날): ① 개념 확인 → ② 학습지와 거의 똑같은 문제 → ③ 그 문제와 관련된 퀴즈
+   · 2일차(그다음 날): ① 개념 확인 → ② 숫자를 바꾼 문제 → ③ 개념을 확인하는 퀴즈
+   문제 중간에 퀴즈를 섞지 않고, 하루 양(문제 14~15개 + 퀴즈 5개)이 정해져 있어요. 틀린 문제는 끝나고 ‘틀린 문제만 다시’로 풀어요. */
 (function () {
   const SUB = { math: ['수학', '#2FA36B', '123'], sci: ['과학', '#1F9BB5', '🔬'], soc: ['사회', '#F08A24', '🌏'], kor: ['국어', '#D9534F', '가'], eng: ['영어', '#3D7BF2', 'ABC'], etc: ['공부', '#8A5CF0', '📘'] };
   const SB = s => SUB[s] || SUB.etc;
   const H = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const T = s => H(s).replace(/\n/g, '<br>');
   const St = () => (STATE.dad = STATE.dad || {});
   const today = () => dkey(new Date());
-  const sets = () => (typeof DADREV !== 'undefined' ? DADREV : []).map((s, i) => Object.assign({ i }, s));
-  const status = s => { const r = St()[s.id]; if (!r) return { k: 'new', t: '새 복습' }; if (r.wrong && r.wrong.length) return { k: 'redo', t: '다시 볼 문제 ' + r.wrong.length + '개' }; return { k: 'done', t: '다 맞혔어요 ⭐' }; };
-  const pending = () => sets().filter(s => status(s).k !== 'done').length;
+  const DN = d => { const a = String(d).split('-').map(Number); return Math.floor(Date.UTC(a[0], a[1] - 1, a[2]) / 864e5); };
+  const TD = () => { const t = new Date(); return Math.floor(Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()) / 864e5); };
+  const sets = () => (typeof DADREV !== 'undefined' ? DADREV : []);
+  /* 묶음을 날짜별 단계로 */
+  function stages() { const out = []; sets().forEach(s => {
+      const P = x => Array.isArray(x) ? { p: x, z: [] } : { p: x.p || [], z: x.z || [] };
+      if (s.day1 || s.day2) { if (s.day1) out.push(Object.assign({ s, n: 1, key: s.id + '#1', open: DN(s.d) + 1, lab: '1일차 · 학습지 문제' }, P(s.day1))); if (s.day2) out.push(Object.assign({ s, n: 2, key: s.id + '#2', open: DN(s.d) + 2, lab: '2일차 · 숫자 바꿔 풀기' }, P(s.day2))); }
+      else out.push({ s, n: 0, key: s.id, open: DN(s.d), lab: '', p: s.items || [], z: [] }); });
+    return out.map((x, i) => Object.assign(x, { i })); }
+  const isOpen = g => g.open <= TD();
+  const left = g => g.open - TD();
+  const status = g => { const r = St()[g.key]; if (!isOpen(g)) return { k: 'lock', t: (left(g) === 1 ? '내일' : left(g) + '일 뒤') + ' 열려요' }; if (!r) return { k: 'new', t: '오늘 할 복습' }; if (r.wrong && r.wrong.length) return { k: 'redo', t: '다시 볼 문제 ' + r.wrong.length + '개' }; return { k: 'done', t: '다 맞혔어요 ⭐' }; };
+  const pending = () => stages().filter(g => isOpen(g) && !St()[g.key]).length;
   const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
   const shf = a => a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
 
-  /* 숫자를 바꿔 비슷한 문제 만들기: {q:'{a} × {b} = □', v:{a:[12,99],b:[2,9]}, ans:'a*b', ex:'{a} × {b} = {ans}', unit:'개'} */
-  function genQ(G) { const v = {}; Object.keys(G.v || {}).forEach(k => { const r = G.v[k]; v[k] = Array.isArray(r) && typeof r[0] === 'number' && r.length === 2 ? rnd(r[0], r[1]) : Array.isArray(r) ? r[Math.floor(Math.random() * r.length)] : r; });
-    if (G.ok) { try { if (!Function(...Object.keys(v), 'return (' + G.ok + ')')(...Object.values(v))) return genQ(G); } catch (e) {} }   /* 조건에 맞는 숫자만 (예: 나누어떨어지기) */
-    let ans; try { ans = Function(...Object.keys(v), 'return (' + G.ans + ')')(...Object.values(v)); } catch (e) { ans = '?'; }
-    const fill = s => String(s || '').replace(/\{(\w+)\}/g, (m, k) => k === 'ans' ? ans : v[k] != null ? v[k] : m);
-    return { q: fill(G.q), a: [String(ans), String(ans) + (G.unit || '')], ex: fill(G.ex || '정답: {ans}' + (G.unit || '')), sim: 1 }; }
+  /* ---------- 그림과 분수 ---------- */
+  function bars(n, k) { n = +n; k = +k; const m = Math.max(1, Math.ceil(k / n)); let h = '<div class="dvbars">'; for (let b = 0; b < m; b++) { h += '<div class="dvbar">'; for (let c = 0; c < n; c++) h += '<i class="' + (b * n + c < k ? 'on' : '') + '"></i>'; h += '</div>'; } return h + '</div>'; }
+  function groups(t, g, k) { t = +t; g = +g; k = +k; let h = '<div class="dvgrp">'; for (let i = 0; i < t; i += g) { h += '<span class="' + (g > 1 ? 'cap' : 'one') + '">'; for (let j = i; j < Math.min(t, i + g); j++) h += '<i class="' + (j < k ? 'on' : '') + '"></i>'; h += '</span>'; } return h + '</div>'; }
+  function pie(n, k) { n = +n; k = +k; let p = ''; for (let i = 0; i < n; i++) { const a0 = i / n * 2 * Math.PI - Math.PI / 2, a1 = (i + 1) / n * 2 * Math.PI - Math.PI / 2, x0 = 50 + 44 * Math.cos(a0), y0 = 50 + 44 * Math.sin(a0), x1 = 50 + 44 * Math.cos(a1), y1 = 50 + 44 * Math.sin(a1);
+      p += '<path d="M50 50 L' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A44 44 0 ' + (1 / n > .5 ? 1 : 0) + ' 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + 'Z" fill="' + (i < k ? '#F4A15D' : '#fff') + '" stroke="#2B2520" stroke-width="2.5"/>'; }
+    return '<svg class="dvpie" viewBox="0 0 100 100">' + p + '</svg>'; }
+  function nline(max, parts, marks) { max = +max; parts = +parts; const W = 300, x = v => 14 + v / (max * parts) * (W - 28); let s = '<svg class="dvline" viewBox="0 0 ' + W + ' 76"><line x1="8" y1="46" x2="' + (W - 6) + '" y2="46" stroke="#2B2520" stroke-width="2.5"/>';
+    for (let t = 0; t <= max * parts; t++) { const big = t % parts === 0; s += '<line x1="' + x(t) + '" y1="' + (big ? 36 : 40) + '" x2="' + x(t) + '" y2="' + (big ? 56 : 52) + '" stroke="#2B2520" stroke-width="' + (big ? 2.5 : 1.5) + '"/>' + (big ? '<text x="' + x(t) + '" y="72" text-anchor="middle" font-size="13" fill="#2B2520">' + (t / parts) + '</text>' : ''); }
+    (marks || []).forEach((m, j) => { const p = m.split(':'), lb = p[0], v = +p[1], c = j ? '#5B6BD6' : '#E07B2E'; s += '<text x="' + (x(v) - 12) + '" y="14" font-size="13" font-weight="700" fill="' + c + '">' + lb + '</text><path d="M' + x(v) + ' 8 V32 M' + (x(v) - 5) + ' 26 L' + x(v) + ' 33 L' + (x(v) + 5) + ' 26" stroke="' + c + '" stroke-width="2.5" fill="none"/>'; });
+    return s + '</svg>'; }
+  const FR = (w, n, d) => '<span class="dvfr">' + (w ? '<b>' + w + '</b>' : '') + '<span class="dvfq"><i>' + n + '</i><i>' + d + '</i></span></span>';
+  function R(s) { return H(s).replace(/\[\[(bar|group|pie|line) ([^\]]+)\]\]/g, (m, k, a) => { const p = a.trim().split(/\s+/); return k === 'bar' ? bars(p[0], p[1]) : k === 'group' ? groups(p[0], p[1], p[2]) : k === 'pie' ? pie(p[0], p[1]) : nline(p[0], p[1], p.slice(2)); })
+      .replace(/\[f:(?:(\d+)\s+)?([^\/\]]+)\/([^\]]+)\]/g, (m, w, n, d) => FR(w, n, d)).replace(/\n/g, '<br>')
+      .replace(/<br>(<div class="dv|<svg)/g, '$1').replace(/(<\/div>|<\/svg>)<br>/g, '$1'); }
 
-  /* 한 묶음의 문제 차례: 공부한 문제 그대로 → 그 문제의 비슷한 문제들 */
-  function buildSeq(s, onlyWrong) { const W = (St()[s.id] || {}).wrong || [], out = [];
-    s.items.forEach((it, k) => { if (onlyWrong && W.indexOf(k) < 0) return;
-      out.push(Object.assign({ k, tag: '📘 공부한 문제' }, it));
-      (it.sim || []).forEach(x => out.push(Object.assign({ k, tag: '🔁 비슷한 문제' }, x)));
-      if (it.gen) for (let n = 0; n < (it.gen.n || 2); n++) out.push(Object.assign({ k, tag: '🔁 비슷한 문제 (새로 만든 문제)' }, genQ(it.gen))); });
-    return out; }
+  /* 숫자를 바꿔 문제 만들기 */
+  function genQ(G, tries) { tries = tries || 0; const v = {}; Object.keys(G.v || {}).forEach(k => { const r = G.v[k]; v[k] = Array.isArray(r) && typeof r[0] === 'number' && r.length === 2 ? rnd(r[0], r[1]) : Array.isArray(r) ? r[Math.floor(Math.random() * r.length)] : r; });
+    const ev = (e, o) => Function(...Object.keys(o), 'return (' + e + ')')(...Object.values(o));
+    Object.keys(G.qv || {}).forEach(k => { try { v[k] = ev(G.qv[k], v); } catch (e) {} });
+    if (G.ok && tries < 80) { try { if (!ev(G.ok, v)) return genQ(G, tries + 1); } catch (e) {} }
+    let ans; try { ans = G.ans ? ev(G.ans, v) : undefined; } catch (e) { ans = '?'; }
+    const fill = s => String(s || '').replace(/\{=([^}]+)\}/g, (m, e) => { try { return ev(e, Object.assign({ ans }, v)); } catch (x) { return m; } }).replace(/\{(\w+)\}/g, (m, k) => k === 'ans' ? ans : v[k] != null ? v[k] : m);
+    const a = G.a ? fill(G.a) : String(ans), q = { q: fill(G.q), a: G.a ? a : [String(ans), String(ans) + (G.unit || '')], ex: fill(G.ex || '정답: {ans}' + (G.unit || '')) };
+    if (G.chs) { const c = [a]; G.chs.map(fill).forEach(x => { if (c.indexOf(x) < 0) c.push(x); }); q.ch = c; }
+    return q; }
+  /* 하루 문제 차례: ② 문제(숫자 바꾼 문제는 새로 만들어요) 다음에 ③ 퀴즈 */
+  function buildSeq(g, onlyWrong) { const W = (St()[g.key] || {}).wrong || [], out = [];
+    const add = (arr, ph) => arr.forEach((it, j) => { const k = ph + j; if (onlyWrong && W.indexOf(k) < 0) return;
+      if (it.gen) { for (let n = 0; n < (it.gen.n || 1); n++) out.push(Object.assign({ k: k + '.' + n, base: k, ph }, genQ(it.gen))); } else out.push(Object.assign({ k, base: k, ph }, it)); });
+    add(g.p, 'p'); add(g.z, 'z'); return out; }
 
   const norm = s => String(s == null ? '' : s).replace(/\s+/g, '').replace(/[.,!?。'"‘’“”]/g, '').toLowerCase();
   const isRight = (q, v) => { const A = (Array.isArray(q.a) ? q.a : [q.a]).map(norm), x = norm(v); if (!x) return false; if (A.includes(x)) return true;
     const nx = parseFloat(x.replace(/[^0-9.\-]/g, '')); return !isNaN(nx) && /^-?[0-9.]+[가-힣a-z]*$/.test(x) && A.some(a => { const na = parseFloat(a.replace(/[^0-9.\-]/g, '')); return !isNaN(na) && na === nx && /^-?[0-9.]+[가-힣a-z]*$/.test(a); }); };
+  const ddate = d => String(d || '').replace(/^(\d+)-0?(\d+)-0?(\d+)$/, '$2월 $3일');
 
   /* ---------- 목록 ---------- */
-  function listView() { const L = sets().reverse();
+  function listView() { const G = stages(), byS = {}; G.forEach(g => (byS[g.s.id] = byS[g.s.id] || []).push(g));
     let h = '<button class="back" data-go="start">← 처음 화면</button><section class="panel dadpanel"><h2>👨‍👧 아빠와 복습</h2>'
-      + '<p class="lead">아빠와 함께 공부한 내용을 다시 풀어 봐요. <b>공부한 문제 그대로</b> 한 번, <b>비슷한 문제</b>로 한 번 더! 틀린 문제는 다음에 또 나와요.</p>';
-    if (!L.length) h += '<div class="dadempty">📭 아직 복습할 내용이 없어요.<br>아빠가 오늘 공부한 내용을 보내 주면 여기에 복습 문제가 생겨요.</div>';
-    else h += '<div class="dadlist">' + L.map(s => { const b = SB(s.subj), st = status(s), r = St()[s.id];
-      return '<button class="dadset ' + st.k + '" style="--u:' + b[1] + '" data-go="dad:' + s.i + '"><span class="dadmk">' + b[2] + '</span><span class="dadtt"><small>' + b[0] + ' · ' + String(s.d || '').replace(/^(\d+)-0?(\d+)-0?(\d+)$/, '$2월 $3일') + (s.src ? ' · ' + H(s.src) : '') + '</small><b>' + H(s.title) + '</b><span class="dadst">' + st.t + ' · 문제 ' + s.items.length + '개' + (r ? ' · 지난번 ' + r.right + '/' + r.n : '') + '</span></span><span class="dadgo">▶</span></button>'; }).join('') + '</div>';
+      + '<p class="lead">아빠와 공부한 다음 날에는 <b>학습지 문제</b>, 그다음 날에는 <b>숫자를 바꾼 문제</b>를 풀어요. 하루에 ① 개념 확인 → ② 문제 풀기 → ③ 관련 퀴즈 순서예요.</p>';
+    const L = sets().slice().reverse();
+    if (!L.length) h += '<div class="dadempty">📭 아직 복습할 내용이 없어요.<br>아빠가 공부한 내용을 보내 주면 다음 날부터 복습이 생겨요.</div>';
+    else h += '<div class="dadlist">' + L.map(s => { const b = SB(s.subj);
+      return '<div class="dadgrpset" style="--u:' + b[1] + '"><div class="dadgh"><span class="dadmk">' + b[2] + '</span><span class="dadtt"><small>' + b[0] + ' · ' + ddate(s.d) + ' 아빠와 공부' + (s.src ? ' · ' + H(s.src) : '') + '</small><b>' + H(s.title) + '</b></span></div>'
+        + (byS[s.id] || []).map(g => { const st = status(g), r = St()[g.key];
+          return '<button class="dadset ' + st.k + '" style="--u:' + b[1] + '"' + (st.k === 'lock' ? ' disabled' : ' data-go="dad:' + g.i + '"') + '><span class="dadtt"><b>' + (g.lab || '복습') + '</b><span class="dadst">' + (st.k === 'lock' ? '🔒 ' : st.k === 'done' ? '✅ ' : '') + st.t + ' · 문제 ' + buildSeq(g).filter(q => q.ph === 'p').length + ' + 퀴즈 ' + g.z.length + (r ? ' · 지난번 ' + r.right + '/' + r.n : '') + '</span></span><span class="dadgo">' + (st.k === 'lock' ? '🔒' : '▶') + '</span></button>'; }).join('') + '</div>'; }).join('') + '</div>';
     show(h + '</section>'); }
 
-  /* ---------- 문제 풀기 ---------- */
+  /* ---------- ① 개념 확인 → ② 문제 → ③ 퀴즈 ---------- */
   let D = null;
-  function startSet(i, onlyWrong) { const s = sets()[i]; if (!s) return listView(); D = { s, qs: buildSeq(s, onlyWrong), i: 0, right: 0, wrong: new Set(), again: [], onlyWrong }; if (!D.qs.length) return listView(); try { sfx('start'); } catch (e) {} draw(); }
-  function draw() { const q = D.qs[D.i], b = SB(D.s.subj), N = D.qs.length;
-    let h = '<button class="back" data-go="dad">← 아빠와 복습</button><div class="meter">' + (D.i + 1) + ' / ' + N + '</div><div class="bar"><i style="width:' + (D.i / N * 100) + '%"></i></div>'
-      + '<section class="panel dadq" style="--u:' + b[1] + '"><p class="dadtag">' + q.tag + (q.again ? ' · 🔁 한 번 더' : '') + '</p><div class="dadqt">' + T(q.q) + '</div>' + (q.img ? '<img class="dadimg" src="' + q.img + '" alt="문제 그림">' : '');
+  const STEP = ph => ph === 'p' ? '② 문제 풀기' : '③ 관련 퀴즈';
+  function conceptView(i, onlyWrong) { const g = stages()[i]; if (!g || !isOpen(g)) return listView(); const C = g.s.concept || [], b = SB(g.s.subj);
+    if (!C.length || onlyWrong) return startSet(i, onlyWrong);
+    const seq = buildSeq(g), np = seq.filter(q => q.ph === 'p').length, nz = seq.length - np;
+    show('<button class="back" data-go="dad">← 아빠와 복습</button><section class="panel dadq dadcon" style="--u:' + b[1] + '"><p class="dadtag">① 개념 확인 · ' + H(g.lab || '') + '</p><h2>' + H(g.s.title) + '</h2>'
+      + '<div class="dadsteps"><span class="on">① 개념 확인</span><span>② 문제 ' + np + '개</span><span>③ 퀴즈 ' + nz + '개</span></div>'
+      + C.map((c, k) => '<div class="dadcc"><b><span>' + (k + 1) + '</span>' + R(c.t) + '</b><div>' + R(c.h) + '</div></div>').join('')
+      + '<div class="row center" style="margin-top:14px"><button class="btn main" id="dad-go">✅ 개념 확인했어요 → 문제 풀기</button></div></section>');
+    document.getElementById('dad-go').onclick = () => startSet(i, false); try { window.scrollTo(0, 0); } catch (e) {} }
+  function startSet(i, onlyWrong) { const g = stages()[i]; if (!g) return listView(); D = { g, s: g.s, qs: buildSeq(g, onlyWrong), i: 0, right: 0, wrong: new Set(), onlyWrong }; if (!D.qs.length) return listView(); try { sfx('start'); } catch (e) {} draw(); }
+  function draw() { const q = D.qs[D.i], b = SB(D.s.subj), same = D.qs.filter(x => x.ph === q.ph), idx = same.indexOf(q) + 1;
+    let h = '<button class="back" data-go="dad">← 아빠와 복습</button><div class="meter">' + STEP(q.ph) + ' · ' + idx + ' / ' + same.length + '</div><div class="bar"><i style="width:' + (D.i / D.qs.length * 100) + '%"></i></div>'
+      + '<section class="panel dadq' + (q.ph === 'z' ? ' dadquiz' : '') + '" style="--u:' + b[1] + '"><p class="dadtag">' + (q.ph === 'p' ? (D.g.n === 2 ? '🔁 숫자를 바꾼 문제' : '📘 학습지 문제') : '💡 관련 퀴즈') + '</p><div class="dadqt">' + R(q.q) + '</div>' + (q.img ? '<img class="dadimg" src="' + q.img + '" alt="문제 그림">' : '');
+    const sym = q.ch && q.ch.every(c => /^[<>=]$/.test(c));
     if (q.ox) h += '<div class="choices dadch">' + ['⭕ 맞아요', '❌ 틀려요'].map((c, k) => '<button class="choice" data-dadc="' + (k ? 'X' : 'O') + '">' + c + '</button>').join('') + '</div>';
-    else if (q.ch && q.ch.length) h += '<div class="choices dadch">' + shf(q.ch.slice()).map(c => '<button class="choice" data-dadc="' + H(c) + '">' + H(c) + '</button>').join('') + '</div>';
+    else if (q.ch && q.ch.length) h += '<div class="choices dadch' + (sym ? ' dadsym' : '') + '">' + (sym ? ['>', '=', '<'] : shf(q.ch.slice())).map(c => '<button class="choice" data-dadc="' + H(c) + '">' + R(c) + '</button>').join('') + '</div>';
     else { const num = (Array.isArray(q.a) ? q.a : [q.a]).every(a => /^-?[0-9.,/ ]+[가-힣a-z]*$/.test(String(a))); h += '<div class="dadin"><input id="dad-ans" class="rdin" ' + (num ? 'inputmode="decimal"' : 'inputmode="text" lang="ko"') + ' autocomplete="off" placeholder="답을 적어요" enterkeyhint="done"><button class="btn main" id="dad-ok">확인</button></div>'; }
     h += '<div id="dad-fb"></div></section>'; show(h);
     const inp = document.getElementById('dad-ans'); if (inp) { const go = () => answer(inp.value); document.getElementById('dad-ok').onclick = go; inp.onkeydown = e => { if (e.key === 'Enter') go(); }; setTimeout(() => { try { inp.focus(); } catch (e) {} }, 50); }
     document.querySelectorAll('[data-dadc]').forEach(bt => bt.onclick = () => answer(bt.dataset.dadc, bt)); }
-  function answer(v, btn) { const q = D.qs[D.i], fb = document.getElementById('dad-fb'); if (!fb || fb.dataset.done) return; fb.dataset.done = 1;
+  function answer(v, btn) { const q = D.qs[D.i], fb = document.getElementById('dad-fb'); if (!fb || fb.dataset.done) return;
+    const inp = document.getElementById('dad-ans'); if (inp && !String(v).trim()) { fb.innerHTML = '<p class="dadwarn">답을 먼저 적어 주세요.</p>'; return; }
+    fb.dataset.done = 1;
     const ok = q.ox ? norm(v) === norm(q.a) : isRight(q, v);
     document.querySelectorAll('[data-dadc]').forEach(b => { b.disabled = true; const c = q.ox ? b.dataset.dadc === norm(q.a).toUpperCase() : isRight(q, b.dataset.dadc); if (c) b.classList.add('ok'); else if (b === btn) b.classList.add('no'); });
-    const inp = document.getElementById('dad-ans'); if (inp) inp.disabled = true;
-    if (ok) { if (!q.again) D.right++; try { sfx('drop'); } catch (e) {} } else { D.wrong.add(q.k); if (!q.again) D.again.push(Object.assign({}, q, { again: 1 })); try { sfx('nope'); } catch (e) {} }
-    const A = Array.isArray(q.a) ? q.a[0] : q.a;
-    fb.innerHTML = '<div class="dadfb ' + (ok ? 'ok' : 'no') + '"><b>' + (ok ? '🎉 정답이에요!' : '🤔 아쉬워요. 정답은 ‘' + H(q.ox ? (norm(A) === 'o' ? '맞아요' : '틀려요') : A) + '’') + '</b>' + (q.ex ? '<p>' + T(q.ex) + '</p>' : '') + '</div><div class="row center"><button class="btn main" id="dad-next">' + (D.i + 1 < D.qs.length || D.again.length ? '다음 문제 ▶' : '결과 보기') + '</button></div>';
+    if (inp) inp.disabled = true;
+    if (ok) { D.right++; try { sfx('drop'); } catch (e) {} } else { D.wrong.add(q.base); try { sfx('nope'); } catch (e) {} }
+    const A = Array.isArray(q.a) ? q.a[0] : q.a, last = D.i + 1 >= D.qs.length, nextPh = !last && D.qs[D.i + 1].ph !== q.ph;
+    fb.innerHTML = '<div class="dadfb ' + (ok ? 'ok' : 'no') + '"><b>' + (ok ? '🎉 정답이에요!' : '🤔 아쉬워요. 정답은 ‘' + (q.ox ? (norm(A) === 'o' ? '맞아요' : '틀려요') : R(A)) + '’') + '</b>' + (q.ex ? '<p>' + R(q.ex) + '</p>' : '') + '</div><div class="row center"><button class="btn main" id="dad-next">' + (last ? '결과 보기' : nextPh ? '③ 관련 퀴즈로 ▶' : '다음 문제 ▶') + '</button></div>';
     document.getElementById('dad-next').onclick = next; }
-  function next() { D.i++; if (D.i >= D.qs.length && D.again.length) { D.qs = D.qs.concat(D.again); D.again = []; }   /* 틀린 문제는 끝에 한 번 더 */
-    if (D.i < D.qs.length) return draw(); finish(); }
-  function finish() { const n = D.qs.filter(q => !q.again).length, s = D.s, R = St(), old = R[s.id] || {};
+  function next() { const prev = D.qs[D.i]; D.i++; if (D.i >= D.qs.length) return finish();
+    if (D.qs[D.i].ph !== prev.ph) { const nz = D.qs.filter(x => x.ph === 'z').length, b = SB(D.s.subj);
+      show('<section class="panel result dadres" style="--u:' + b[1] + '"><div class="big">✏️</div><h2>② 문제 풀기 끝!</h2><p>이제 방금 푼 문제와 관련된 <b>퀴즈 ' + nz + '개</b>만 풀면 오늘 복습 끝이에요.</p><div class="row center"><button class="btn main" id="dad-z">③ 관련 퀴즈 시작 ▶</button></div></section>');
+      document.getElementById('dad-z').onclick = draw; return; }
+    draw(); }
+  function finish() { const n = D.qs.length, g = D.g, s = D.s, R0 = St(), old = R0[g.key] || {};
     const wrong = D.onlyWrong ? (old.wrong || []).filter(k => D.wrong.has(k)) : [...D.wrong];
-    R[s.id] = { d: today(), n, right: D.right, wrong, cnt: (old.cnt || 0) + 1 }; try { persist(); } catch (e) {} try { grantGame(); } catch (e) {}
-    const all = D.right === n;
-    show('<section class="panel result dadres"><div class="budcheer">' + BUD('cheer', 'happy') + '</div><h2>' + (all ? '🌟 모두 맞혔어요!' : '복습 끝! 잘했어요') + '</h2><p><b>' + H(s.title) + '</b><br>' + n + '문제 중 <b>' + D.right + '문제</b>를 처음에 맞혔어요.'
-      + (wrong.length ? '<br>틀린 문제 ' + wrong.length + '개는 다음에 <b>‘틀린 문제만 다시’</b>로 또 풀어 봐요.' : '<br>아빠에게 자랑해요! 👏') + '</p><div class="row center">'
-      + (wrong.length ? '<button class="btn sun" data-go="dad:' + s.i + ':w">🔁 틀린 문제만 다시</button>' : '') + '<button class="btn main" data-go="dad">목록으로</button><button class="back" data-go="start">🏠 처음 화면</button></div></section>'); }
+    R0[g.key] = { d: today(), n, right: D.right, wrong, cnt: (old.cnt || 0) + 1 }; try { persist(); } catch (e) {} try { grantGame(); } catch (e) {}
+    const all = D.right === n, nx = stages().find(x => x.s.id === s.id && x.n === g.n + 1);
+    show('<section class="panel result dadres"><div class="budcheer">' + BUD('cheer', 'happy') + '</div><h2>' + (all ? '🌟 모두 맞혔어요!' : '오늘 복습 끝! 잘했어요') + '</h2><p><b>' + H(s.title) + '</b>' + (g.lab ? ' · ' + H(g.lab) : '') + '<br>' + n + '문제 중 <b>' + D.right + '문제</b>를 맞혔어요.'
+      + (wrong.length ? '<br>틀린 문제 ' + wrong.length + '개는 <b>‘틀린 문제만 다시’</b>로 또 풀어 봐요.' : '<br>아빠에게 자랑해요! 👏') + (nx && !isOpen(nx) ? '<br>📅 ' + (left(nx) === 1 ? '내일' : left(nx) + '일 뒤') + '은 <b>' + H(nx.lab) + '</b>가 열려요.' : '') + '</p><div class="row center">'
+      + (wrong.length ? '<button class="btn sun" data-go="dad:' + g.i + ':w">🔁 틀린 문제만 다시</button>' : '') + '<button class="btn main" data-go="dad">목록으로</button><button class="back" data-go="start">🏠 처음 화면</button></div></section>'); }
 
   /* ---------- 길 잇기 ---------- */
-  const _ri = routeInner; routeInner = function (v, a, b) { if (v === 'dad') { VIEW = 'dad'; if (a === undefined || a === '' || a === null) return listView(); return startSet(+a, b === 'w'); } return _ri.apply(this, arguments); };
+  const _ri = routeInner; routeInner = function (v, a, b) { if (v === 'dad') { VIEW = 'dad'; if (a === undefined || a === '' || a === null) return listView(); return conceptView(+a, b === 'w'); } return _ri.apply(this, arguments); };
 
-  /* ---------- 처음 화면 배치 ---------- */
+  /* ---------- 처음 화면 ---------- */
   const _st = start; start = function () { const r = _st.apply(this, arguments);
     try { if (!CURSUBJ) { const nw = $app.querySelector('.nwbanner'), wy = $app.querySelector('.whybanner');
         let duo = $app.querySelector('.duo'); if (nw && wy && !duo) { duo = document.createElement('div'); duo.className = 'duo'; nw.parentNode.insertBefore(duo, nw); duo.appendChild(nw); duo.appendChild(wy); }
         const pr = $app.querySelector('.pairrow'), at = duo || nw || wy; if (pr && at) at.insertAdjacentElement('afterend', pr);
-        /* 두 칸 카드는 짧은 글로 */
         if (duo) { const k = duo.querySelector('.nwbk'); if (k) k.textContent = '📰 오늘의 이슈'; }
         if (pr) { const rb = pr.querySelector('[data-go="read"]'), tb = pr.querySelector('[data-go="top"]'), dsc = b => b && b.querySelector('span:nth-child(2)>span');
           if (dsc(rb)) dsc(rb).textContent = '지금까지 ' + ((STATE.reads || []).length) + '권'; if (rb) { const t = rb.querySelector('b'); if (t) t.textContent = '📚 읽은 책 꽂기'; }
           if (dsc(tb)) { const fin = /🏅/.test(tb.textContent); dsc(tb).textContent = fin ? '오늘 도전 완료 🏅' : '오늘의 2문제'; } if (tb) { const t = tb.querySelector('b'); if (t) t.textContent = '🧠 하루 두 문제'; } }
-        /* 오늘의 학습: 새로 들어온(또는 다시 볼) 복습 묶음이 있으면 아빠와 복습이 올라와요 */
-        const g = $app.querySelector('.todaygrid'); if (g && !g.querySelector('.dadtoday')) { const L = sets(), p = L.find(x => status(x).k !== 'done'), dn = L.filter(x => (St()[x.id] || {}).d === today() && status(x).k === 'done').pop(), s = p || dn;
-          if (s) { const st = status(s), did = !p; g.insertAdjacentHTML(did ? 'beforeend' : 'afterbegin', '<button class="todaycard dadtoday' + (did ? ' did' : '') + '" style="--u:#E0457B" data-go="dad:' + s.i + (st.k === 'redo' ? ':w' : '') + '"><span class="tmark">👨‍👧</span><span class="tt"><b>아빠와 복습</b><span class="tw">' + SB(s.subj)[0] + ' · ' + H(s.title) + '</span><span class="tl">' + (did ? '오늘 복습 완료!' : st.k === 'redo' ? '틀린 문제 ' + (St()[s.id].wrong.length) + '개 다시 풀기' : '공부한 문제 + 비슷한 문제') + '</span></span>' + (did ? '<span class="tdone" role="img" aria-label="오늘 완료">완료</span>' : '<span class="tgo" aria-hidden="true">▶</span>') + '</button>'); } }
-        /* 과목 목록에 ‘아빠와 복습’ 과목 */
-        const subs = $app.querySelectorAll('.subjcard'); if (subs.length && !$app.querySelector('.dadsubj')) { const L = sets(), done = L.filter(x => status(x).k === 'done').length, p = pending();
-          subs[subs.length - 1].insertAdjacentHTML('afterend', '<button class="grade subjcard dadsubj" style="--u:#E0457B" data-go="dad"><span class="gnum budbox"><span style="font-size:2rem">👨‍👧</span></span><span class="gtxt"><b>아빠와 복습</b><span>아빠와 공부한 문제 그대로, 비슷한 문제로 한 번 더</span><span class="nb">복습 묶음 ' + done + ' / ' + L.length + '개' + (p ? ' · 새 복습 ' + p + '개' : '') + '</span><span class="gbar"><i style="width:' + (L.length ? done / L.length * 100 : 0) + '%"></i></span></span></button>'); }      } } catch (e) {}
+        /* 오늘의 학습: 열린 날의 복습 중 아직 안 한 것 (했으면 ‘완료’) */
+        const g = $app.querySelector('.todaygrid'); if (g && !g.querySelector('.dadtoday')) { const L = stages().filter(isOpen), p = L.find(x => !St()[x.key]), dn = L.filter(x => (St()[x.key] || {}).d === today()).pop(), x = p || dn;
+          if (x) { const did = !p, seq = buildSeq(x), np = seq.filter(q => q.ph === 'p').length;
+            g.insertAdjacentHTML(did ? 'beforeend' : 'afterbegin', '<button class="todaycard dadtoday' + (did ? ' did' : '') + '" style="--u:#E0457B" data-go="dad:' + x.i + '"><span class="tmark">👨‍👧</span><span class="tt"><b>아빠와 복습</b><span class="tw">' + SB(x.s.subj)[0] + ' · ' + H(x.s.title) + '</span><span class="tl">' + (did ? '오늘 복습 완료!' : H(x.lab) + ' · 개념 → 문제 ' + np + ' → 퀴즈 ' + (seq.length - np)) + '</span></span>' + (did ? '<span class="tdone" role="img" aria-label="오늘 완료">완료</span>' : '<span class="tgo" aria-hidden="true">▶</span>') + '</button>'); } }
+        const subs = $app.querySelectorAll('.subjcard'); if (subs.length && !$app.querySelector('.dadsubj')) { const L = stages().filter(isOpen), done = L.filter(x => St()[x.key]).length, p = pending();
+          subs[subs.length - 1].insertAdjacentHTML('afterend', '<button class="grade subjcard dadsubj" style="--u:#E0457B" data-go="dad"><span class="gnum budbox"><span style="font-size:2rem">👨‍👧</span></span><span class="gtxt"><b>아빠와 복습</b><span>개념 확인 → 문제 풀기 → 관련 퀴즈</span><span class="nb">복습 ' + done + ' / ' + L.length + '번 했어요' + (p ? ' · 오늘 할 복습 ' + p + '개' : '') + '</span><span class="gbar"><i style="width:' + (L.length ? done / L.length * 100 : 0) + '%"></i></span></span></button>'); } } } catch (e) {}
     return r; };
 
   const css = document.createElement('style');
-  css.textContent = '.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.duo>button{margin:0!important;min-width:0;grid-template-columns:1fr!important;align-content:start;gap:6px!important;padding:8px 8px 10px!important;position:relative}'
+  css.textContent = '.dvbars{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}.dvbar{display:flex;border:2.5px solid #2B2520;border-radius:6px;overflow:hidden}.dvbar i{width:26px;height:26px;border-right:2px solid #2B2520;background:#fff}.dvbar i:last-child{border-right:0}.dvbar i.on{background:#F4A15D}'
+    + '.dvgrp{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}.dvgrp .cap{display:inline-flex;gap:3px;padding:4px 6px;border:2px solid #2B2520;border-radius:999px;background:#FFF4E6}.dvgrp .one{display:inline-flex}.dvgrp i{width:16px;height:16px;border-radius:50%;border:2px solid #2B2520;background:#fff}.dvgrp i.on{background:#F4A15D}'
+    + '.dvpie{display:block;width:96px;height:96px;margin:8px auto}.dvline{display:block;width:100%;max-width:360px;margin:8px auto}'
+    + '.dvfr{display:inline-flex;align-items:center;gap:2px;vertical-align:middle;margin:0 2px}.dvfr>b{font-size:1.05em}.dvfq{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;font-size:.82em}.dvfq i{font-style:normal;padding:0 2px}.dvfq i:first-child{border-bottom:1.6px solid currentColor}'
+    + '.dadcon h2{margin:2px 0 10px}.dadcc{border:2px solid #F2D9A6;background:#FFF9EC;border-radius:14px;padding:10px 12px;margin:10px 0;line-height:1.75;word-break:keep-all}.dadcc>b{display:flex;align-items:center;gap:8px;font-size:1.05rem;margin-bottom:4px}.dadcc>b span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--u);color:#fff;font-size:.85rem;flex:none}'
+    + '.dadsteps{display:flex;gap:6px;margin:4px 0 8px}.dadsteps span{flex:1;text-align:center;font-weight:800;font-size:.85rem;padding:6px 4px;border-radius:999px;background:#F1F2F6;color:#6b7280}.dadsteps span.on{background:var(--u);color:#fff}'
+    + '.dadquiz{border-style:dashed}.dadwarn{color:#D9534F;font-weight:800;margin:8px 0 0}'
+    + '.dadempty{margin:14px 0;padding:18px;border-radius:14px;background:#F4F6FB;text-align:center;line-height:1.7}.dadlist{display:grid;gap:12px;margin-top:12px}.dadgrpset{border:2px solid var(--u);border-radius:16px;padding:10px;display:grid;gap:8px;background:#fff}.dadgh{display:flex;align-items:center;gap:10px}'
+    + '.dadset{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border-radius:14px;border:2px solid var(--u);background:#fff;box-shadow:0 3px 0 var(--u);font:inherit;color:inherit;text-align:left;cursor:pointer}.dadset.new{background:#FFFBEA}.dadset.done{background:#F1FAF4}.dadset.lock{opacity:.55;box-shadow:none}'
+    + '.dadmk{min-width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--u);color:#fff;font-weight:900;font-size:.85rem}.dadtt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.dadtt b{font-size:1.02rem}.dadtt small{font-size:.8rem;color:#5b6378}.dadst{font-weight:700;color:var(--u)!important;font-size:.82rem}.dadgo{color:#1B2750;font-weight:900}'
+    + '.dadtag{font-size:.82rem;font-weight:800;color:var(--u);margin:0 0 6px}.dadqt{font-size:1.15rem;line-height:1.8;word-break:keep-all}.dadimg{display:block;max-width:100%;margin:10px auto;border-radius:10px}.dadin{display:flex;gap:8px;margin-top:14px}.dadin input{flex:1;min-width:0;font-size:1.15rem}'
+    + '.dadch .choice .dvfr{font-size:1.15em}.dadsym{grid-template-columns:repeat(3,1fr)!important}.dadsym .choice{font-size:1.6rem;font-weight:900}'
+    + '.dadch .choice.ok{background:#E3F6EA;border-color:#2FA36B}.dadch .choice.no{background:#FDE7E4;border-color:#E5533D}.dadfb{margin-top:12px;padding:12px;border-radius:12px;line-height:1.7}.dadfb.ok{background:#E3F6EA}.dadfb.no{background:#FDE7E4}.dadfb p{margin:6px 0 0}'
+    + '.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.duo>button{margin:0!important;min-width:0;grid-template-columns:1fr!important;align-content:start;gap:6px!important;padding:8px 8px 10px!important;position:relative}'
     + '.duo .nwthumb,.duo .whythumb{width:100%!important;height:auto!important;aspect-ratio:21/8;border-radius:8px!important}.duo .whystamp{display:none}.duo .nwbs,.duo .whybs,.duo .nwgo,.duo .whygo{display:none}.duo .nwbk,.duo .whybk{font-size:.7rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.duo b{font-size:.86rem!important;line-height:1.3!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}.duo .whybanner{padding-left:8px!important;border-radius:16px!important;box-shadow:0 3px 0 var(--k)!important}.duo .whybanner:active{box-shadow:0 1px 0 var(--k)!important}'
-    + '.pairrow{margin-top:0!important;margin-bottom:18px!important}.duo{margin-bottom:12px!important}.pairrow .lesson{padding:8px 10px 10px!important;gap:3px!important;min-height:0}.pairrow .lesson .n{padding:2px 8px!important;font-size:.68rem!important}.pairrow .lesson b{font-size:.9rem!important}.pairrow .lesson>span:nth-child(2)>span{font-size:.74rem!important}.pairrow .lesson .go{font-size:1.1rem!important;top:6px!important}.dadcard{width:100%;display:flex;align-items:center;gap:10px;margin:12px 0 4px;padding:12px 14px;border-radius:16px;border:2px solid #1B2750;background:linear-gradient(135deg,#FFF4D6,#FFE3EC);box-shadow:0 4px 0 #1B2750;font:inherit;color:inherit;text-align:left;cursor:pointer;touch-action:manipulation;position:relative}'
-    + '.dadcard:active{transform:translateY(2px);box-shadow:0 2px 0 #1B2750}.dadic{font-size:2rem}.dadtt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.dadtt b{font-size:1.05rem}.dadtt>span,.dadtt small{font-size:.8rem;color:#5b6378;line-height:1.4}.dadnew{position:absolute;top:-8px;right:10px;background:#E5533D;color:#fff;border-radius:999px;padding:2px 9px;font-size:.8rem;font-weight:800}.dadgo{color:#1B2750;font-weight:900}'
-    + '.dadempty{margin:14px 0;padding:18px;border-radius:14px;background:#F4F6FB;text-align:center;line-height:1.7}.dadlist{display:grid;gap:10px;margin-top:12px}.dadset{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border-radius:14px;border:2px solid var(--u);background:#fff;box-shadow:0 3px 0 var(--u);font:inherit;color:inherit;text-align:left;cursor:pointer}'
-    + '.dadset.done{opacity:.8}.dadset.new{background:#FFFBEA}.dadmk{min-width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--u);color:#fff;font-weight:900;font-size:.85rem}.dadst{font-weight:700;color:var(--u)!important}'
-    + '.dadtag{font-size:.82rem;font-weight:800;color:var(--u);margin:0 0 6px}.dadqt{font-size:1.15rem;line-height:1.7;word-break:keep-all}.dadimg{display:block;max-width:100%;margin:10px auto;border-radius:10px}.dadin{display:flex;gap:8px;margin-top:14px}.dadin input{flex:1;min-width:0;font-size:1.15rem}'
-    + '.dadch .choice.ok{background:#E3F6EA;border-color:#2FA36B}.dadch .choice.no{background:#FDE7E4;border-color:#E5533D}.dadfb{margin-top:12px;padding:12px;border-radius:12px;line-height:1.6}.dadfb.ok{background:#E3F6EA}.dadfb.no{background:#FDE7E4}.dadfb p{margin:6px 0 0}';
+    + '.pairrow{margin-top:0!important;margin-bottom:18px!important}.duo{margin-bottom:12px!important}.pairrow .lesson{padding:8px 10px 10px!important;gap:3px!important;min-height:0}.pairrow .lesson .n{padding:2px 8px!important;font-size:.68rem!important}.pairrow .lesson b{font-size:.9rem!important}.pairrow .lesson>span:nth-child(2)>span{font-size:.74rem!important}.pairrow .lesson .go{font-size:1.1rem!important;top:6px!important}';
   document.head.appendChild(css);
-  /* 새로 고침: 아빠와 복습을 보고 있었으면 복습 목록으로 */
   try { const o = JSON.parse(sessionStorage.getItem('e3-view') || 'null'); if (o && o.v === 'dad') listView(); else if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
 })();
 </script>
@@ -10271,7 +10373,7 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
     const b = mr.querySelector('.trbat'); b.onclick = () => { if (b.dataset.go2) return; b.dataset.go2 = 1; b.insertAdjacentHTML('beforeend', flyers2(FLY[bg] || FLY.hw, 9, 1)); b.classList.add('pop');
       setTimeout(() => { try { typeof route === 'function' ? route('trbox') : routeInner('trbox'); } catch (e) { routeInner('trbox'); } }, 420); }; }
   /* 박쥐·복습·기분이 한 줄에 들어가도록: 칸이 모자라면 기분 단추가 조금씩 작아져요 (박쥐가 밖으로 나가지 않게) */
-  css.textContent += '.moodrow:has(.trbat){min-width:0;overflow:visible}.moodrow:has(.trbat)>.moodbar{flex:0 1 auto;min-width:0}.moodrow:has(.trbat)>.moodbar>button{flex:0 1 38px;min-width:24px;width:auto!important;max-width:38px;overflow:hidden}'
+  css.textContent += '.moodrow:has(.trbat){min-width:0;overflow:visible}.moodrow:has(.trbat)>.moodbar{flex:0 1 auto;min-width:0}.moodrow:has(.trbat)>.moodbar>button{flex:0 0 auto;width:clamp(28px,8.8vw,36px)!important;height:clamp(28px,8.8vw,36px)!important;padding:0!important;border-radius:50%!important;display:grid;place-items:center;font-size:1.18rem;line-height:1;overflow:visible}.moodrow:has(.trbat)>.moodbar>button.on{transform:scale(1.08)}'
     + '.trrv{position:relative;flex:none;margin:0 8px 0 0;padding:7px 10px;border:2px solid #E0457B;border-radius:12px;background:#FFF0F5;box-shadow:0 3px 0 #E0457B;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.trrv:active{transform:translateY(2px);box-shadow:none}'
     + '.trrv .ic{display:block;font-family:Jua,"Gowun Dodum",sans-serif;font-size:1.08rem;line-height:1;letter-spacing:.04em;color:#C2185B}'
     + '.trrv.done{border-color:#2E8B57;background:#2FA36B;box-shadow:0 3px 0 #1F7A47}.trrv.done .ic{color:#fff}'
