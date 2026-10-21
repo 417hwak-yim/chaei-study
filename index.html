@@ -8846,12 +8846,14 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
 
   /* ---------- 복습 상자 화면과 처음 화면 카드 ---------- */
   function counts(){ vocaSpread(); const R=RV(), d=TODAY(); return {v:vocaDue().length, vl:vocaSync().length, w:wrongDue().length, wa:R.wr.length, st:R.dn.steps===d, wk:!!R.wk[wkKey()], we:isWeekend(), vd:R.dn.voca===d, wd:R.dn.wrong===d}; }
+  /* 오늘 끝낸 복습은 ‘할 복습’ 개수에서 빼요 */
+  function fixDue(a){ return a.map(x=>{ if(x[6]) x[4]=false; return x; }); }
   function items(){ const c=counts();
-    return [['voca','🔤','영어 낱말 복습',c.vl?(c.v?'오늘 '+Math.min(10,c.v)+'개 · 배운 낱말 '+c.vl+'개':'오늘 복습 끝! · 배운 낱말 '+c.vl+'개'):'낱말 만나기를 끝내면 열려요',c.v>0,'#E0457B',c.vd||(c.vl>0&&!c.v)],
+    return fixDue([['voca','🔤','영어 낱말 복습',c.vl?(c.v?'오늘 '+Math.min(10,c.v)+'개 · 배운 낱말 '+c.vl+'개':'오늘 복습 끝! · 배운 낱말 '+c.vl+'개'):'낱말 만나기를 끝내면 열려요',c.v>0,'#E0457B',c.vd||(c.vl>0&&!c.v)],
       ['wrong','🔁','틀린 문제 다시 풀기',c.wa?(c.w?'오늘 '+Math.min(10,c.w)+'개 · 노트에 '+c.wa+'개':'오늘 다시 풀 문제 없음 · 노트에 '+c.wa+'개'):'틀린 문제가 생기면 여기에 모여요',c.w>0,'#D9534F',c.wd||(c.wa>0&&!c.w)],
       ['steps','🧮','수학 풀이 과정',c.st?'오늘 연습 끝!':'식 세우기부터 답까지 3문제',!c.st,'#2FA36B',c.st],
       ['week','📝','주말 누적 평가',c.wk?'이번 주 평가 끝!':c.we?'이번 주에 배운 것 15문제':'토·일요일에 열려요',c.we&&!c.wk,'#8A5CF0',c.wk],
-      ['rep','👪','부모님 리포트','최근 7일 공부 기록',false,'#1B2750']]; }
+      ['rep','👪','부모님 리포트','최근 7일 공부 기록',false,'#1B2750']]); }
   function boxView(msg){ VIEW='rv'; const it=items();
     let h='<button class="back" data-go="start">← 처음 화면</button><section class="panel rvp"><h2>🧰 복습 상자</h2><p class="lead">배운 것을 잊기 전에 다시 만나요. 반짝이는 칸이 오늘 할 복습이에요.</p>'+(msg?'<p class="rvmsg">'+E(msg)+'</p>':'')
       +'<div class="rvgrid">'+it.map(x=>'<button class="rvitem'+(x[4]?' due':'')+(x[6]?' done':'')+'" style="--k:'+x[5]+'" data-go="rv:'+x[0]+'"'+(x[0]==='week'&&!counts().we?' disabled':'')+'><span class="rvic">'+x[1]+'</span><span><b>'+x[2]+'</b><small>'+x[3]+'</small></span>'+(x[6]?'<span class="rvdone">완료</span>':'')+'</button>').join('')+'</div>'
