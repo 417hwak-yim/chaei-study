@@ -9522,7 +9522,13 @@ const DADREV = [
   /* ---------- ① 개념 확인 → ② 문제 → ③ 퀴즈 ---------- */
   let D = null;
   const STEP = ph => ph === 'p' ? '② 문제 풀기' : '③ 관련 퀴즈';
-  function conceptView(i, onlyWrong) { const g = stages()[i]; if (!g || !isOpen(g)) return listView(); const C = g.s.concept || [], b = SB(g.s.subj);
+  /* 새로 고침해도 보던 자리로 돌아와요 (같은 탭에서만) */
+  const RK = 'dad-run';
+  const runSave = o => { try { sessionStorage.setItem(RK, JSON.stringify(o)); } catch (e) {} };
+  const runGet = () => { try { return JSON.parse(sessionStorage.getItem(RK) || 'null'); } catch (e) { return null; } };
+  const runClear = () => { try { sessionStorage.removeItem(RK); } catch (e) {} };
+  const saveD = (i, scr) => runSave({ gi: D.g.i, ow: !!D.onlyWrong, qs: D.qs, i, right: D.right, wrong: [...D.wrong], scr });
+  function conceptView(i, onlyWrong, rs) { const g = stages()[i]; if (!g || !isOpen(g)) return listView(); const C = g.s.concept || [], b = SB(g.s.subj);
     if (!C.length || onlyWrong) return startSet(i, onlyWrong);
     const seq = buildSeq(g), np = seq.filter(q => q.ph === 'p').length, nz = seq.length - np;
     show('<button class="back" data-go="dad">← 아빠와 복습</button><section class="panel dadq dadcon" style="--u:' + b[1] + '"><p class="dadtag">① 개념 확인 · ' + H(g.lab || '') + '</p><h2>' + H(g.s.title) + '</h2>'
@@ -9532,13 +9538,16 @@ const DADREV = [
         + '<div class="dadnext"><button type="button" class="btn" data-next="' + k + '">' + (k < C.length - 1 ? '알았어요! 다음 개념 ▶' : '알았어요! ✓') + '</button></div><p class="dadlockt">🔒 ' + k + '번을 다 보면 열려요</p></div>').join('')
       + '<div class="row center dadgo" style="margin-top:14px"><button class="btn main" id="dad-go">✅ 개념 확인했어요 → 문제 풀기</button></div></section>');
     const sec = document.querySelector('.dadcon'), cards = [...sec.querySelectorAll('.dadcc')];
+    const cst = () => runSave({ gi: i, scr: 'c', seen: cards.filter(c => c.classList.contains('seen')).map(c => +c.dataset.k), open: cards.map(c => [...c.querySelectorAll('.dadhide')].map((x, j) => x.classList.contains('open') ? j : -1).filter(j => j >= 0)) });
     /* 가린 네모를 다 열어야 '알았어요' 단추가 켜져요 */
     const check = cd => { const left = cd.querySelectorAll('.dadhide:not(.open)').length, nb = cd.querySelector('[data-next]'); nb.disabled = left > 0; nb.textContent = left ? '🔍 네모 ' + left + '개를 더 열어 보세요' : (+cd.dataset.k < cards.length - 1 ? '알았어요! 다음 개념 ▶' : '알았어요! ✓'); };
-    cards.forEach(cd => { cd.querySelectorAll('.dadhide').forEach(x => x.onclick = () => { if (cd.classList.contains('lock') || x.classList.contains('open')) return; x.classList.add('open'); x.setAttribute('aria-pressed', 'true'); try { sfx('ok'); } catch (e) {} check(cd); }); check(cd); });
+    cards.forEach(cd => { cd.querySelectorAll('.dadhide').forEach(x => x.onclick = () => { if (cd.classList.contains('lock') || x.classList.contains('open')) return; x.classList.add('open'); x.setAttribute('aria-pressed', 'true'); if (!x.dataset.rs) { try { sfx('ok'); } catch (e) {} } check(cd); cst(); }); check(cd); });
     sec.querySelectorAll('[data-next]').forEach(b => b.onclick = () => { const k = +b.dataset.next, cd = cards[k]; cd.classList.add('seen'); const nx = cards[k + 1];
       if (nx) { nx.classList.remove('lock'); nx.classList.add('opening'); setTimeout(() => { try { nx.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} }, 60); }
-      else { sec.classList.add('alldone'); setTimeout(() => { try { sec.querySelector('.dadgo').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); } });
-    document.getElementById('dad-go').onclick = () => startSet(i, false); try { window.scrollTo(0, 0); } catch (e) {} }
+      else { sec.classList.add('alldone'); setTimeout(() => { try { sec.querySelector('.dadgo').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); } cst(); });
+    if (rs && rs.scr === 'c') cards.forEach((cd, k) => { const hs = [...cd.querySelectorAll('.dadhide')]; ((rs.open || [])[k] || []).forEach(j => { const x = hs[j]; if (x) { x.dataset.rs = 1; x.click(); delete x.dataset.rs; } }); if ((rs.seen || []).includes(k)) { const nb = cd.querySelector('[data-next]'); if (nb && !nb.disabled) nb.click(); } });
+    else cst();
+    document.getElementById('dad-go').onclick = () => startSet(i, false); if (!rs) { try { window.scrollTo(0, 0); } catch (e) {} } }
   /* 개념 글: {{ }} 안은 네모로 가려 두었다가 누르면 열려요 */
   function RH(s) { const box = []; const t = String(s || '').replace(/\{\{([\s\S]+?)\}\}/g, (m, x) => { box.push(x); return 'ⓗ' + (box.length - 1) + 'ⓗ'; });
     return R(t).replace(/ⓗ(\d+)ⓗ/g, (m, k) => '<button type="button" class="dadhide" aria-pressed="false" aria-label="가려진 부분 열기"><span>' + R(box[+k]) + '</span></button>'); }
@@ -9550,7 +9559,7 @@ const DADREV = [
     if (q.ox) h += '<div class="choices dadch">' + ['⭕ 맞아요', '❌ 틀려요'].map((c, k) => '<button class="choice" data-dadc="' + (k ? 'X' : 'O') + '">' + c + '</button>').join('') + '</div>';
     else if (q.ch && q.ch.length) h += '<div class="choices dadch' + (sym ? ' dadsym' : '') + '">' + (sym ? ['>', '=', '<'] : shf(q.ch.slice())).map(c => '<button class="choice" data-dadc="' + H(c) + '">' + R(c) + '</button>').join('') + '</div>';
     else { const num = (Array.isArray(q.a) ? q.a : [q.a]).every(a => /^-?[0-9.,/ ]+[가-힣a-z]*$/.test(String(a))); h += '<div class="dadin"><input id="dad-ans" class="rdin" ' + (num ? 'inputmode="decimal"' : 'inputmode="text" lang="ko"') + ' autocomplete="off" placeholder="답을 적어요" enterkeyhint="done"><button class="btn main" id="dad-ok">확인</button></div>'; }
-    h += '<div id="dad-fb"></div></section>'; show(h);
+    h += '<div id="dad-fb"></div></section>'; show(h); saveD(D.i, 'q');
     const inp = document.getElementById('dad-ans'); if (inp) { const go = () => answer(inp.value); document.getElementById('dad-ok').onclick = go; inp.onkeydown = e => { if (e.key === 'Enter') go(); }; setTimeout(() => { try { inp.focus(); } catch (e) {} }, 50); }
     document.querySelectorAll('[data-dadc]').forEach(bt => bt.onclick = () => answer(bt.dataset.dadc, bt)); }
   function answer(v, btn) { const q = D.qs[D.i], fb = document.getElementById('dad-fb'); if (!fb || fb.dataset.done) return;
@@ -9562,13 +9571,15 @@ const DADREV = [
     if (ok) { D.right++; try { sfx('drop'); } catch (e) {} } else { D.wrong.add(q.base); try { sfx('nope'); } catch (e) {} }
     const A = Array.isArray(q.a) ? q.a[0] : q.a, last = D.i + 1 >= D.qs.length, nextPh = !last && D.qs[D.i + 1].ph !== q.ph;
     fb.innerHTML = '<div class="dadfb ' + (ok ? 'ok' : 'no') + '"><b>' + (ok ? '🎉 정답이에요!' : '🤔 아쉬워요. 정답은 ‘' + (q.ox ? (norm(A) === 'o' ? '맞아요' : '틀려요') : R(A)) + '’') + '</b>' + (q.ex ? '<p>' + R(q.ex) + '</p>' : '') + '</div><div class="row center"><button class="btn main" id="dad-next">' + (last ? '결과 보기' : nextPh ? '③ 관련 퀴즈로 ▶' : '다음 문제 ▶') + '</button></div>';
+    saveD(D.i + 1, nextPh ? 't' : 'q');
     document.getElementById('dad-next').onclick = next; }
   function next() { const prev = D.qs[D.i]; D.i++; if (D.i >= D.qs.length) return finish();
-    if (D.qs[D.i].ph !== prev.ph) { const nz = D.qs.filter(x => x.ph === 'z').length, b = SB(D.s.subj);
-      show('<section class="panel result dadres" style="--u:' + b[1] + '"><div class="big">✏️</div><h2>② 문제 풀기 끝!</h2><p>이제 방금 푼 문제와 관련된 <b>퀴즈 ' + nz + '개</b>만 풀면 오늘 복습 끝이에요.</p><div class="row center"><button class="btn main" id="dad-z">③ 관련 퀴즈 시작 ▶</button></div></section>');
-      document.getElementById('dad-z').onclick = draw; return; }
+    if (D.qs[D.i].ph !== prev.ph) return bridge();
     draw(); }
-  function finish() { const n = D.qs.length, g = D.g, s = D.s, R0 = St(), old = R0[g.key] || {};
+  function bridge() { { const nz = D.qs.filter(x => x.ph === 'z').length, b = SB(D.s.subj); saveD(D.i, 't');
+      show('<section class="panel result dadres" style="--u:' + b[1] + '"><div class="big">✏️</div><h2>② 문제 풀기 끝!</h2><p>이제 방금 푼 문제와 관련된 <b>퀴즈 ' + nz + '개</b>만 풀면 오늘 복습 끝이에요.</p><div class="row center"><button class="btn main" id="dad-z">③ 관련 퀴즈 시작 ▶</button></div></section>');
+      document.getElementById('dad-z').onclick = draw; } }
+  function finish() { runSave({ gi: D.g.i, scr: 'f' }); const n = D.qs.length, g = D.g, s = D.s, R0 = St(), old = R0[g.key] || {};
     const wrong = D.onlyWrong ? (old.wrong || []).filter(k => D.wrong.has(k)) : [...D.wrong];
     R0[g.key] = { d: today(), n, right: D.right, wrong, cnt: (old.cnt || 0) + 1 }; try { persist(); } catch (e) {} try { grantGame(); } catch (e) {}
     const all = D.right === n, nx = stages().find(x => x.s.id === s.id && x.n === g.n + 1);
@@ -9576,8 +9587,18 @@ const DADREV = [
       + (wrong.length ? '<br>틀린 문제 ' + wrong.length + '개는 <b>‘틀린 문제만 다시’</b>로 또 풀어 봐요.' : '<br>아빠에게 자랑해요! 👏') + (nx && !isOpen(nx) ? '<br>📅 ' + (left(nx) === 1 ? '내일' : left(nx) + '일 뒤') + '은 <b>' + H(nx.lab) + '</b>가 열려요.' : '') + '</p><div class="row center">'
       + (wrong.length ? '<button class="btn sun" data-go="dad:' + g.i + ':w">🔁 틀린 문제만 다시</button>' : '') + '<button class="btn main" data-go="dad">목록으로</button><button class="back" data-go="start">🏠 처음 화면</button></div></section>'); }
 
+  function resume(a, b) { if (a === undefined || a === null || a === '') return listView(); const gi = +a, g = stages()[gi], r = runGet();
+    if (!g || !isOpen(g)) return listView();
+    if (!r || r.gi !== gi) return conceptView(gi, b === 'w');
+    if (r.scr === 'f') return listView();
+    if (r.scr === 'c') return conceptView(gi, false, r);
+    D = { g, s: g.s, qs: r.qs || [], i: r.i || 0, right: r.right || 0, wrong: new Set(r.wrong || []), onlyWrong: !!r.ow };
+    if (!D.qs.length) return conceptView(gi, b === 'w');
+    if (D.i >= D.qs.length) return finish();
+    return r.scr === 't' ? bridge() : draw(); }
+
   /* ---------- 길 잇기 ---------- */
-  const _ri = routeInner; routeInner = function (v, a, b) { if (v === 'dad') { VIEW = 'dad'; if (a === undefined || a === '' || a === null) return listView(); return conceptView(+a, b === 'w'); } return _ri.apply(this, arguments); };
+  const _ri = routeInner; routeInner = function (v, a, b) { if (v === 'dad') { VIEW = 'dad'; runClear(); if (a === undefined || a === '' || a === null) return listView(); return conceptView(+a, b === 'w'); } return _ri.apply(this, arguments); };
 
   /* ---------- 처음 화면 ---------- */
   const _st = start; start = function () { const r = _st.apply(this, arguments);
@@ -9618,7 +9639,7 @@ const DADREV = [
     + '.duo .nwthumb,.duo .whythumb{width:100%!important;height:auto!important;aspect-ratio:21/8;border-radius:8px!important}.duo .whystamp{display:none}.duo .nwbs,.duo .whybs,.duo .nwgo,.duo .whygo{display:none}.duo .nwbk,.duo .whybk{font-size:.7rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.duo b{font-size:.86rem!important;line-height:1.3!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}.duo .whybanner{padding-left:8px!important;border-radius:16px!important;box-shadow:0 3px 0 var(--k)!important}.duo .whybanner:active{box-shadow:0 1px 0 var(--k)!important}'
     + '.pairrow{margin-top:0!important;margin-bottom:18px!important}.duo{margin-bottom:12px!important}.pairrow .lesson{padding:8px 10px 10px!important;gap:3px!important;min-height:0}.pairrow .lesson .n{padding:2px 8px!important;font-size:.68rem!important}.pairrow .lesson b{font-size:.9rem!important}.pairrow .lesson>span:nth-child(2)>span{font-size:.74rem!important}.pairrow .lesson .go{font-size:1.1rem!important;top:6px!important}';
   document.head.appendChild(css);
-  try { const o = JSON.parse(sessionStorage.getItem('e3-view') || 'null'); if (o && o.v === 'dad') listView(); else if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
+  try { const o = JSON.parse(sessionStorage.getItem('e3-view') || 'null'); if (o && o.v === 'dad') { VIEW = 'dad'; resume(o.a, o.b); } else if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
 })();
 </script>
 <!-- ===== 아빠와 복습 끝 ===== -->
@@ -10609,10 +10630,8 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
   const MSG = '오늘의 학습을 다 하면 열려요!';
   function read() {
     const tb = document.querySelector('#app .todaybox'); if (!tb) return null;
-    if (tb.classList.contains('alldone')) return true;
-    const m = /(\d+)\s*\/\s*(\d+)/.exec((tb.querySelector('h2') || tb).textContent || '');
-    if (m) return +m[1] >= +m[2];
-    return true; /* 오늘 할 학습이 없으면 열어 둬요 */
+    /* 오늘의 학습 목록에 보이는 카드(시계·아빠와 복습·최상위 수학 포함)를 모두 끝내야 열려요. 할 학습이 없으면 열어 둬요 */
+    return !tb.querySelector('.todaygrid > .todaycard:not(.did):not(.done):not(.rvcard)');
   }
   function toast(t) {
     let el = document.getElementById('rvltoast'); if (el) el.remove();
@@ -10629,8 +10648,6 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
   function deco() {
     const v = read(); if (v === null) return; set(v);
     document.querySelectorAll('#app .rvhome, #app .rvs-home, #app .todaycard.rvcard').forEach(x => x.classList.toggle('rvlock', !v));
-    /* 잠긴 복습 카드는 오늘의 학습 맨 아래로 */
-    if (!v) document.querySelectorAll('#app .todaycard.rvcard.rvlock').forEach(c => { const p = c.parentElement; if (p && p.lastElementChild !== c) p.appendChild(c); });
     document.querySelectorAll('.trrv').forEach(b => {
       b.classList.toggle('rvlock', !v);
       const ic = b.querySelector('.ic'); if (ic && !v) ic.textContent = '복습';
@@ -10678,5 +10695,46 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
 })();
 </script>
 <!-- ===== 도장 지도 아이콘 끝 ===== -->
+<!-- ===== 오늘의 학습 순서 시작 ===== -->
+<script>
+/* ===== 오늘의 학습 순서 (두 공부방) =====
+   아직 안 한 학습 → 🧰 복습 상자 → ✅ 끝낸 학습 순서로 보여요.
+   · 학습을 끝내면 그 카드는 복습 상자 아래로 내려가요.
+   · 위쪽 학습을 모두 끝내면 복습 상자가 맨 위에 남아요.
+   · 복습까지 끝내면 복습 상자는 오늘의 학습 상자 아래로 내려가요. */
+(function () {
+  const css = document.createElement('style');
+  css.textContent = '.todaygrid>.rvhome,.todaygrid>.rvs-home{margin:4px 0!important}'
+    + '.todaygrid>.tddiv{margin:8px 2px 0;font-size:.85rem;font-weight:800;color:var(--ok,#2E8B57);display:flex;align-items:center;gap:8px}.todaygrid>.tddiv::after{content:"";flex:1;height:1.5px;background:currentColor;opacity:.3}';
+  document.head.appendChild(css);
+  const isDone = c => c.classList.contains('did') || c.classList.contains('done');
+  function rvDone() {
+    try { const it = window.__rv && __rv.items ? __rv.items() : null; if (it && it.some(x => x[4])) return false; } catch (e) {}
+    const rc = document.querySelector('#app .todaycard.rvcard:not(.did)'); return !rc;
+  }
+  function arrange() {
+    const tb = document.querySelector('#app .todaybox'), g = tb && tb.querySelector('.todaygrid'); if (!g) return;
+    const box = document.querySelector('#app .rvhome, #app .rvs-home'); if (!box) return;
+    g.querySelectorAll(':scope > .tddiv').forEach(x => x.remove());
+    const cards = [...g.querySelectorAll(':scope > .todaycard')];
+    const rvc = cards.filter(c => c.classList.contains('rvcard') && !isDone(c));
+    const pend = cards.filter(c => !c.classList.contains('rvcard') && !isDone(c));
+    const done = cards.filter(c => isDone(c));
+    const frag = [];
+    pend.forEach(c => frag.push(c));
+    const finished = rvDone();
+    if (!finished) { frag.push(box); rvc.forEach(c => frag.push(c)); }
+    else rvc.forEach(c => frag.push(c));
+    if (done.length && frag.length) { const d = document.createElement('p'); d.className = 'tddiv'; d.textContent = '✅ 끝낸 학습 ' + done.length + '개'; frag.push(d); }
+    done.forEach(c => frag.push(c));
+    frag.forEach(x => g.appendChild(x));
+    if (finished && box.parentElement === g) tb.after(box);
+    else if (finished && box.previousElementSibling !== tb) tb.after(box);
+  }
+  { const _st = start; start = function () { const r = _st.apply(this, arguments); try { if (!CURSUBJ) { arrange(); setTimeout(arrange, 0); } } catch (e) {} return r; }; }
+  try { if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
+})();
+</script>
+<!-- ===== 오늘의 학습 순서 끝 ===== -->
 </body>
 </html>
