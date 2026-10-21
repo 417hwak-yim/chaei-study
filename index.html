@@ -10736,5 +10736,50 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
 })();
 </script>
 <!-- ===== 오늘의 학습 순서 끝 ===== -->
+<!-- ===== 낱말 힌트와 소리 시작 ===== -->
+<script>
+/* ===== 낱말 쓰기 힌트와 짧은 낱말 소리 (채이) =====
+   · 한글 낱말을 직접 쓰는 문제의 힌트: 글자 수 대신, 초성 위에 글자를 하나씩 채워 보여 줘요.
+     힌트 1: 첫 글자를 알려 줘요 (예: 정ㅅㄱ)
+     힌트 2: 마지막 글자만 남기고 채워 주고, 마지막 글자의 받침을 알려 줘요 (예: 정성ㄱ · 마지막 글자는 ‘가’에 받침 ‘ㄱ’)
+   · 짧은 한글 낱말(띄어쓰기 없는 8글자 이하)의 ‘소리 듣기’ 단추는 없애요. 문장·영어는 그대로 들을 수 있어요. */
+(function () {
+  const CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+  const JONG = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+  const isH = c => { const k = c.charCodeAt(0) - 0xAC00; return k >= 0 && k < 11172; };
+  const cho = c => CHO[Math.floor((c.charCodeAt(0) - 0xAC00) / 588)];
+  const jong = c => (c.charCodeAt(0) - 0xAC00) % 28;
+  const open = c => String.fromCharCode(c.charCodeAt(0) - jong(c));
+  const ro = j => j === 'ㄹ' ? '로' : '으로';
+  const JUNG = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
+  const jung = c => JUNG[Math.floor(((c.charCodeAt(0) - 0xAC00) % 588) / 28)];
+  const tail = c => jong(c) ? '‘' + open(c) + '’에 받침 ‘' + JONG[jong(c)] + '’을 붙여요' : '‘' + cho(c) + '’에 모음 ‘' + jung(c) + '’를 더해요 (받침 없음)';
+  function koHint(ans, n) {
+    const sy = [...ans], idx = sy.map((c, i) => isH(c) ? i : -1).filter(i => i >= 0);
+    const mask = r => sy.map((c, i) => isH(c) && !r.has(i) ? cho(c) : c).join('');
+    if (!idx.length) return null;
+    if (idx.length === 1) { const c = sy[idx[0]]; return n === 1 ? '‘' + cho(c) + '’' + ro(cho(c)) + ' 시작하는 한 글자예요. ' + (jong(c) ? '받침이 있어요.' : '받침이 없어요.') : '이 글자는 ' + tail(c) + '.'; }
+    if (n === 1) return '첫 글자는 ‘' + sy[idx[0]] + '’ → <b>' + mask(new Set([idx[0]])) + '</b>';
+    const last = idx[idx.length - 1];
+    return '거의 다 왔어요! <b>' + mask(new Set(idx.slice(0, -1))) + '</b> · 마지막 글자는 ' + tail(sy[last]) + '.';
+  }
+  try {
+    const _h = hintFor;
+    hintFor = function (q, n) {
+      try { if (q && q.t === 'w' && q.w && /[가-힣]/.test(String(q.w.en)) && !/[A-Za-z0-9]/.test(String(q.w.en))) { const t = koHint(String(q.w.en).trim(), n); if (t) return t; } } catch (e) {}
+      return _h.apply(this, arguments);
+    };
+  } catch (e) {}
+  /* 짧은 한글 낱말의 소리 듣기 단추 없애기 */
+  const short = t => { t = String(t || '').trim(); return /[가-힣]/.test(t) && !/[A-Za-z]/.test(t) && !/\s/.test(t) && t.length <= 8; };
+  function strip(root) {
+    (root || document).querySelectorAll('#app button.say[data-say]').forEach(b => { if (short(b.dataset.say)) { const p = b.parentElement; b.remove(); if (p && p !== document.getElementById('app') && !p.children.length && !p.textContent.trim()) p.remove(); } });
+  }
+  const app = document.getElementById('app');
+  if (app) new MutationObserver(() => strip()).observe(app, { childList: true, subtree: true });
+  strip();
+})();
+</script>
+<!-- ===== 낱말 힌트와 소리 끝 ===== -->
 </body>
 </html>
