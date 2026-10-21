@@ -8850,7 +8850,7 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
   function fixDue(a){ return a.map(x=>{ if(x[6]) x[4]=false; return x; }); }
   function items(){ const c=counts();
     return fixDue([['voca','🔤','영어 낱말 복습',c.vl?(c.v?'오늘 '+Math.min(10,c.v)+'개 · 배운 낱말 '+c.vl+'개':'오늘 복습 끝! · 배운 낱말 '+c.vl+'개'):'낱말 만나기를 끝내면 열려요',c.v>0,'#E0457B',c.vd||(c.vl>0&&!c.v)],
-      ['wrong','🔁','틀린 문제 다시 풀기',c.wa?(c.w?'오늘 '+Math.min(10,c.w)+'개 · 노트에 '+c.wa+'개':'오늘 다시 풀 문제 없음 · 노트에 '+c.wa+'개'):'틀린 문제가 생기면 여기에 모여요',c.w>0,'#D9534F',c.wd||(c.wa>0&&!c.w)],
+      ['wrong','🔁','틀린 문제 다시 풀기',c.wa?(c.wd?'오늘 복습 끝! · 노트에 '+c.wa+'개':c.w?'오늘 '+Math.min(10,c.w)+'개 · 노트에 '+c.wa+'개':'오늘 다시 풀 문제 없음 · 노트에 '+c.wa+'개'):'틀린 문제가 생기면 여기에 모여요',c.w>0,'#D9534F',c.wd||(c.wa>0&&!c.w)],
       ['steps','🧮','수학 풀이 과정',c.st?'오늘 연습 끝!':'식 세우기부터 답까지 3문제',!c.st,'#2FA36B',c.st],
       ['week','📝','주말 누적 평가',c.wk?'이번 주 평가 끝!':c.we?'이번 주에 배운 것 15문제':'토·일요일에 열려요',c.we&&!c.wk,'#8A5CF0',c.wk],
       ['rep','👪','부모님 리포트','최근 7일 공부 기록',false,'#1B2750']]); }
@@ -10139,18 +10139,7 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
   /* 처음 화면: 시간 표시, 다시 풀기 칸, 오늘의 학습 목록 기억 */
   function decorateHome() {
     const g = $app.querySelector('.todaygrid'); if (!g || g.dataset.flow) return; g.dataset.flow = 1;
-    /* 다시 풀기 칸 */
-    /* 서이: 복습 상자의 낱말 복습·수 세기 복습도 오늘의 학습 칸으로 (놓치지 않게) */
-    if (SEOI) try { const R = window.__rv, rv = R.RV(), n0 = new Date(), td = Math.floor(Date.UTC(n0.getFullYear(), n0.getMonth(), n0.getDate()) / 864e5), L = R.sync().length, D = R.due().length;
-      const card = (go, ic, name, tw, tl, did, col) => '<button class="todaycard rvcard' + (did ? ' did' : '') + '" style="--u:' + col + '" data-go="' + go + '"><span class="tmark">' + ic + '</span><span class="tt"><b>' + name + '</b><span class="tw">' + tw + '</span><span class="tl">' + tl + '</span></span>' + (did ? '<span class="tdone" role="img" aria-label="오늘 완료">완료</span>' : '<span class="tgo" aria-hidden="true">▶</span>') + '</button>';
-      let h = '';
-      if (L) { const did = rv.dn.word === td || !D; h += card('rv:word', '🗣️', '낱말 복습', did ? '오늘 몫을 끝냈어요' : '배운 낱말 ' + Math.min(6, D) + '개를 다시 만나요', did ? '한 번 더 해도 좋아요' : '잊기 전에 한 번 더!', did, '#E0457B'); }
-      { const did = rv.dn.num === td; h += card('rv:num', '🔢', '수 세기 복습', did ? '오늘 몫을 끝냈어요' : '수 세기·더하기·빼기 5문제', did ? '한 번 더 해도 좋아요' : '날마다 5문제', did, '#2FA36B'); }
-      g.insertAdjacentHTML('afterbegin', h); } catch (e) {}
-    else try { const R = window.__rv; let n = 0, lab = '', go = '';
-      if (R && R.wrongDue) { n = R.wrongDue().length; lab = '틀린 문제 다시 풀기'; go = 'tdrv:wrong'; }
-      else if (R && R.due) { n = R.due().length; lab = '낱말 복습'; go = 'tdrv:word'; }
-      if (n > 0) g.insertAdjacentHTML('afterbegin', '<button class="todaycard rvtoday" style="--u:#D9534F" data-go="' + go + '"><span class="tmark">🔁</span><span class="tt"><b>' + lab + '</b><span class="tw">전에 ' + (SEOI ? '배운 낱말' : '틀린 문제') + ' ' + Math.min(n, SEOI ? 6 : 10) + '개를 다시 만나요</span><span class="tl">잊기 전에 한 번 더! <span class="tmin">약 ' + (SEOI ? 3 : 5) + '분</span></span></span><span class="tgo" aria-hidden="true">▶</span></button>'); } catch (e) {}
+    /* 복습(틀린 문제 다시 풀기·낱말 복습·수 세기 복습)은 오늘의 학습 목록에 넣지 않아요. 아래 복습 상자에서만 해요 */
     /* 걸리는 시간 */
     let left = 0; const list = [];
     g.querySelectorAll('.todaycard').forEach(c => { if (c.classList.contains('resume') || c.classList.contains('rvtoday')) return; if (c.classList.contains('rvcard')) { const did = c.classList.contains('did'), m = SEOI ? 3 : 5; const tl = c.querySelector('.tl'); if (tl && !c.querySelector('.tmin')) tl.insertAdjacentHTML('beforeend', ' <span class="tmin">⏱ 약 ' + m + '분</span>'); if (!did) left += m; list.push({ go: c.dataset.go, name: nameOf(c), did }); return; } const n = nameOf(c); if (!n) return; const m = minOf(n), did = c.classList.contains('did') || c.classList.contains('done');
@@ -10711,7 +10700,7 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
   }
   /* 잠긴 동안은 복습 화면으로 가지 않아요 (리포트는 예외) */
   { const _ri = routeInner; routeInner = function (v, a) {
-      if (v === 'rv' && a !== 'rep' && !get()) { const r = _ri.call(this, 'start'); toast(MSG); return r; }
+      if (((v === 'rv' && a !== 'rep') || v === 'tdrv') && !get()) { const r = _ri.call(this, 'start'); toast(MSG); return r; }
       return _ri.apply(this, arguments); }; }
   /* 단추를 누르면 잠긴 경우 안내만 해요 */
   document.addEventListener('click', e => {
