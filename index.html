@@ -9777,7 +9777,55 @@ const DADREV = [
     {q:'[f:5/5]과 1은 같을까요?', ox:true, a:'O', ex:'1을 5칸으로 나눈 것 5칸 → 1 = [f:5/5]'},
     {q:'분모를 조각으로 셌으면 분자는 낱개로 세어도 될까요?', ox:true, a:'X', ex:'분모와 분자는 같은 것으로 세요. 조각이면 둘 다 조각!'},
     {q:'가분수를 대분수로 바꿀 때 나눗셈의 나머지는 대분수의 어디가 될까요?', ch:['분자','자연수 부분','분모'], a:'분자', ex:'몫은 자연수 부분, 나머지는 분자, 분모는 그대로예요.'},
-    {q:'[f:2/3]으로 나타냈어요. 무엇을 세었을까요?\n[[pie 3 2]]', ch:['조각','묶음','낱개'], a:'조각', ex:'원을 3조각으로 나누고 2조각을 색칠했어요. 조각을 셌어요.'}]}}
+    {q:'[f:2/3]으로 나타냈어요. 무엇을 세었을까요?\n[[pie 3 2]]', ch:['조각','묶음','낱개'], a:'조각', ex:'원을 3조각으로 나누고 2조각을 색칠했어요. 조각을 셌어요.'}]}},
+ {id:'frac-3', d:'2026-10-25', after:'frac-2', subj:'math', title:'분수 탐험 3차시 · 한 묶음이 열쇠예요', src:'아빠와 학습지',
+  concept:[
+   {t:'○의 몇 분의 몇은 한 묶음부터', h:'사탕 20개의 [f:3/4]을 구하려면 먼저 한 묶음([f:1/4])을 찾아요.\n[[group 20 5 15]]\n① 똑같이 4묶음으로 나눠요: 20 ÷ 4 = {{5}}개가 한 묶음\n② 그런 묶음을 3개 모아요: 5 × 3 = {{15}}개\n식으로 쓰면 20 ÷ 4 × 3 → ÷ 4는 {{한 묶음 찾기}}, × 3은 {{3묶음 모으기}}'},
+   {t:'거꾸로 가도 열쇠는 한 칸', h:'어떤 수의 [f:3/4]이 12예요. 띠를 똑같이 4칸으로 나누고 3칸을 색칠했어요.\n[[bar 4 3]]\n색칠한 3칸이 12 → 한 칸([f:1/4])은 12 ÷ 3 = {{4}}\n전체 4칸은 4 × 4 = {{16}} → 어떤 수는 {{16}}'},
+   {t:'1보다 큰 분수만큼', h:'12의 [f:5/4]는 얼마일까요? [f:5/4]는 1보다 커서 답은 12보다 {{커요}}.\n[[group 12 3 12]]\n한 묶음([f:1/4])은 12 ÷ 4 = {{3}}개 → [f:5/4]는 한 묶음이 5개 → 3 × 5 = {{15}}'},
+   {t:'뺄셈도 단위분수로 세요', h:'3 − [f:2/5]: 3은 [f:1/5]이 {{15개}}\n[[bar 5 15]]\n2개를 지우면 {{13개}} → [f:13/5] = {{[f:2 3/5]}}\n[f:2 1/5] − [f:3/5]: [f:1/5]에서 [f:3/5]은 뺄 수 없으니, [f:2 1/5]을 [f:1/5]이 {{11개}}로 바꿔요. 3개를 빼면 {{8개}} → [f:8/5] = {{[f:1 3/5]}}'}],
+  day1:{
+   p:[
+    {q:'[f:3 1/4]은 [f:1/4]이 몇 개일까요?\n[[bar 4 13]]', a:'13', ex:'1은 [f:1/4]이 4개 → 3은 12개, 1개를 더해 13개 → [f:3 1/4] = [f:13/4]'},
+    {q:'사탕 20개의 [f:3/4]을 구해요. 먼저 똑같이 4묶음으로 나누면 한 묶음([f:1/4])은 몇 개일까요?\n[[group 20 5 15]]', a:'5', ex:'20 ÷ 4 = 5 → 한 묶음은 5개예요.'},
+    {q:'그럼 사탕 20개의 [f:3/4]은 몇 개일까요?', a:'15', ex:'한 묶음 5개를 3묶음 모아요 → 5 × 3 = 15개'},
+    {q:'쿠키 18개의 [f:2/3]를 구하는 식은 어느 것일까요?\n[[group 18 6 12]]', ch:['18 ÷ 3 × 2','18 ÷ 2 × 3','18 × 3 ÷ 2','18 ÷ 6 × 2'], a:'18 ÷ 3 × 2', ex:'똑같이 3묶음으로 나누고(÷ 3), 그런 묶음 2개를 모아요(× 2) → 18 ÷ 3 × 2 = 12'},
+    {q:'18 ÷ 3 × 2 = 12 에서 ÷ 3은 무엇을 하는 걸까요?', ch:['똑같이 3묶음으로 나누기','3묶음 모으기','쿠키 3개 더하기'], a:'똑같이 3묶음으로 나누기', ex:'÷ 3은 한 묶음 찾기, × 2는 2묶음 모으기예요. 한 묶음은 6개 = 18의 [f:1/3]'},
+    {q:'어떤 수의 [f:3/4]이 12예요. 한 칸([f:1/4])은 얼마일까요?\n[[bar 4 3]]', a:'4', ex:'색칠한 3칸이 12 → 한 칸은 12 ÷ 3 = 4'},
+    {q:'그럼 어떤 수는 얼마일까요?', a:'16', ex:'전체 4칸 → 4 × 4 = 16. 거꾸로 가도 열쇠는 한 칸이에요!'},
+    {q:'24의 [f:5/6]는 얼마일까요?\n[[bar 6 5]]', a:'20', ex:'한 칸([f:1/6])은 24 ÷ 6 = 4 → 5칸은 4 × 5 = 20'},
+    {q:'거꾸로! 어떤 수의 [f:2/5]가 8이에요. 어떤 수는 얼마일까요?\n[[bar 5 2]]', a:'20', ex:'색칠한 2칸이 8 → 한 칸은 8 ÷ 2 = 4 → 전체 5칸은 4 × 5 = 20'},
+    {q:'동전 15개를 3개씩 묶고 4묶음을 색칠했어요. 색칠한 동전은 15의 몇 분의 몇일까요?\n[[group 15 3 12]]', ch:['[f:4/5]','[f:4/3]','[f:3/5]','[f:12/5]'], a:'[f:4/5]', ex:'3개씩 묶으면 모두 5묶음, 그중 4묶음 → [f:4/5]. 식은 15 ÷ 5 × 4 = 12'},
+    {q:'12의 [f:5/4]는 얼마일까요? [f:5/4]는 1보다 큰 분수예요!\n[[group 12 3 12]]', a:'15', ex:'한 묶음([f:1/4])은 12 ÷ 4 = 3 → 한 묶음이 5개라서 3 × 5 = 15. 1보다 큰 분수만큼이라 12보다 커요!'},
+    {q:'3 − [f:2/5] = ?\n[[bar 5 15]]', ch:['[f:2 3/5]','[f:1/5]','[f:2 2/5]','[f:3 2/5]'], a:'[f:2 3/5]', ex:'3은 [f:1/5]이 15개, 2개를 지우면 13개 → [f:13/5] = [f:2 3/5]'},
+    {q:'[f:2 1/5] − [f:3/5] = ?\n[[bar 5 11]]', ch:['[f:1 3/5]','[f:2 2/5]','[f:1 2/5]','[f:2 3/5]'], a:'[f:1 3/5]', ex:'[f:2 1/5]은 [f:1/5]이 11개, 3개를 빼면 8개 → [f:8/5] = [f:1 3/5]'},
+    {q:'수직선의 가([f:7/4])에 개구리가 있어요. [f:1/4]씩 뛰어서 3까지 가려면 몇 번 뛰어야 할까요?\n[[line 3 4 가:7]]', a:'5', ex:'3은 [f:1/4]이 12개, [f:7/4]는 7개 → 12 − 7 = 5번'},
+    {q:'도전! 채이가 사탕을 먼저 전체의 [f:1/3]만큼 먹었더니 12개가 남았어요. 처음 사탕은 몇 개였을까요?\n[[bar 3 2]]', a:'18', ex:'남은 것은 [f:2/3] → 2칸이 12개 → 한 칸 6개 → 처음은 6 × 3 = 18개'}],
+   z:[
+    {q:'친구가 3 − [f:2/5] = [f:1/5] 이라고 했어요. "3에서 2를 뺐어요." 바른 답은?', ch:['[f:13/5]','[f:1/5]','[f:3/5]','[f:5/5]'], a:'[f:13/5]', ex:'3은 [f:1/5]이 15개예요. 2개를 지우면 13개 → [f:13/5] = [f:2 3/5]. 자연수 3에서 분자 2를 빼면 안 돼요!'},
+    {q:'[f:2 3/5]이 3이 되려면 [f:1/5]이 몇 개 더 있어야 할까요?', a:'2', ex:'1을 채우려면 [f:1/5]이 5개 → 지금 3개라서 2개 더!'},
+    {q:'[f:1 3/5]은 1보다 [f:1/5]이 몇 개 더 많을까요?', a:'3', ex:'[f:1 3/5]은 1과 [f:3/5] → [f:1/5]이 3개 더 많아요.'},
+    {q:'12의 [f:5/4]는 12보다 커요.', ox:true, a:'O', ex:'[f:5/4]는 1보다 큰 분수라서, 12의 [f:5/4]는 12보다 커요(15).'},
+    {q:'분수 문제의 열쇠는 무엇일까요?', ch:['한 묶음(단위분수) 찾기','분모와 분자 더하기','큰 수에서 작은 수 빼기'], a:'한 묶음(단위분수) 찾기', ex:'○의 몇 분의 몇도, 거꾸로도, 뺄셈도 한 묶음(단위분수)을 찾으면 다 풀려요!'}]},
+  day2:{
+   p:[
+    {gen:{q:'[f:{w} {p}/{n}]{=[2,4,5,9].includes(p)?"는":"은"} [f:1/{n}]이 몇 개일까요?\n[[bar {n} {=w*n+p}]]', v:{w:[1,3],n:[3,6],p:[1,5]}, ok:'p<n', ans:'w*n+p', ex:'1은 [f:1/{n}]이 {n}개 → {w}{=[2,4,5,9].includes(w)?"는":"은"} {=w*n}개, {p}개를 더해 모두 {ans}개', n:1}},
+    {gen:{q:'{t}의 [f:{k}/{n}]{=[2,4,5,9].includes(k)?"는":"은"} 얼마일까요?\n[[group {t} {m} {=m*k}]]', v:{n:[3,6],m:[2,6],k:[2,5]}, ok:'k<n', qv:{t:'n*m'}, ans:'m*k', ex:'한 묶음([f:1/{n}])은 {t} ÷ {n} = {m} → {k}묶음은 {m} × {k} = {ans}', n:2}},
+    {gen:{q:'{t}의 [f:{k}/{n}]{=[2,4,5,9].includes(k)?"를":"을"} 구하는 식은 어느 것일까요?', v:{n:[3,6],m:[2,6],k:[2,5]}, ok:'k<n&&m!==n&&m!==k', qv:{t:'n*m'}, a:'{t} ÷ {n} × {k}', chs:['{t} ÷ {k} × {n}','{t} × {n} ÷ {k}','{t} ÷ {m} × {k}'], ex:'÷ {n}은 똑같이 {n}묶음으로 나누어 한 묶음 찾기, × {k}는 그런 묶음 {k}개 모으기', n:1}},
+    {gen:{q:'사탕 몇 개의 [f:{k}/{n}]{=[2,4,5,9].includes(k)?"가":"이"} {s}개예요. 사탕은 모두 몇 개일까요?\n[[bar {n} {k}]]', v:{n:[3,6],m:[2,6],k:[2,5]}, ok:'k<n', qv:{s:'m*k'}, ans:'m*n', ex:'색칠한 {k}칸이 {s}개 → 한 칸([f:1/{n}])은 {s} ÷ {k} = {m}개 → 전체 {n}칸은 {m} × {n} = {ans}개', n:2}},
+    {gen:{q:'{t}의 [f:{k}/{n}]{=[2,4,5,9].includes(k)?"는":"은"} 얼마일까요? 1보다 큰 분수예요!', v:{n:[2,5],m:[2,5],k:[3,9]}, ok:'k>n&&k<2*n', qv:{t:'n*m'}, ans:'m*k', ex:'한 묶음([f:1/{n}])은 {t} ÷ {n} = {m} → 한 묶음이 {k}개라서 {m} × {k} = {ans}. 1보다 큰 분수만큼이라 {t}보다 커요!', n:2}},
+    {gen:{q:'{t}개를 {m}개씩 묶고 {k}묶음을 색칠했어요. 색칠한 것은 {t}의 몇 분의 몇일까요?\n[[group {t} {m} {=m*k}]]', v:{n:[3,6],m:[2,5],k:[1,4]}, ok:'k<n&&k+1<n&&m!==n', qv:{t:'n*m'}, a:'[f:{k}/{n}]', chs:['[f:{k}/{m}]','[f:{n}/{k}]','[f:{=k+1}/{n}]'], ex:'{m}개씩 묶으면 모두 {n}묶음, 그중 {k}묶음 → [f:{k}/{n}] (분모와 분자는 묶음의 수예요)', n:1}},
+    {gen:{q:'{w} − [f:{p}/{n}] = ?\n[[bar {n} {=w*n}]]', v:{w:[2,4],n:[3,6],p:[1,5]}, ok:'p<n&&n-p!==p&&w>p', a:'[f:{=w-1} {=n-p}/{n}]', chs:['[f:{=w-1} {p}/{n}]','[f:{w} {=n-p}/{n}]','[f:{=w-p}/{n}]'], ex:'{w}{=[2,4,5,9].includes(w)?"는":"은"} [f:1/{n}]이 {=w*n}개, {p}개를 지우면 {=w*n-p}개 → [f:{=w*n-p}/{n}] = [f:{=w-1} {=n-p}/{n}]', n:1}},
+    {gen:{q:'[f:{w} {p}/{n}] − [f:{r}/{n}] = ?\n[[bar {n} {=w*n+p}]]', v:{w:[2,4],n:[4,7],p:[1,5],r:[2,6]}, ok:'p<r&&r<n&&n+p-r!==r-p', a:'[f:{=w-1} {=n+p-r}/{n}]', chs:['[f:{w} {=r-p}/{n}]','[f:{=w-1} {=r-p}/{n}]','[f:{w} {=n+p-r}/{n}]'], ex:'[f:{p}/{n}]에서 [f:{r}/{n}]은 뺄 수 없으니 [f:1/{n}]의 개수로 바꿔요: [f:1/{n}]이 {=w*n+p}개, {r}개를 빼면 {=w*n+p-r}개 → [f:{=w*n+p-r}/{n}] = [f:{=w-1} {=n+p-r}/{n}]', n:2}},
+    {gen:{q:'수직선의 가에 개구리가 있어요. [f:1/{n}]씩 뛰어서 {w}까지 가려면 몇 번 뛰어야 할까요?\n[[line {w} {n} 가:{x}]]', v:{n:[3,5],w:[2,3],x:[2,14]}, ok:'x<w*n&&x%n!==0', ans:'w*n-x', ex:'가는 [f:{x}/{n}], {w}{=[2,4,5,9].includes(w)?"는":"은"} [f:1/{n}]이 {=w*n}개 → {=w*n} − {x} = {ans}번', n:1}},
+    {gen:{q:'[f:{w} {p}/{n}]{=[2,4,5,9].includes(p)?"가":"이"} {=w+1}{=[2,4,5,9].includes(w+1)?"가":"이"} 되려면 [f:1/{n}]이 몇 개 더 있어야 할까요?', v:{w:[1,3],n:[3,7],p:[1,6]}, ok:'p<n', ans:'n-p', ex:'1을 채우려면 [f:1/{n}]이 {n}개 → 지금 {p}개라서 {ans}개 더!', n:1}},
+    {gen:{q:'도전! 사탕을 전체의 [f:1/{n}]만큼 먹었더니 {s}개가 남았어요. 처음 사탕은 몇 개였을까요?\n[[bar {n} {=n-1}]]', v:{n:[3,5],m:[2,6]}, qv:{s:'m*(n-1)'}, ans:'m*n', ex:'남은 것은 [f:{=n-1}/{n}] → {=n-1}칸이 {s}개 → 한 칸 {m}개 → 처음은 {m} × {n} = {ans}개', n:1}}],
+   z:[
+    {q:'20 ÷ 4 × 3 에서 × 3은 무엇을 하는 걸까요?', ch:['한 묶음을 3개 모으기','똑같이 3묶음으로 나누기','3개를 더하기'], a:'한 묶음을 3개 모으기', ex:'÷ 4는 한 묶음 찾기, × 3은 그런 묶음 3개 모으기예요.'},
+    {q:'어떤 수의 [f:2/3]가 10이면, 한 칸([f:1/3])은 5예요.', ox:true, a:'O', ex:'색칠한 2칸이 10 → 한 칸은 10 ÷ 2 = 5'},
+    {q:'24의 [f:3/2]은 24보다 작아요.', ox:true, a:'X', ex:'[f:3/2]은 1보다 큰 분수라서 24보다 커요. 24 ÷ 2 × 3 = 36'},
+    {q:'[f:3 1/4] − [f:3/4]을 계산할 때 맨 먼저 할 일은?', ch:['[f:3 1/4]을 [f:1/4]이 13개로 바꾸기','1에서 3을 빼기','분모끼리 빼기'], a:'[f:3 1/4]을 [f:1/4]이 13개로 바꾸기', ex:'[f:1/4]에서 [f:3/4]은 뺄 수 없어서 [f:1/4]의 개수로 바꿔요: 13개 − 3개 = 10개 → [f:10/4] = [f:2 2/4]'},
+    {q:'한 줄 정리! 3은 [f:1/4]이 몇 개일까요?', a:'12', ex:'1은 [f:1/4]이 4개 → 3은 12개! 분수 문제의 열쇠는 한 묶음(단위분수)이에요.'}]}}
 ];
 
 /* ===== 아빠와 복습 (하루 흐름) =====
@@ -12407,5 +12455,524 @@ details .row > .btn,details .row > label.btn{white-space:normal!important;word-b
 })();
 </script>
 <!-- ===== 글자 채우기·위로 가기 (2026-10-24) 끝 ===== -->
+<!-- ===== 영어 문법: 교재 따라 쓰는 영문법 (2026-10-25) 시작 ===== -->
+<script>
+/* ===== 영어 문법 = 집에서 쓰는 교재(EBS 만점왕 영어 따라 쓰는 영문법 1~3권)와 같은 차례 =====
+   · 장기 계획: 1권(지금, 3~4학년) → 2권(4~5학년) → 3권(5~6학년). 한 권이 1년쯤 걸려요.
+   · 단원(Unit) = 교재 Unit. 단원마다 교재 Word Preview 낱말 5개로 예문을 만들어요.
+     차시: ① 규칙 알아보기(골라 쓰기) ② 바른 문장 찾기(고쳐 쓰기) ③ 문장 만들기 ④ 놀이 ⑤ 마무리 도전 — 교재 STEP 1·2·3와 같은 흐름이에요.
+   · 교재 Chapter가 끝나면 다른 과목처럼 '마무리'가 나와요(그 Chapter 단원을 섞어 15문제).
+   · 교재 진도 맞추기: 과목 화면에서 "교재에서 Unit 몇까지 했어요"를 고르면 그 단원까지만 열려요.
+     교재로 먼저 배우고 공부방에서 한 번 더 익혀요. 아직 배우지 않은 단원·다른 권의 문법은 먼저 나오지 않아요.
+   · 문장에는 지금까지 배운 문법만 써요(현재형만, will·과거형·-ing·의문사·명령문·비교급·to부정사 없이).
+   · 2권·3권도 교재 차례대로 같은 방식으로 모두 들어 있어요. 1권 끝 → 2권 Unit 01 → … → 3권 Unit 28.
+     2·3권 낱말은 교재를 아직 사지 않아서 단원 주제에 맞춰 골라 두었어요. 교재를 사면 Word Preview 낱말로 바꿔요.
+   · 예전 '영어 문법 1~3단계'(eg1~eg3)는 숨겨요(기록은 그대로 남아요). */
+const EBS1 = [
+ {c:1,n:1,pg:8,t:'be동사의 기본 형태',k:'am, are, is',i:'🙂',w:[['hungry','배고픈'],['hero','영웅'],['tired','피곤한'],['excited','신이 난'],['designer','디자이너']],
+  r:'be동사는 <b>am, are, is</b> 세 가지예요. 주어에 따라 달라져요.<br><b>I am</b> · <b>You / We / They are</b> · <b>He / She / It is</b><br>줄여 쓰기: I’m, You’re, We’re, They’re, He’s, She’s, It’s',
+  p:'주어가 둘 이상이면 are예요. Tom and Mina are ~ (○), Tom and Mina is ~ (×)',
+  q:["I ___ hungry.|am|is|are|나는 배고파.","You ___ a hero.|are|is|am|너는 영웅이야.","He ___ tired.|is|are|am|그는 피곤해.","We ___ excited.|are|is|am|우리는 신이 났어.","She ___ a designer.|is|am|are|그녀는 디자이너야.","They ___ my friends.|are|is|am|그들은 내 친구들이야.","It ___ yummy.|is|are|am|그것은 맛있어.","___ is a hero.|He|We|You|그는 영웅이야.","___ hungry.|They're|They's|They'm|그들은 배고파.","___ excited.|I'm|I's|I're|나는 신이 났어.","Tom and Mina ___ in the kitchen.|are|is|am|톰과 미나는 부엌에 있어."]},
+ {c:1,n:2,pg:12,t:'주어와 보어',k:'be동사 뒤에 오는 말',i:'🎨',w:[['artist','예술가'],['scientist','과학자'],['smart','똑똑한'],['brave','용감한'],['safe','안전한']],
+  r:'be동사 뒤에 와서 주어를 설명하는 말을 <b>보어</b>라고 해요.<br>She is <b>an artist</b>. → 누구인지 (~이다)<br>She is <b>smart</b>. → 어떤지 (상태·특성이다)<br>She is <b>in the park</b>. → 어디에 있는지 (~에 있다)',
+  p:'상태를 나타내는 말(smart, brave)은 a 없이 써요. He is brave. (○), He is a brave. (×)',
+  q:["She is ___.|an artist|artist an|an artists|그녀는 예술가야.","My mom is ___.|a scientist|scientist a|a scientists|우리 엄마는 과학자야.","You are very ___.|smart|a smart|smarts|너는 아주 똑똑해.","They are ___.|brave|a brave|braves|그들은 용감해.","We are ___ now.|safe|a safe|safes|우리는 이제 안전해.","It is ___ the box.|in|is|am|그것은 상자 안에 있어.","I am ___.|nine years old|nine year old|nine years|나는 아홉 살이야.","The cat is ___ the chair.|on|is|are|고양이는 의자 위에 있어.","Mina is ___.|my sister|sister my|my sisters|미나는 내 여동생이야.","He is ___ and smart.|brave|a brave|braves|그는 용감하고 똑똑해."]},
+ {c:1,n:3,pg:16,t:'be동사의 부정문',k:'am not, isn’t, aren’t',i:'🙅',w:[['umbrella','우산'],['musician','음악가'],['pilot','조종사'],['police officer','경찰관'],['firefighter','소방관']],
+  r:'‘~이 아니다, ~에 있지 않다’는 be동사 뒤에 <b>not</b>을 붙여요.<br>I <b>am not</b> · You / We / They <b>are not</b> (aren’t) · He / She / It <b>is not</b> (isn’t)',
+  p:'not은 be동사 뒤에 와요. He is not a pilot. (○), He not is a pilot. (×) · am not은 줄여 쓰지 않아요. I amn’t (×)',
+  q:["I ___ a pilot.|am not|not am|amn't|나는 조종사가 아니야.","He ___ a musician.|is not|not is|are not|그는 음악가가 아니야.","She ___ a police officer.|isn't|aren't|not is|그녀는 경찰관이 아니야.","They ___ firefighters.|aren't|isn't|not are|그들은 소방관이 아니야.","It ___ my umbrella.|isn't|aren't|am not|그것은 내 우산이 아니야.","We ___ at school.|are not|is not|not are|우리는 학교에 있지 않아.","You ___ late.|aren't|isn't|am not|너는 늦지 않았어.","I'm ___ busy.|not|no|isn't|나는 바쁘지 않아.","My dad ___ a firefighter.|is not|are not|am not|우리 아빠는 소방관이 아니야.","The umbrellas ___ in the car.|are not|is not|am not|우산들은 차 안에 있지 않아."]},
+ {c:1,n:4,pg:20,t:'be동사의 의문문',k:'Are you ~? Is he ~?',i:'❓',w:[['honest','정직한'],['writer','작가'],['thirsty','목마른'],['restaurant','식당'],['mountain','산']],
+  r:'물어볼 때는 be동사를 주어 <b>앞</b>으로 보내고 물음표(?)를 써요.<br>You are thirsty. → <b>Are you</b> thirsty?<br>대답: Yes, I am. / No, I’m not.<br>Is he a writer? → Yes, he is. / No, he isn’t.',
+  p:'Are you ~?로 물으면 I로 대답해요. Yes, I am. (○) · Yes로 대답할 때는 줄여 쓰지 않아요. Yes, he’s. (×)',
+  q:["___ you thirsty?|Are|Is|Am|너는 목마르니?","___ she a writer?|Is|Are|Am|그녀는 작가니?","___ they honest?|Are|Is|Am|그들은 정직하니?","___ it a restaurant?|Is|Are|Am|그곳은 식당이니?","___ I late?|Am|Are|Is|내가 늦었니?","Are you thirsty? Yes, I ___.|am|are|is|너 목마르니? 응, 목말라.","Is he a writer? No, he ___.|isn't|aren't|is|그는 작가니? 아니, 작가가 아니야.","Are they on the mountain? Yes, they ___.|are|is|am|그들은 산 위에 있니? 응, 있어.","Is she honest? Yes, ___ is.|she|he|it|그녀는 정직하니? 응, 정직해.","Are you and Tom in the restaurant? Yes, ___ are.|we|you|they|너와 톰은 식당에 있니? 응, 우리는 있어."]},
+ {c:2,n:5,pg:26,t:'일반동사의 기본 형태',k:'read, reads처럼 움직임을 나타내는 말',i:'📖',w:[['read','읽다'],['clean','청소하다'],['help','돕다'],['ride','타다'],['fix','고치다']],
+  r:'움직임이나 상태를 나타내는 동사를 <b>일반동사</b>라고 해요. (read, clean, help, ride)<br>I, You, We, They 뒤에는 동사를 <b>그대로</b> 써요. I <b>read</b> books.<br>He, She, It, 한 사람·하나 뒤에는 <b>-s / -es</b>를 붙여요. He <b>reads</b>. She <b>fixes</b>.<br>자음 + y → <b>-ies</b>: study → studies · <b>have → has</b>',
+  p:'be동사와 일반동사를 함께 쓰지 않아요. I read books. (○), I am read books. (×)',
+  q:["I ___ books.|read|reads|am read|나는 책을 읽어.","She ___ her room.|cleans|clean|is clean|그녀는 자기 방을 청소해.","We ___ our mom.|help|helps|are help|우리는 엄마를 도와.","He ___ a bike.|rides|ride|is ride|그는 자전거를 타.","My dad ___ the car.|fixes|fixs|fix|우리 아빠는 차를 고치셔.","They ___ the classroom.|clean|cleans|are clean|그들은 교실을 청소해.","Tom ___ his sister.|helps|help|is help|톰은 여동생을 도와.","Mina ___ English.|studies|studys|study|미나는 영어를 공부해.","It ___ a long tail.|has|have|haves|그것은 꼬리가 길어.","You ___ a horse.|ride|rides|are ride|너는 말을 타."]},
+ {c:2,n:6,pg:30,t:'일반동사의 부정문',k:'don’t, doesn’t',i:'🚫',w:[['plant','심다'],['answer','대답하다'],['draw','그리다'],['wear','입다, 쓰다'],['build','짓다, 만들다']],
+  r:'‘~하지 않다’는 동사 앞에 <b>don’t</b>나 <b>doesn’t</b>를 써요.<br>I / You / We / They → <b>don’t</b> + 동사원형<br>He / She / It → <b>doesn’t</b> + 동사원형 (동사에 -s를 붙이지 않아요)',
+  p:'doesn’t 뒤에는 동사원형! She doesn’t draw. (○), She doesn’t draws. (×)',
+  q:["I ___ trees.|don't plant|doesn't plant|don't plants|나는 나무를 심지 않아.","She ___ the question.|doesn't answer|don't answer|doesn't answers|그녀는 질문에 대답하지 않아.","We ___ pictures.|don't draw|doesn't draw|not draw|우리는 그림을 그리지 않아.","He ___ glasses.|doesn't wear|don't wear|doesn't wears|그는 안경을 쓰지 않아.","They ___ houses.|don't build|doesn't build|don't builds|그들은 집을 짓지 않아.","My mom doesn't ___ hats.|wear|wears|is wear|우리 엄마는 모자를 쓰지 않아.","Tom ___ flowers.|doesn't plant|don't plant|isn't plant|톰은 꽃을 심지 않아.","You ___ my question.|don't answer|doesn't answer|aren't answer|너는 내 질문에 대답하지 않는구나.","It ___ milk.|doesn't drink|don't drink|doesn't drinks|그것은 우유를 마시지 않아.","I don't ___ robots.|build|builds|am build|나는 로봇을 만들지 않아."]},
+ {c:2,n:7,pg:34,t:'일반동사의 의문문',k:'Do you ~? Does he ~?',i:'🙋',w:[['stay','머무르다'],['visit','방문하다'],['laugh','웃다'],['drive','운전하다'],['know','알다']],
+  r:'물어볼 때는 문장 맨 앞에 <b>Do</b>나 <b>Does</b>를 써요.<br>Do + I / you / we / they + 동사원형 ~? → Yes, I do. / No, I don’t.<br>Does + he / she / it + 동사원형 ~? → Yes, he does. / No, he doesn’t.',
+  p:'Does로 물을 때 동사는 원형! Does she drive? (○), Does she drives? (×)',
+  q:["___ you know Mina?|Do|Does|Are|너는 미나를 아니?","___ he drive a car?|Does|Do|Is|그는 차를 운전하니?","___ they visit their grandma?|Do|Does|Are|그들은 할머니 댁을 방문하니?","Does she ___ a lot?|laugh|laughs|is laugh|그녀는 많이 웃니?","Do you stay home? Yes, I ___.|do|does|am|너는 집에 머무르니? 응, 그래.","Does he know the answer? No, he ___.|doesn't|don't|isn't|그는 답을 아니? 아니, 몰라.","Do they drive? No, they ___.|don't|doesn't|aren't|그들은 운전하니? 아니, 안 해.","___ your dad stay in Seoul?|Does|Do|Is|너의 아빠는 서울에 머무르시니?","Does Tom visit the zoo? Yes, he ___.|does|do|is|톰은 동물원에 가니? 응, 가.","___ we know her?|Do|Does|Are|우리가 그녀를 아니?"]},
+ {c:3,n:8,pg:40,t:'명사의 종류',k:'셀 수 있는 명사, 셀 수 없는 명사, 이름',i:'🐒',w:[['about','~에 관한'],['family','가족'],['be from','~ 출신이다'],['monkey','원숭이'],['sell','팔다']],
+  r:'사람, 동물, 물건, 장소의 이름을 <b>명사</b>라고 해요.<br><b>셀 수 있는 명사</b>: monkey, book, apple → 하나, 둘 셀 수 있어요<br><b>셀 수 없는 명사</b>: water, milk, sugar → -s를 붙이지 않아요<br><b>사람·나라·도시 이름</b>은 첫 글자를 대문자로 써요: Mina, Korea, Seoul',
+  p:'이름은 대문자로! I am from Korea. (○), I am from korea. (×)',
+  q:["I am from ___.|Korea|korea|KOREA|나는 한국 출신이야.","This is my ___.|family|familys|families|이분들은 우리 가족이야.","___ is my friend.|Mina|mina|MINA|미나는 내 친구야.","She sells ___.|milk|milks|a milk|그녀는 우유를 팔아.","He is from ___.|Canada|canada|CANADA|그는 캐나다 출신이야.","I see a ___.|monkey|monkeys|monkies|원숭이 한 마리가 보여.","This book is about ___.|monkeys|monkey|monkies|이 책은 원숭이에 관한 거야.","They sell ___.|water|waters|a water|그들은 물을 팔아.","We live in ___.|Seoul|seoul|SEOUL|우리는 서울에 살아.","Tom ___ from England.|is|are|am|톰은 영국 출신이야."]},
+ {c:3,n:9,pg:44,t:'명사의 복수형',k:'-s, -es, -ies, -ves, 모양이 바뀌는 말',i:'🐙',w:[['fly','날다, 파리'],['octopus','문어'],['collect','모으다'],['knife','칼'],['bring','가져오다']],
+  r:'둘 이상이면 명사에 <b>-s</b>를 붙여요. cat → cats<br>s, x, ch, sh, o로 끝나면 <b>-es</b>: box → boxes, dish → dishes, potato → potatoes<br>자음 + y → <b>-ies</b>: baby → babies, fly → flies<br>f, fe → <b>-ves</b>: knife → knives, leaf → leaves<br>모양이 바뀌어요: man → men, child → children, foot → feet, tooth → teeth',
+  p:'둘 이상일 때는 a를 쓰지 않아요. two knives (○), a knives (×)',
+  q:["I collect ___.|stamps|stamp|stampes|나는 우표를 모아.","I see two ___.|octopuses|octopus|octopuss|문어 두 마리가 보여.","We bring three ___.|knives|knifes|knife|우리는 칼 세 자루를 가져와.","I see two ___.|flies|flys|flyes|파리 두 마리가 보여.","She has two ___.|boxes|boxs|box|그녀는 상자가 두 개 있어.","Three ___ are in the park.|children|childs|childrens|아이 세 명이 공원에 있어.","I have two ___.|feet|foots|feets|나는 발이 두 개 있어.","We need five ___.|dishes|dishs|dish|우리는 접시 다섯 개가 필요해.","The ___ are cute.|babies|babys|baby|아기들이 귀여워.","He collects ___.|leaves|leafs|leaf|그는 나뭇잎을 모아."]},
+ {c:3,n:10,pg:48,t:'셀 수 없는 명사',k:'water, sugar, honey와 a glass of',i:'🍯',w:[['jam','잼'],['sugar','설탕'],['peace','평화'],['flour','밀가루'],['honey','꿀']],
+  r:'가루, 액체, 덩어리처럼 하나, 둘 셀 수 없는 것이 있어요: water, milk, sugar, flour, honey, jam<br>눈에 보이지 않는 것도 셀 수 없어요: peace, love<br>셀 수 없는 명사는 a를 쓰지 않고, -s도 붙이지 않아요.<br>셀 때는 담는 것을 세요: <b>a glass of</b> milk, <b>two bottles of</b> water, <b>a piece of</b> cake',
+  p:'two glasses of milk (○), two milks (×) · 담는 낱말에 -s를 붙여요.',
+  q:["I like ___.|honey|a honey|honeys|나는 꿀을 좋아해.","We need ___.|flour|a flour|flours|우리는 밀가루가 필요해.","She puts ___ in her tea.|sugar|a sugar|sugars|그녀는 차에 설탕을 넣어.","I want ___.|peace|a peace|peaces|나는 평화를 원해.","He eats bread with ___.|jam|a jam|jams|그는 빵에 잼을 발라 먹어.","I drink a glass of ___.|milk|milks|a milk|나는 우유 한 잔을 마셔.","She has two ___ of water.|bottles|bottle|bottless|그녀는 물 두 병이 있어.","I eat a ___ of cake.|piece|pieces|peace|나는 케이크 한 조각을 먹어.","We drink two ___ of juice.|glasses|glass|glasss|우리는 주스 두 잔을 마셔.","Mom buys a ___ of rice.|bag|bags|bage|엄마는 쌀 한 봉지를 사셔."]},
+ {c:3,n:11,pg:52,t:'There is / There are',k:'~이 있다',i:'🗺️',w:[['map','지도'],['cave','동굴'],['pond','연못'],['closet','벽장, 옷장'],['field','들판']],
+  r:'‘~이 있다’는 <b>There is / There are</b>로 말해요.<br>하나이거나 셀 수 없는 명사 → <b>There is</b> a map. / There is water.<br>둘 이상 → <b>There are</b> two caves.<br>부정: There isn’t ~ / There aren’t ~ · 의문: Is there ~? / Are there ~?',
+  p:'There are 뒤에는 복수형! There are three ducks. (○), There are three duck. (×)',
+  q:["There ___ a map on the wall.|is|are|am|벽에 지도가 하나 있어.","There ___ two caves.|are|is|am|동굴이 두 개 있어.","There ___ a pond in the park.|is|are|am|공원에 연못이 하나 있어.","There are three ___ in the pond.|ducks|duck|duckes|연못에 오리가 세 마리 있어.","There ___ water in the bottle.|is|are|am|병에 물이 있어.","There ___ clothes in the closet.|are|is|am|옷장에 옷이 있어.","There ___ a cow in the field.|isn't|aren't|not is|들판에 소가 없어.","___ there a map in your bag?|Is|Are|Am|네 가방에 지도가 있니?","___ there two closets?|Are|Is|Am|벽장이 두 개 있니?","Is there a cave? Yes, there ___.|is|are|it|동굴이 있니? 응, 있어."]},
+ {c:4,n:12,pg:58,t:'인칭대명사',k:'I – my – me처럼 모양이 바뀌는 말',i:'🧑‍🤝‍🧑',w:[['trust','믿다, 신뢰하다'],['call','전화하다'],['spend','(시간을) 보내다'],['exercise','운동하다'],['finish','끝내다']],
+  r:'사람이나 물건 대신 쓰는 말이에요. 자리에 따라 모양이 바뀌어요.<br>~은/는: I · you · he · she · it · we · they<br>~의: my · your · his · her · its · our · their<br>~을/를: me · you · him · her · it · us · them',
+  p:'동사 뒤에는 ~을/를 모양을 써요. I trust him. (○), I trust he. (×)',
+  q:["I trust ___.|him|he|his|나는 그를 믿어.","She calls ___ every day.|me|I|my|그녀는 매일 나에게 전화해.","___ exercise in the morning.|We|Us|Our|우리는 아침에 운동해.","They finish ___ homework.|their|they|them|그들은 숙제를 끝내.","He spends time with ___.|us|we|our|그는 우리와 시간을 보내.","This is ___ bag.|her|she|she's|이것은 그녀의 가방이야.","Do you trust ___?|them|they|their|너는 그들을 믿니?","My dog loves ___.|me|I|my|우리 개는 나를 좋아해.","___ calls his grandma.|He|Him|His|그는 할머니께 전화해.","The cat licks ___ paw.|its|it's|it|고양이가 자기 발을 핥아."]},
+ {c:4,n:13,pg:62,t:'지시대명사 this / that',k:'이것, 저것, 이것들, 저것들',i:'👉',w:[['parents','부모님'],['backpack','배낭'],['cousin','사촌'],['lunch','점심 식사'],['sock','양말']],
+  r:'가까이 있는 것은 <b>this</b>(이것)·<b>these</b>(이것들), 멀리 있는 것은 <b>that</b>(저것)·<b>those</b>(저것들)<br>this / that + <b>is</b> · these / those + <b>are</b><br>사람을 소개할 때도 써요: This is my cousin.',
+  p:'these, those 뒤의 명사는 복수형! these socks (○), these sock (×)',
+  q:["___ is my backpack.|This|These|Those|이것은 내 배낭이야.","___ are my parents.|These|This|That|이분들은 우리 부모님이셔.","___ is my cousin over there.|That|These|Those|저기 저 아이는 내 사촌이야.","Those ___ my socks.|are|is|am|저것들은 내 양말이야.","This ___ my lunch.|is|are|am|이것은 내 점심이야.","Are ___ your socks?|these|this|that|이것들은 네 양말이니?","Is ___ your backpack?|that|those|these|저것은 네 배낭이니?","These are my ___.|cousins|cousin|cousines|이 아이들은 내 사촌들이야.","Those ___ my parents.|are|is|am|저분들은 우리 부모님이셔.","Is this your lunch? Yes, ___ is.|it|this|he|이것은 네 점심이니? 응, 그래."]},
+ {c:4,n:14,pg:66,t:'비인칭 주어 it',k:'시간, 날씨, 계절을 말하는 it',i:'⛅',w:[['summer','여름'],['winter','겨울'],["o'clock",'~시 정각'],['warm','따뜻한'],['dark','어두운']],
+  r:'시간, 날씨, 계절, 요일, 밝기를 말할 때 주어로 <b>it</b>을 써요. 이때 it은 ‘그것’이라고 옮기지 않아요.<br><b>It is</b> seven o’clock. (시간) · <b>It is</b> warm. (날씨)<br><b>It is</b> summer. (계절) · <b>It is</b> dark. (밝기)',
+  p:'주어 it을 빼면 안 돼요. It is cold. (○), Is cold. (×)',
+  q:["___ is seven o'clock.|It|This|That|7시 정각이야.","It ___ warm today.|is|are|am|오늘은 따뜻해.","It is ___ now.|summer|summers|a summers|지금은 여름이야.","___ dark outside.|It's|Its|It|밖이 어두워.","It is cold in ___.|winter|winters|a winters|겨울에는 추워.","It is three ___.|o'clock|clock|o'clocks|3시 정각이야.","___ it rainy?|Is|Are|Am|비가 오니?","Is it Monday? Yes, ___ is.|it|this|that|월요일이니? 응, 그래.","It ___ not warm.|is|are|am|따뜻하지 않아.","It is ___ today.|sunny|sunnys|a sunnys|오늘은 화창해."]},
+ {c:5,n:15,pg:72,t:'형용사',k:'어떤지 꾸며 주는 말',i:'🌶️',w:[['salty','(맛이) 짠'],['empty','빈, 비어 있는'],['bright','밝은'],['spicy','매운'],['lazy','게으른']],
+  r:'사람이나 물건이 어떤지 나타내는 말을 <b>형용사</b>라고 해요.<br>명사 <b>앞</b>에서 꾸며요: a <b>bright</b> room<br>be동사 <b>뒤</b>에서 설명해요: The soup is <b>salty</b>.',
+  p:'형용사는 명사 앞에! a spicy dish (○), a dish spicy (×) · 형용사에는 -s를 붙이지 않아요.',
+  q:["The soup is ___.|salty|saltys|a salty|수프가 짜.","This box is ___.|empty|emptys|a empty|이 상자는 비어 있어.","I like ___ food.|spicy|spicys|spicily|나는 매운 음식을 좋아해.","My cat is ___.|lazy|lazys|a lazy|우리 고양이는 게을러.","It is a ___ day.|bright|brights|brightly|밝은 날이야.","He has a ___.|big dog|dog big|bigs dog|그는 큰 개가 있어.","The room is ___.|empty|emptys|emptily|그 방은 비어 있어.","This kimchi is ___.|spicy|spicily|a spicy|이 김치는 매워.","She has ___ eyes.|bright|brights|brightly|그녀는 눈이 반짝여.","I see a ___.|lazy cat|cat lazy|lazys cat|게으른 고양이가 보여."]},
+ {c:5,n:16,pg:76,t:'부사',k:'어떻게 하는지 꾸며 주는 말',i:'⌨️',w:[['luckily','다행히, 운 좋게'],['type','타자를 치다'],['terribly','끔찍하게'],['suddenly','갑자기'],['smoothly','부드럽게']],
+  r:'동사나 형용사를 꾸며서 ‘어떻게’를 알려 주는 말을 <b>부사</b>라고 해요.<br>형용사 + <b>-ly</b>: quick → quickly, slow → slowly<br>y → <b>-ily</b>: happy → happily, lucky → luckily<br>모양이 같은 부사: fast(빨리), hard(열심히) · good → <b>well</b>',
+  p:'동사를 꾸밀 때는 부사! She types quickly. (○), She types quick. (×)',
+  q:["She types ___.|quickly|quick|quicky|그녀는 빨리 타자를 쳐.","___, I have an umbrella.|Luckily|Lucky|Luckly|다행히, 나는 우산이 있어.","The car moves ___.|smoothly|smooth|smoothy|그 차는 부드럽게 움직여.","He sings ___.|terribly|terrible|terribley|그는 노래를 끔찍하게 못 불러.","___, the room is dark.|Suddenly|Sudden|Suddenlly|갑자기 방이 어두워.","Tom runs ___.|fast|fastly|fasts|톰은 빨리 달려.","She dances ___.|well|good|goodly|그녀는 춤을 잘 춰.","The baby smiles ___.|happily|happy|happyly|아기가 행복하게 웃어.","We study ___.|hard|hardly|hards|우리는 열심히 공부해.","He speaks ___.|slowly|slow|slowely|그는 천천히 말해."]},
+ {c:5,n:17,pg:80,t:'How + 형용사 / 부사',k:'얼마나 ~하니?',i:'📏',w:[['skate','스케이트를 타다'],['often','자주'],['clear','맑은'],['blanket','담요'],['dangerous','위험한']],
+  r:'<b>How + 형용사 / 부사</b>로 ‘얼마나 ~하니?’를 물어요.<br>How <b>old</b> are you? (나이) · How <b>tall</b> is he? (키)<br>How <b>long</b> is it? (길이) · How <b>far</b> is it? (거리)<br>How <b>often</b> do you skate? (얼마나 자주)',
+  p:'How old are you? (○), How old you are? (×) · How + 형용사 다음에 묻는 순서(are you)로 써요.',
+  q:["How ___ are you? I'm nine.|old|tall|often|너는 몇 살이니? 아홉 살이야.","How ___ is your brother? He is 130 cm.|tall|old|often|네 동생은 키가 얼마니? 130센티미터야.","How ___ do you skate? Every Sunday.|often|old|tall|너는 얼마나 자주 스케이트를 타니? 일요일마다.","How long ___ the blanket?|is|are|do|그 담요는 얼마나 기니?","How ___ is the river? It is very long.|long|old|often|그 강은 얼마나 기니? 아주 길어.","How old ___ your sister?|is|are|does|네 언니는 몇 살이니?","How often ___ you exercise?|do|does|are|너는 얼마나 자주 운동하니?","How ___ is your house from here?|far|old|often|여기서 너희 집은 얼마나 머니?","The sky is ___ today.|clear|clearly|a clear|오늘 하늘이 맑아.","The road is ___.|dangerous|danger|dangerously|그 길은 위험해."]},
+ {c:5,n:18,pg:84,t:'동사 + 형용사 / 부사',k:'look, feel + 형용사 / 동사 + 부사',i:'🐕',w:[['calm','침착한'],['behave','행동하다'],['careful','조심하는, 주의 깊은'],['greet','맞이하다, 인사하다'],['bark','짖다']],
+  r:'<b>look, feel, sound, taste, smell</b> 뒤에는 <b>형용사</b>를 써요. She looks <b>calm</b>. It tastes <b>good</b>.<br>다른 일반동사는 <b>부사</b>로 꾸며요. He behaves <b>well</b>. He drives <b>carefully</b>.',
+  p:'You look happy. (○), You look happily. (×)',
+  q:["She looks ___.|calm|calmly|calms|그녀는 침착해 보여.","The dog barks ___ at night.|quietly|quiet|quiets|그 개는 밤에 조용히 짖어.","This cake tastes ___.|good|well|goodly|이 케이크는 맛있어.","He behaves ___.|well|good|goodly|그는 바르게 행동해.","You sound ___.|happy|happily|happys|너 행복하게 들려.","I am ___ with the knife.|careful|carefully|carefuls|나는 칼을 조심해서 다뤄.","She greets us ___.|kindly|kinds|kindlys|그녀는 우리를 친절하게 맞이해.","The flowers smell ___.|sweet|sweetly|sweets|꽃 냄새가 달콤해.","I feel ___ today.|tired|tiredly|tireds|나는 오늘 피곤해.","He drives ___.|carefully|careful|carefuls|그는 조심해서 운전해."]},
+ {c:6,n:19,pg:90,t:'can / may',k:'~할 수 있다, ~해도 된다, ~일지도 모른다',i:'🤸',w:[['speak','말하다'],['expensive','비싼'],['jump rope','줄넘기하다'],['forget','잊다'],['lose','잃어버리다, 지다']],
+  r:'<b>can</b> + 동사원형: ~할 수 있다 (능력), ~해도 된다 (허락)<br><b>may</b> + 동사원형: ~해도 된다 (허락), ~일지도 모른다 (추측)<br>조동사 뒤에는 꼭 <b>동사원형</b>. 주어가 he, she라도 can에 -s를 붙이지 않아요.',
+  p:'She can speak English. (○), She cans speak. (×), She can speaks. (×)',
+  q:["I can ___ English.|speak|speaks|to speak|나는 영어를 말할 수 있어.","She ___ jump rope.|can|cans|can to|그녀는 줄넘기를 할 수 있어.","He can ___ fast.|run|runs|to run|그는 빨리 달릴 수 있어.","You ___ use my pencil.|may|mays|may to|너는 내 연필을 써도 돼.","It may ___ expensive.|be|is|are|그것은 비쌀지도 몰라.","We can ___ the game.|lose|loses|to lose|우리는 경기에서 질 수도 있어.","Birds can ___.|fly|flies|to fly|새는 날 수 있어.","You may ___ my name.|forget|forgets|to forget|너는 내 이름을 잊을지도 몰라.","My dog ___ swim.|can|cans|can to|우리 개는 수영할 수 있어.","She may ___ late.|be|is|are|그녀는 늦을지도 몰라."]},
+ {c:6,n:20,pg:94,t:'can / may 부정문',k:'can’t, may not',i:'🚗',w:[['park','주차하다'],['answer','대답하다'],['visitor','방문객'],['reach','~에 닿다'],['climb','오르다']],
+  r:'<b>cannot (can’t)</b> + 동사원형: ~할 수 없다, ~하면 안 된다<br><b>may not</b> + 동사원형: ~하면 안 된다, ~이 아닐지도 모른다<br>may not은 줄여 쓰지 않아요.',
+  p:'I can’t reach it. (○), I can’t reaches it. (×), I don’t can reach it. (×)',
+  q:["I ___ reach the shelf.|can't|don't can|can't to|나는 선반에 손이 닿지 않아.","You ___ park here.|cannot|can't to|don't can|여기에 주차하면 안 돼.","Visitors ___ go inside.|may not|may don't|don't may|방문객은 안에 들어가면 안 돼.","He can't ___ the tree.|climb|climbs|to climb|그는 그 나무에 오를 수 없어.","She may not ___ the question.|answer|answers|to answer|그녀는 그 질문에 대답하지 않을지도 몰라.","We ___ swim here.|can't|aren't can|can't to|우리는 여기서 수영하면 안 돼.","It ___ be true.|may not|may don't|not may|그건 사실이 아닐지도 몰라.","My brother can't ___ yet.|walk|walks|to walk|내 남동생은 아직 걷지 못해.","Penguins ___ fly.|can't|don't can|can't to|펭귄은 날 수 없어.","You may not ___ the cake.|eat|eats|to eat|그 케이크를 먹으면 안 돼."]},
+ {c:6,n:21,pg:98,t:'can / may 의문문',k:'Can you ~? May I ~?',i:'⛷️',w:[['question','질문'],['ski','스키를 타다'],['grow','자라다, 기르다'],['cross','건너다'],['bottle','병']],
+  r:'<b>Can</b> + 주어 + 동사원형 ~? → 할 수 있니? / 해도 되니?<br><b>May I</b> + 동사원형 ~? → (공손하게) ~해도 될까요?<br>대답: Yes, I can. / No, I can’t. · Yes, you may. / No, you may not.',
+  p:'Can you ski? (○), Do you can ski? (×), Can you skis? (×)',
+  q:["___ you ski?|Can|Do|Are|너는 스키를 탈 수 있니?","___ I ask a question?|May|Do|Am|질문해도 될까요?","Can she ___ the street?|cross|crosses|to cross|그녀는 길을 건널 수 있니?","Can you ski? Yes, I ___.|can|do|am|스키 탈 수 있니? 응, 탈 수 있어.","Can he open the bottle? No, he ___.|can't|doesn't|isn't|그는 병을 열 수 있니? 아니, 못 열어.","May I use your phone? Yes, you ___.|may|do|are|전화 써도 될까요? 네, 써도 돼요.","Can plants ___ in the dark?|grow|grows|to grow|식물은 어둠 속에서 자랄 수 있니?","___ I open the window?|May|Am|Do|창문을 열어도 될까요?","Can they ___ tomatoes?|grow|grows|to grow|그들은 토마토를 기를 수 있니?","Can your dog swim? Yes, ___ can.|it|its|it's|너희 개는 수영할 수 있니? 응, 할 수 있어."]},
+ {c:6,n:22,pg:102,t:'must / should',k:'꼭 ~해야 한다, ~하는 게 좋다',i:'🛂',w:[['mistake','실수'],['uniform','교복, 제복'],['passport','여권'],['promise','약속하다, 약속'],['return','돌려주다, 돌아오다']],
+  r:'<b>must</b> + 동사원형: 반드시 ~해야 한다 (꼭 지켜야 하는 규칙)<br><b>should</b> + 동사원형: ~하는 게 좋다, ~해야 한다 (충고)<br>주어가 he, she라도 must, should 모양은 그대로예요.',
+  p:'You must wear a uniform. (○), You must wears ~ (×), You must to wear ~ (×)',
+  q:["You ___ wear a uniform at school.|must|musts|must to|학교에서는 교복을 꼭 입어야 해.","We must ___ our passports.|bring|brings|to bring|우리는 여권을 꼭 가져와야 해.","You ___ return the book.|should|shoulds|should to|그 책을 돌려주는 게 좋겠어.","He should ___ his mistake.|fix|fixes|to fix|그는 자기 실수를 고치는 게 좋겠어.","She must ___ her promise.|keep|keeps|to keep|그녀는 약속을 꼭 지켜야 해.","Students ___ be quiet in the library.|must|musts|are must|학생들은 도서관에서 꼭 조용히 해야 해.","I should ___ to bed early.|go|goes|to go|나는 일찍 자는 게 좋겠어.","You should ___ sorry.|say|says|to say|미안하다고 말하는 게 좋겠어.","We must ___ the street carefully.|cross|crosses|to cross|우리는 길을 조심해서 건너야 해.","He ___ wear a hat. It's sunny.|should|shoulds|should to|그는 모자를 쓰는 게 좋겠어. 햇볕이 강해."]},
+ {c:6,n:23,pg:106,t:'would / could',k:'~해 주시겠어요? ~을 원해요',i:'🎁',w:[['screen','화면'],['window seat','창가 자리'],['backpack','배낭'],['take a break','잠깐 쉬다'],['surprise gift','깜짝 선물']],
+  r:'<b>Could you</b> + 동사원형 ~? → ~해 주시겠어요? (공손한 부탁)<br><b>Would you</b> + 동사원형 ~? → ~해 주시겠어요?<br><b>Would you like</b> + 명사? → ~을 드릴까요?<br><b>I would like</b> (I’d like) + 명사 → ~을 원해요',
+  p:'Could you help me? (○), Could you helps me? (×), Could you to help me? (×)',
+  q:["___ you open the window?|Could|Are|Is|창문을 열어 주시겠어요?","Would you like a ___?|window seat|window seats|seat window|창가 자리를 원하세요?","I would ___ a surprise gift.|like|likes|to like|나는 깜짝 선물을 원해요.","Could you ___ the screen?|clean|cleans|to clean|화면을 닦아 주시겠어요?","Would you ___ a break?|take|takes|to take|잠깐 쉬시겠어요?","I'd like a new ___.|backpack|backpacks|backpackes|나는 새 배낭을 원해요.","Could you ___ me?|help|helps|to help|저를 도와주시겠어요?","___ you like a window seat?|Would|Are|Is|창가 자리를 원하세요?","Would you ___ me a pen?|give|gives|to give|펜 좀 주시겠어요?","She ___ like a window seat.|would|woulds|would to|그녀는 창가 자리를 원해요."]},
+ {c:6,n:24,pg:110,t:'must / should / would / could 부정문',k:'must not, shouldn’t',i:'🥤',w:[['text','문자를 보내다'],['waste','낭비하다'],['skip','거르다, 빼먹다'],['trust','믿다'],['soda','탄산음료']],
+  r:'<b>must not</b> (mustn’t) + 동사원형: ~하면 절대 안 된다<br><b>should not</b> (shouldn’t) + 동사원형: ~하지 않는 게 좋다<br><b>would not</b> (wouldn’t): ~하려 하지 않는다 · <b>could not</b> (couldn’t): ~할 수 없다<br>not은 조동사 바로 뒤에 와요.',
+  p:'You must not waste water. (○), You don’t must waste water. (×)',
+  q:["You ___ waste water.|must not|don't must|must don't|물을 낭비하면 절대 안 돼.","You ___ skip breakfast.|should not|don't should|should don't|아침을 거르지 않는 게 좋아.","We mustn't ___ in class.|text|texts|to text|우리는 수업 시간에 문자를 보내면 안 돼.","You shouldn't ___ too much soda.|drink|drinks|to drink|탄산음료를 너무 많이 마시지 않는 게 좋아.","She ___ trust strangers.|shouldn't|doesn't should|shouldn't to|그녀는 낯선 사람을 믿지 않는 게 좋아.","You must not ___ here.|run|runs|to run|여기서 뛰면 절대 안 돼.","He ___ waste his money.|shouldn't|shouldn't to|don't should|그는 돈을 낭비하지 않는 게 좋아.","Kids ___ play with fire.|must not|must not to|don't must|아이들은 불장난을 하면 절대 안 돼.","My cat ___ eat this food.|wouldn't|wouldn't to|doesn't would|우리 고양이는 이 음식을 먹으려 하지 않아.","You should not ___ the class.|skip|skips|to skip|그 수업을 빠지지 않는 게 좋아."]},
+ {c:6,n:25,pg:114,t:'must / should / would / could 의문문',k:'Should I ~? Could you ~?',i:'💳',w:[['pay','지불하다'],['cash','현금'],['follow','따라가다'],['cancel','취소하다'],['practice','연습하다']],
+  r:'조동사를 주어 <b>앞</b>으로 보내서 물어요.<br><b>Should I</b> + 동사원형 ~? → 내가 ~하는 게 좋을까?<br><b>Could you</b> / <b>Would you</b> + 동사원형 ~? → ~해 주시겠어요?<br>대답: Yes, you should. / No, you shouldn’t. · Sure. / Sorry, I can’t.',
+  p:'Should I pay in cash? (○), Do I should pay in cash? (×)',
+  q:["___ I pay in cash?|Should|Do|Am|현금으로 내는 게 좋을까?","Should I ___ the class?|cancel|cancels|to cancel|수업을 취소하는 게 좋을까?","___ you follow me, please?|Could|Do|Are|저를 따라와 주시겠어요?","Should I practice more? Yes, you ___.|should|do|are|더 연습하는 게 좋을까? 응, 그러는 게 좋아.","Should we cancel it? No, you ___.|shouldn't|don't|aren't|그걸 취소하는 게 좋을까? 아니, 그러지 않는 게 좋아.","Would you ___ the piano for us?|play|plays|to play|우리를 위해 피아노를 쳐 주시겠어요?","Could you ___ by card?|pay|pays|to pay|카드로 내 주시겠어요?","Should she ___ every day?|practice|practices|to practice|그녀는 매일 연습하는 게 좋을까?","___ I follow the map?|Should|Am|Does|지도를 따라가는 게 좋을까?","Must I ___ the rules?|follow|follows|to follow|규칙을 꼭 따라야 하니?"]},
+ {c:7,n:26,pg:120,t:'시간 전치사',k:'at, on, in, before, after',i:'⏰',w:[['meet','만나다'],['stretch','스트레칭하다'],['snack','간식'],['share','나누다'],['match','경기']],
+  r:'<b>at</b> + 시각: at 7 o’clock, at noon, at night<br><b>on</b> + 요일·날짜: on Monday, on May 5th, on my birthday<br><b>in</b> + 달·계절·연도·아침/오후/저녁: in May, in summer, in the morning<br><b>before</b> ~ 전에 · <b>after</b> ~ 후에',
+  p:'in the morning (○), on the morning (×) · on Sunday (○), in Sunday (×)',
+  q:["We meet ___ 3 o'clock.|at|on|in|우리는 3시에 만나.","I stretch ___ the morning.|in|on|at|나는 아침에 스트레칭을 해.","The match is ___ Saturday.|on|in|at|경기는 토요일이야.","We eat snacks ___ lunch.|after|in|on|우리는 점심 후에 간식을 먹어.","My birthday is ___ May.|in|on|at|내 생일은 5월이야.","I share my toys ___ my birthday.|on|in|at|나는 내 생일에 장난감을 나눠.","We swim in the sea ___ summer.|in|on|at|우리는 여름에 바다에서 수영해.","I wash my hands ___ dinner.|before|in|on|나는 저녁 먹기 전에 손을 씻어.","The stars are bright ___ night.|at|in|on|밤에는 별이 밝아.","We have a match ___ May 5th.|on|in|at|우리는 5월 5일에 경기가 있어."]},
+ {c:7,n:27,pg:124,t:'장소 전치사',k:'in, on, under, next to, behind, between',i:'🐚',w:[['pocket','주머니'],['floor','바닥'],['hang','걸다, 걸려 있다'],['shell','껍데기, 조개껍데기'],['gym','체육관']],
+  r:'<b>in</b> ~ 안에 · <b>on</b> ~ 위에(붙어서) · <b>under</b> ~ 아래에<br><b>next to</b> ~ 옆에 · <b>behind</b> ~ 뒤에 · <b>in front of</b> ~ 앞에 · <b>between A and B</b> A와 B 사이에<br><b>at</b> + 장소: at the gym, at school',
+  p:'next to (○), next (×) · in front of (○), in front (×)',
+  q:["The coin is ___ my pocket.|in|on|at|동전이 내 주머니 안에 있어.","The bag is ___ the floor.|on|between|behind|가방이 바닥 위에 있어.","A picture hangs ___ the wall.|on|in|under|그림 한 점이 벽에 걸려 있어.","The cat is ___ the table.|under|between|at|고양이가 탁자 아래에 있어.","We play basketball ___ the gym.|at|on|under|우리는 체육관에서 농구를 해.","The bank is ___ the park and the school.|between|next|behind|은행은 공원과 학교 사이에 있어.","My house is ___ to the library.|next|between|front|우리 집은 도서관 옆에 있어.","The tree is ___ the house.|behind|between|next|나무는 집 뒤에 있어.","A shell is ___ the box.|in|at|between|조개껍데기가 상자 안에 있어.","He is in ___ of the door.|front|next|behind|그는 문 앞에 있어."]},
+ {c:7,n:28,pg:128,t:'방향 전치사',k:'up, down, into, out of, across, along',i:'🪜',w:[['stairs','계단'],['ladder','사다리'],['stream','개울'],['cave','동굴'],['pour','붓다']],
+  r:'움직이는 방향을 알려 줘요.<br><b>up</b> 위로 · <b>down</b> 아래로 · <b>into</b> ~ 안으로 · <b>out of</b> ~ 밖으로<br><b>across</b> ~을 가로질러 · <b>along</b> ~을 따라 · <b>to</b> ~으로 · <b>from</b> ~에서',
+  p:'out of the cave (○), out the cave (×) · 안으로 들어갈 때는 into예요.',
+  q:["He goes ___ the stairs.|up|into|out|그는 계단을 올라가.","She climbs ___ the ladder.|down|into|across|그녀는 사다리를 내려와.","We walk ___ the stream.|along|into|up|우리는 개울을 따라 걸어.","The bear goes ___ the cave.|into|up|out|곰이 동굴 안으로 들어가.","The bats fly ___ of the cave.|out|into|up|박쥐들이 동굴 밖으로 날아가.","I pour milk ___ the cup.|into|out|up|나는 컵에 우유를 부어.","They walk ___ the bridge.|across|into|out|그들은 다리를 건너가.","I walk ___ school every day.|to|into|out|나는 매일 학교에 걸어가.","The ball rolls ___ the hill.|down|into|out|공이 언덕 아래로 굴러가.","This letter is ___ my grandma.|from|into|up|이 편지는 할머니에게서 온 거야."]}
+];
+/* 교재 Chapter (1권) */
+const EBS1CH = [[1,'be동사'],[2,'일반동사'],[3,'명사'],[4,'대명사'],[5,'형용사와 부사'],[6,'조동사'],[7,'전치사']];
+/* ===== 2권 (4~5학년): 교재 차례의 단원 주제를 따르고, 낱말은 단원 주제에 맞춰 골랐어요 (교재 낱말 사진을 받으면 바꿔요) =====
+   예문에는 그 단원까지 배운 문법만 써요 (예: 진행형 단원 전에는 -ing 문장이 없어요) */
+const EBS2 = [
+ {c:1,n:1,t:'be동사 과거형의 기본 규칙',k:'was, were',i:'🕰️',w:[['yesterday','어제'],['weekend','주말'],['museum','박물관'],['sleepy','졸린'],['crowded','붐비는']],
+  r:'<b>was / were</b>는 be동사의 과거형이에요. ‘~이었다, ~에 있었다’<br>am, is → <b>was</b> · are → <b>were</b><br>I / He / She / It <b>was</b> · You / We / They <b>were</b><br>yesterday, last week, then 같은 지난 때를 나타내는 말과 함께 자주 써요.',
+  p:'주어가 여럿이면 were! We were (○), We was (×)',
+  q:["I ___ sleepy yesterday.|was|were|am|나는 어제 졸렸어.","They ___ at the museum last weekend.|were|was|are|그들은 지난 주말에 박물관에 있었어.","The bus ___ crowded yesterday.|was|were|are|어제 버스가 붐볐어.","We ___ happy last weekend.|were|was|are|우리는 지난 주말에 행복했어.","She ___ in Busan yesterday.|was|were|is|그녀는 어제 부산에 있었어.","You ___ late yesterday.|were|was|are|너는 어제 늦었어.","It ___ cold last night.|was|were|is|어젯밤은 추웠어.","Tom and I ___ at home yesterday.|were|was|are|톰과 나는 어제 집에 있었어.","My parents ___ busy last week.|were|was|are|우리 부모님은 지난주에 바쁘셨어.","He ___ ten years old last year.|was|were|is|그는 작년에 열 살이었어."]},
+ {c:1,n:2,t:'be동사 과거형의 부정문',k:'wasn’t, weren’t',i:'🙅',w:[['noisy','시끄러운'],['ready','준비된'],['nervous','긴장한'],['absent','결석한'],['quiet','조용한']],
+  r:'‘~이 아니었다, ~에 없었다’는 was, were 뒤에 <b>not</b>을 붙여요.<br><b>was not</b> (wasn’t) · <b>were not</b> (weren’t)',
+  p:'not은 was, were 뒤에! I was not late. (○), I not was late. (×)',
+  q:["I ___ nervous yesterday.|wasn't|weren't|not was|나는 어제 긴장하지 않았어.","They ___ noisy in class.|weren't|wasn't|not were|그들은 수업 시간에 시끄럽지 않았어.","She ___ absent yesterday.|wasn't|weren't|isn't|그녀는 어제 결석하지 않았어.","We ___ ready then.|weren't|wasn't|aren't|우리는 그때 준비가 안 돼 있었어.","The room ___ quiet last night.|wasn't|weren't|isn't|어젯밤 방은 조용하지 않았어.","You ___ late yesterday.|weren't|wasn't|aren't|너는 어제 늦지 않았어.","He was not ___.|nervous|nervously|nervouses|그는 긴장하지 않았어.","It ___ my bag.|wasn't|weren't|not was|그건 내 가방이 아니었어.","My friends ___ at the park yesterday.|weren't|wasn't|aren't|내 친구들은 어제 공원에 없었어.","I ___ absent last week.|was not|were not|not was|나는 지난주에 결석하지 않았어."]},
+ {c:1,n:3,t:'be동사 과거형의 의문문',k:'Was he ~? Were you ~?',i:'❓',w:[['bored','지루한'],['sick','아픈'],['zoo','동물원'],['concert','음악회'],['last night','어젯밤']],
+  r:'was, were를 주어 <b>앞</b>으로 보내서 물어요.<br><b>Were you</b> sick? → Yes, I was. / No, I wasn’t.<br><b>Was he</b> at the zoo? → Yes, he was. / No, he wasn’t.',
+  p:'Were you ~?로 물으면 I로 대답해요. Yes, I was. (○)',
+  q:["___ you sick yesterday?|Were|Was|Are|너는 어제 아팠니?","___ he at the zoo last weekend?|Was|Were|Is|그는 지난 주말에 동물원에 있었니?","___ they bored?|Were|Was|Do|그들은 지루했니?","Was it cold last night? Yes, it ___.|was|were|is|어젯밤 추웠니? 응, 추웠어.","Were you at the concert? No, I ___.|wasn't|weren't|am not|너 음악회에 있었니? 아니, 없었어.","Was she sick? No, she ___.|wasn't|weren't|isn't|그녀는 아팠니? 아니, 안 아팠어.","___ the concert fun last night?|Was|Were|Is|어젯밤 음악회 재미있었니?","Were they at the zoo? Yes, they ___.|were|was|are|그들은 동물원에 있었니? 응, 있었어.","___ I late yesterday?|Was|Were|Am|내가 어제 늦었니?","Was Tom bored? Yes, ___ was.|he|she|it|톰은 지루했니? 응, 지루했어."]},
+ {c:2,n:4,t:'일반동사 과거형의 기본 규칙',k:'-ed를 붙이는 동사',i:'📦',w:[['arrive','도착하다'],['carry','나르다'],['stop','멈추다'],['dance','춤추다'],['wash','씻다']],
+  r:'지난 일을 말할 때 동사에 <b>-ed</b>를 붙여요. play → played<br>e로 끝나면 <b>-d</b>: dance → danced, arrive → arrived<br>자음 + y → <b>-ied</b>: carry → carried, study → studied<br>짧은 모음 + 자음 하나 → 자음을 한 번 더: stop → stopped<br>과거형은 주어가 누구든 모양이 같아요.',
+  p:'He played. (○), He playeds. (×) · 과거형에는 -s를 붙이지 않아요.',
+  q:["I ___ my hands an hour ago.|washed|washs|washeded|나는 한 시간 전에 손을 씻었어.","She ___ at the station yesterday.|arrived|arriveed|arrives|그녀는 어제 역에 도착했어.","He ___ the box yesterday.|carried|carryed|carries|그는 어제 상자를 날랐어.","The bus ___ ten minutes ago.|stopped|stoped|stops|버스가 10분 전에 멈췄어.","We ___ at the party last night.|danced|danceed|dances|우리는 어젯밤 파티에서 춤을 췄어.","They ___ soccer yesterday.|played|plaied|plays|그들은 어제 축구를 했어.","Mina ___ English last night.|studied|studyed|studies|미나는 어젯밤 영어를 공부했어.","I ___ my mom yesterday.|helped|helpped|helps|나는 어제 엄마를 도왔어.","He ___ the door last night.|closed|closeed|closes|그는 어젯밤 문을 닫았어.","We ___ in Seoul last month.|stayed|staied|stays|우리는 지난달에 서울에 머물렀어."]},
+ {c:2,n:5,t:'일반동사 과거형의 불규칙 변화',k:'went, ate, saw처럼 모양이 바뀌는 동사',i:'🎣',w:[['catch','잡다'],['find','찾다'],['buy','사다'],['write','쓰다'],['swim','수영하다']],
+  r:'과거형이 -ed가 아니라 모양이 바뀌는 동사가 있어요.<br>go → <b>went</b> · come → <b>came</b> · eat → <b>ate</b> · see → <b>saw</b> · have → <b>had</b> · make → <b>made</b><br>buy → <b>bought</b> · catch → <b>caught</b> · find → <b>found</b> · write → <b>wrote</b> · swim → <b>swam</b> · read → <b>read</b>(레드)',
+  p:'goed, eated, buyed라고 쓰지 않아요. 모양이 바뀌는 동사는 소리 내어 외워요.',
+  q:["I ___ a fish yesterday.|caught|catched|catchs|나는 어제 물고기를 잡았어.","She ___ her key this morning.|found|finded|finds|그녀는 오늘 아침 열쇠를 찾았어.","We ___ a cake yesterday.|bought|buyed|buys|우리는 어제 케이크를 샀어.","He ___ a letter last night.|wrote|writed|writes|그는 어젯밤 편지를 썼어.","They ___ in the sea last summer.|swam|swimmed|swims|그들은 지난여름 바다에서 수영했어.","I ___ to the park yesterday.|went|goed|goes|나는 어제 공원에 갔어.","She ___ pizza for lunch yesterday.|ate|eated|eats|그녀는 어제 점심으로 피자를 먹었어.","We ___ a movie last weekend.|saw|seed|sees|우리는 지난 주말에 영화를 봤어.","He ___ a good time yesterday.|had|haved|has|그는 어제 즐거운 시간을 보냈어.","My dad ___ home late last night.|came|comed|comes|아빠는 어젯밤 늦게 집에 오셨어."]},
+ {c:2,n:6,t:'일반동사 과거형의 부정문',k:'didn’t + 동사원형',i:'🙉',w:[['hear','듣다'],['break','깨다'],['enjoy','즐기다'],['understand','이해하다'],['believe','믿다']],
+  r:'‘~하지 않았다’는 <b>didn’t (did not)</b> + 동사원형이에요. 주어가 누구든 같아요.<br>I didn’t go. · She didn’t eat.',
+  p:'didn’t 뒤에는 동사원형! I didn’t go. (○), I didn’t went. (×)',
+  q:["I ___ the noise.|didn't hear|didn't heard|don't heard|나는 그 소리를 듣지 못했어.","She ___ the glass.|didn't break|didn't broke|doesn't broke|그녀는 유리잔을 깨지 않았어.","We didn't ___ the movie.|enjoy|enjoyed|enjoys|우리는 그 영화가 재미없었어.","He ___ the question.|didn't understand|didn't understood|not understood|그는 질문을 이해하지 못했어.","They didn't ___ me.|believe|believed|believes|그들은 나를 믿지 않았어.","I didn't ___ to school yesterday.|go|went|goes|나는 어제 학교에 가지 않았어.","Mina ___ breakfast this morning.|didn't eat|didn't ate|doesn't ate|미나는 오늘 아침을 먹지 않았어.","We ___ TV last night.|didn't watch|didn't watched|weren't watch|우리는 어젯밤 TV를 보지 않았어.","He didn't ___ his homework.|do|did|does|그는 숙제를 하지 않았어.","You ___ the window.|didn't break|didn't broke|wasn't break|너는 창문을 깨지 않았어."]},
+ {c:2,n:7,t:'일반동사 과거형의 의문문',k:'Did you ~?',i:'✈️',w:[['invite','초대하다'],['travel','여행하다'],['borrow','빌리다'],['decide','결정하다'],['win','이기다']],
+  r:'<b>Did</b> + 주어 + 동사원형 ~? → ~했니?<br>대답: Yes, I did. / No, I didn’t.',
+  p:'Did you go? (○), Did you went? (×)',
+  q:["___ you invite Tom yesterday?|Did|Do|Were|너 어제 톰을 초대했니?","Did she ___ to Jeju last summer?|travel|traveled|travels|그녀는 지난여름 제주도로 여행 갔니?","Did they ___ the game?|win|won|wins|그들은 경기에서 이겼니?","Did you borrow a book? Yes, I ___.|did|do|was|너 책 빌렸니? 응, 빌렸어.","Did he decide? No, he ___.|didn't|doesn't|wasn't|그는 결정했니? 아니, 안 했어.","___ your mom call you last night?|Did|Was|Does|어젯밤 엄마가 너에게 전화하셨니?","Did you ___ a pencil from Mina?|borrow|borrowed|borrows|미나에게 연필 빌렸니?","Did we win? Yes, we ___.|did|won|were|우리가 이겼니? 응, 이겼어.","Did she ___ her friends to the party?|invite|invited|invites|그녀는 친구들을 파티에 초대했니?","___ they travel by train yesterday?|Did|Were|Do|그들은 어제 기차로 여행했니?"]},
+ {c:3,n:8,t:'미래형의 기본 규칙',k:'will + 동사원형',i:'🎪',w:[['tomorrow','내일'],['next week','다음 주'],['rain','비가 오다'],['plan','계획'],['festival','축제']],
+  r:'앞으로 할 일은 <b>will</b> + 동사원형: ~할 것이다, ~할게<br>주어가 누구든 will 모양은 그대로예요. 줄여서 I’ll, You’ll, He’ll, It’ll',
+  p:'She will go. (○), She wills go. (×), She will goes. (×)',
+  q:["It ___ rain tomorrow.|will|wills|is will|내일 비가 올 거야.","I will ___ you tomorrow.|call|calls|called|내일 너에게 전화할게.","We will ___ the festival next week.|visit|visits|visited|우리는 다음 주에 축제에 갈 거야.","She ___ be ten next year.|will|wills|is|그녀는 내년에 열 살이 될 거야.","They will ___ a new plan.|make|makes|made|그들은 새 계획을 세울 거야.","I'll ___ you after school.|help|helps|helped|방과 후에 너를 도와줄게.","He will ___ here soon.|be|is|was|그는 곧 여기에 올 거야.","The festival ___ start at six.|will|wills|is|축제는 6시에 시작할 거야.","We ___ go there tomorrow.|will|wills|are|우리는 내일 거기에 갈 거야.","I will ___ my room tomorrow.|clean|cleans|cleaned|나는 내일 내 방을 청소할 거야."]},
+ {c:3,n:9,t:'미래형의 다른 표현',k:'be going to + 동사원형',i:'🏕️',w:[['camp','캠프'],['pack','짐을 싸다'],['move','이사하다'],['picnic','소풍'],['vacation','방학']],
+  r:'<b>be going to</b> + 동사원형: ~할 예정이다 (미리 정해 둔 계획)<br>I <b>am going to</b> · He / She <b>is going to</b> · We / They <b>are going to</b>',
+  p:'She is going to pack. (○), She going to pack. (×) · be동사를 빠뜨리지 않아요.',
+  q:["I am going ___ visit my grandparents.|to|for|will|나는 조부모님을 찾아뵐 거야.","She ___ going to pack her bag.|is|are|am|그녀는 가방을 쌀 거야.","We are going to ___ to Busan.|move|moves|moved|우리는 부산으로 이사 갈 거야.","They ___ going to have a picnic.|are|is|am|그들은 소풍을 갈 거야.","He is going to ___ at a camp.|stay|stays|stayed|그는 캠프에서 지낼 거야.","I'm going to ___ during the vacation.|swim|swims|swam|나는 방학 동안 수영을 할 거야.","Are you going to ___ the bus?|take|takes|took|너 버스 탈 거니?","It is going to ___ soon.|rain|rains|rained|곧 비가 올 거야.","We are going ___ have a picnic on Sunday.|to|for|will|우리는 일요일에 소풍을 갈 거야.","My mom ___ going to make a cake.|is|are|be|엄마는 케이크를 만드실 거야."]},
+ {c:3,n:10,t:'미래형의 부정문',k:'won’t, be not going to',i:'💪',w:[['give up','포기하다'],['tease','놀리다'],['spill','쏟다'],['repeat','반복하다'],['worry','걱정하다']],
+  r:'<b>will not</b> (won’t) + 동사원형: ~하지 않을 것이다<br><b>be not going to</b> + 동사원형: ~하지 않을 예정이다',
+  p:'I won’t give up. (○), I willn’t give up. (×), I don’t will give up. (×)',
+  q:["I ___ give up.|won't|willn't|don't will|나는 포기하지 않을 거야.","She will not ___ her brother.|tease|teases|teased|그녀는 남동생을 놀리지 않을 거야.","We ___ going to spill the milk.|aren't|isn't|won't|우리는 우유를 쏟지 않을 거야.","He won't ___ the mistake.|repeat|repeats|repeated|그는 그 실수를 반복하지 않을 거야.","I won't ___ about it.|worry|worries|worried|나는 그것에 대해 걱정하지 않을 거야.","They ___ be late.|won't|don't|aren't|그들은 늦지 않을 거야.","It will not ___ tomorrow.|rain|rains|rained|내일은 비가 오지 않을 거야.","I'm not going to ___ up.|give|gives|gave|나는 포기하지 않을 거야.","He ___ not going to come.|is|are|will|그는 오지 않을 거야.","We ___ forget you.|won't|don't will|willn't|우리는 너를 잊지 않을 거야."]},
+ {c:3,n:11,t:'미래형의 의문문',k:'Will you ~? Are you going to ~?',i:'🎟️',w:[['join','함께하다'],['prepare','준비하다'],['show','보여 주다'],['ticket','표'],['trip','여행']],
+  r:'<b>Will</b> + 주어 + 동사원형 ~? → Yes, I will. / No, I won’t.<br><b>Are you going to</b> + 동사원형 ~? → Yes, I am. / No, I’m not.',
+  p:'Will you join us? (○), Do you will join us? (×)',
+  q:["___ you join us?|Will|Are|Do|너 우리와 함께할 거니?","Will she ___ dinner?|prepare|prepares|prepared|그녀가 저녁을 준비할까?","Are you going to ___ me the picture?|show|shows|showed|나에게 그 사진 보여 줄 거니?","Will they buy tickets? Yes, they ___.|will|do|are|그들은 표를 살 거니? 응, 살 거야.","Will he come? No, he ___.|won't|doesn't|isn't|그는 올까? 아니, 안 올 거야.","___ we going to take a trip?|Are|Will|Do|우리 여행 갈 거야?","Is it going to rain? Yes, it ___.|is|will|does|비가 올까? 응, 올 거야.","Will you ___ the class?|join|joins|joined|그 수업에 함께할 거니?","___ Mina going to prepare a gift?|Is|Are|Will|미나는 선물을 준비할 거니?","Are you going to buy a ticket? No, I'm ___.|not|won't|don't|표 살 거니? 아니, 안 살 거야."]},
+ {c:4,n:12,t:'진행형의 기본 규칙',k:'be동사 + 동사ing',i:'⏳',w:[['shout','외치다'],['wait','기다리다'],['sit','앉다'],['smile','미소 짓다'],['lie','눕다']],
+  r:'<b>be동사 + 동사ing</b>: ~하고 있다 (지금 하고 있는 일)<br>-ing 붙이기: play → playing · e로 끝나면 e를 빼고: smile → smiling<br>짧은 모음 + 자음 하나: sit → sitting, run → running · ie → y: lie → lying',
+  p:'I am waiting. (○), I waiting. (×) · be동사를 빠뜨리지 않아요.',
+  q:["I am ___ for the bus.|waiting|waitting|wait|나는 버스를 기다리고 있어.","She is ___ at me.|smiling|smileing|smile|그녀는 나에게 미소 짓고 있어.","They are ___ on the bench.|sitting|siting|sit|그들은 벤치에 앉아 있어.","The boy is ___ loudly.|shouting|shoutting|shout|그 남자아이가 큰 소리로 외치고 있어.","The cat is ___ on the sofa.|lying|lieing|lie|고양이가 소파에 누워 있어.","We ___ playing soccer.|are|is|am|우리는 축구를 하고 있어.","He is ___.|running|runing|run|그는 달리고 있어.","My mom ___ cooking.|is|are|am|엄마는 요리하고 계셔.","It is ___ now.|raining|rainning|rain|지금 비가 오고 있어.","I ___ reading a book.|am|is|are|나는 책을 읽고 있어."]},
+ {c:4,n:13,t:'현재진행형과 과거진행형',k:'is doing / was doing',i:'🍪',w:[['then','그때'],['bake','굽다'],['fish','낚시하다'],['knock','두드리다'],['ring','울리다']],
+  r:'현재진행형: <b>am / are / is + 동사ing</b> → 지금 ~하고 있다<br>과거진행형: <b>was / were + 동사ing</b> → 그때 ~하고 있었다',
+  p:'then, at that time(그때)이 있으면 was / were + -ing!',
+  q:["I ___ baking cookies then.|was|am|were|나는 그때 쿠키를 굽고 있었어.","They ___ fishing at that time.|were|was|are|그들은 그때 낚시를 하고 있었어.","The baby ___ sleeping now.|is|was|were|아기는 지금 자고 있어.","Someone ___ knocking on the door now.|is|was|were|지금 누군가 문을 두드리고 있어.","The phone ___ ringing then.|was|is|were|그때 전화가 울리고 있었어.","We were ___ at seven last night.|eating|eat|ate|우리는 어젯밤 7시에 먹고 있었어.","She is ___ a cake now.|baking|bakeing|bake|그녀는 지금 케이크를 굽고 있어.","He was ___ in the lake then.|fishing|fishs|fished|그는 그때 호수에서 낚시하고 있었어.","You ___ sleeping at ten last night.|were|was|are|너는 어젯밤 10시에 자고 있었어.","I am ___ the door now.|knocking|knock|knocked|나는 지금 문을 두드리고 있어."]},
+ {c:4,n:14,t:'진행형의 부정문',k:'isn’t doing, wasn’t doing',i:'🤫',w:[['cry','울다'],['hide','숨다'],['fight','싸우다'],['listen','듣다'],['rest','쉬다']],
+  r:'be동사 뒤에 <b>not</b>을 붙여요.<br>I’m not crying. · She isn’t hiding. · They weren’t fighting.',
+  p:'She isn’t hiding. (○), She doesn’t hiding. (×)',
+  q:["I'm not ___.|crying|cry|cried|나는 울고 있지 않아.","She ___ hiding now.|isn't|aren't|doesn't|그녀는 지금 숨어 있지 않아.","They ___ fighting then.|weren't|wasn't|aren't|그들은 그때 싸우고 있지 않았어.","He is not ___ to music.|listening|listen|listens|그는 음악을 듣고 있지 않아.","We ___ resting now.|aren't|isn't|don't|우리는 지금 쉬고 있지 않아.","The dog wasn't ___.|barking|bark|barked|그 개는 짖고 있지 않았어.","I ___ watching TV then.|wasn't|weren't|didn't|나는 그때 TV를 보고 있지 않았어.","You aren't ___.|listening|listen|listened|너는 듣고 있지 않구나.","It ___ snowing now.|isn't|aren't|doesn't|지금 눈이 오고 있지 않아.","Mina and Tom ___ fighting.|aren't|isn't|don't|미나와 톰은 싸우고 있지 않아."]},
+ {c:4,n:15,t:'진행형의 의문문',k:'Are you doing ~?',i:'🚿',w:[['chat','수다를 떨다'],['paint','칠하다, 그리다'],['look for','찾다'],['take a shower','샤워하다'],['shake','흔들다, 떨다']],
+  r:'be동사를 주어 <b>앞</b>으로 보내요.<br><b>Are you</b> chatting? → Yes, I am. / No, I’m not.<br><b>Was he</b> painting? → Yes, he was. / No, he wasn’t.',
+  p:'Is he painting? (○), Does he painting? (×)',
+  q:["___ you chatting with Mina?|Are|Do|Is|너 미나랑 수다 떨고 있니?","___ he painting the wall?|Is|Are|Does|그는 벽을 칠하고 있니?","Are they looking ___ the cat?|for|at|to|그들은 고양이를 찾고 있니?","Is she taking a shower? Yes, she ___.|is|does|was|그녀는 샤워하고 있니? 응, 하고 있어.","Were you sleeping? No, I ___.|wasn't|weren't|didn't|너 자고 있었니? 아니, 안 자고 있었어.","Is the dog shaking? No, it ___.|isn't|doesn't|wasn't|그 개는 떨고 있니? 아니, 안 떨고 있어.","___ they painting then?|Were|Was|Are|그들은 그때 칠하고 있었니?","Is Tom ___ a shower?|taking|take|took|톰은 샤워하고 있니?","Are you ___ for your key?|looking|look|looked|너 열쇠 찾고 있니?","Was it raining? Yes, it ___.|was|were|did|비가 오고 있었니? 응, 오고 있었어."]},
+ {c:5,n:16,t:'Who, What',k:'누구, 무엇',i:'🎤',w:[['favorite','가장 좋아하는'],['hobby','취미'],['sport','운동, 스포츠'],['subject','과목'],['singer','가수']],
+  r:'<b>Who</b>: 누구 · <b>What</b>: 무엇<br>Who is he? → He is my cousin.<br>What is your hobby? → My hobby is reading.<br><b>What</b> + 명사: 무슨 ~ → What sport do you like?',
+  p:'의문사 다음에는 묻는 순서! What is it? (○), What it is? (×)',
+  q:["___ is your favorite singer?|Who|What|Where|네가 가장 좋아하는 가수는 누구야?","___ is your hobby?|What|Who|When|네 취미는 뭐야?","___ sport do you like?|What|Who|Where|너는 무슨 운동을 좋아하니?","___ is that boy? He is my cousin.|Who|What|How|저 남자아이는 누구니? 내 사촌이야.","What ___ your favorite subject?|is|are|do|네가 가장 좋아하는 과목은 뭐니?","___ did you eat for lunch?|What|Who|Where|점심으로 뭐 먹었어?","___ made this cake? My mom did.|Who|What|How|누가 이 케이크를 만들었어? 엄마가.","What ___ you doing?|are|is|do|너 뭐 하고 있니?","Who ___ your teacher?|is|are|does|너의 선생님은 누구셔?","___ subject is easy for you?|What|Who|Why|어떤 과목이 너에게 쉽니?"]},
+ {c:5,n:17,t:'When, Where, Why, How',k:'언제, 어디, 왜, 어떻게',i:'🚉',w:[['library','도서관'],['birthday','생일'],['station','역'],['upset','속상한'],['by bus','버스로']],
+  r:'<b>When</b> 언제 · <b>Where</b> 어디 · <b>Why</b> 왜 (대답: Because ~) · <b>How</b> 어떻게, 어떤<br>When is your birthday? · Where is the library? · Why are you upset? · How do you go to school?',
+  p:'Why로 물으면 Because로 대답해요. Why are you upset? Because I lost my bag.',
+  q:["___ is your birthday? It's in May.|When|Where|Why|네 생일은 언제야? 5월이야.","___ is the library? It's next to the bank.|Where|When|Who|도서관은 어디에 있어? 은행 옆에 있어.","___ are you upset? I lost my bag.|Why|Where|When|왜 속상해? 가방을 잃어버렸어.","___ do you go to school? By bus.|How|Why|When|학교에 어떻게 가? 버스로.","Where ___ the station?|is|are|do|역은 어디야?","When ___ you get up?|do|are|is|너는 언제 일어나?","___ are you? I'm fine.|How|What|Where|어떻게 지내? 잘 지내.","Why ___ he crying?|is|does|do|그는 왜 울고 있어?","Where ___ you go yesterday?|did|do|were|어제 어디 갔었어?","___ was the trip? It was great.|How|Why|Where|여행은 어땠어? 정말 좋았어."]},
+ {c:5,n:18,t:'의문사의 형식과 쓰임',k:'What time, Whose, Which',i:'🕒',w:[['whose','누구의'],['which','어느 (것)'],['color','색깔'],['time','시간, 시각'],['way','길, 방법']],
+  r:'의문사 + be동사 + 주어? Where <b>is</b> the station?<br>의문사 + do / does / did + 주어 + 동사원형? What <b>did</b> you buy?<br>의문사가 주어일 때: <b>Who</b> broke the window?<br><b>What time</b> 몇 시 · <b>Whose</b> + 명사 누구의 · <b>Which</b> + 명사 어느',
+  p:'Where does she live? (○), Where she lives? (×)',
+  q:["___ time is it? It's three.|What|Which|Who|몇 시야? 3시야.","___ bag is this? It's Mina's.|Whose|Who|Which|이건 누구 가방이야? 미나 거야.","___ color do you like, red or blue?|Which|Who|Whose|빨강과 파랑 중 어느 색을 좋아해?","Where ___ she live?|does|do|is|그녀는 어디에 사니?","What ___ you buy yesterday?|did|do|were|어제 뭐 샀어?","Who ___ the window? Tom did.|broke|breaks|breaking|누가 창문을 깼어? 톰이.","Which way ___ the station?|is|are|does|어느 길이 역으로 가는 길이야?","Whose ___ are these?|shoes|shoe|shoeses|이것들은 누구 신발이야?","What time ___ you have lunch?|do|are|is|너는 몇 시에 점심을 먹어?","How ___ you come here?|did|were|was|여기 어떻게 왔어?"]},
+ {c:6,n:19,t:'and, but, or, so',k:'그리고, 하지만, 또는, 그래서',i:'🧃',w:[['early','일찍'],['rainy','비 오는'],['cookie','쿠키'],['juice','주스'],['cheap','값싼']],
+  r:'<b>and</b> 그리고 · <b>but</b> 하지만 · <b>or</b> 또는 · <b>so</b> 그래서<br>so 뒤에는 결과가 와요: It was cold, <b>so</b> I wore a coat.',
+  p:'뜻이 반대일 때 but, 까닭과 결과일 때 so예요.',
+  q:["I like cookies ___ juice.|and|but|so|나는 쿠키와 주스를 좋아해.","It was rainy, ___ we stayed home.|so|but|or|비가 와서 우리는 집에 있었어.","Do you want milk ___ juice?|or|so|but|우유 아니면 주스를 원해?","I was tired, ___ I finished my homework.|but|so|or|나는 피곤했지만 숙제를 끝냈어.","It was cold, ___ I wore a coat.|so|but|or|추워서 나는 코트를 입었어.","She is small ___ strong.|but|so|or|그녀는 작지만 힘이 세.","We can walk ___ take a bus.|or|so|but|우리는 걸어가거나 버스를 탈 수 있어.","I got up early ___ ran in the park.|and|or|so|나는 일찍 일어나서 공원에서 달렸어.","The cookie was cheap, ___ I bought two.|so|or|but|쿠키가 싸서 나는 두 개 샀어.","It's rainy ___ windy today.|and|but|so|오늘은 비가 오고 바람이 불어."]},
+ {c:6,n:20,t:'before, after, when, because',k:'~ 전에, ~ 후에, ~할 때, ~ 때문에',i:'🪥',w:[['brush','닦다'],['homework','숙제'],['bedtime','잠잘 시간'],['dinner','저녁 식사'],['snow','눈이 오다']],
+  r:'<b>before</b> ~하기 전에 · <b>after</b> ~한 후에 · <b>when</b> ~할 때 · <b>because</b> ~ 때문에<br>I brush my teeth <b>before</b> I go to bed.<br>문장 앞에 오면 쉼표: <b>When</b> it rains, I use an umbrella.',
+  p:'because 뒤에는 까닭! I stayed home because I was sick.',
+  q:["I brush my teeth ___ I go to bed.|before|after|because|나는 자기 전에 이를 닦아.","We play outside ___ we finish our homework.|after|before|because|우리는 숙제를 끝낸 뒤에 밖에서 놀아.","I was happy ___ it snowed.|because|before|so|눈이 와서 나는 행복했어.","___ I was young, I lived in Busan.|When|Because|After|어렸을 때 나는 부산에 살았어.","I wash my hands ___ I eat dinner.|before|because|so|나는 저녁을 먹기 전에 손을 씻어.","She stayed home ___ she was sick.|because|before|after|그녀는 아파서 집에 있었어.","___ it rains, I use an umbrella.|When|Because|Before|비가 올 때 나는 우산을 써.","I read a book ___ bedtime.|before|because|when|나는 잠잘 시간 전에 책을 읽어.","He was late ___ he missed the bus.|because|when|before|그는 버스를 놓쳐서 늦었어.","I watch TV ___ I do my homework.|after|because|so|나는 숙제를 한 뒤에 TV를 봐."]},
+ {c:6,n:21,t:'접속사의 형식과 쓰임',k:'because와 so, 쉼표 쓰기',i:'🏆',w:[['proud','자랑스러운'],['scared','무서워하는'],['noise','소리, 소음'],['prize','상'],['team','팀']],
+  r:'because + 까닭 / so + 결과<br>I was scared, <b>so</b> I cried. = I cried <b>because</b> I was scared.<br>when, before, after, because가 문장 앞에 오면 쉼표(,)를 찍어요.',
+  p:'Because I was sick, I stayed home. (○) · 까닭과 결과의 자리를 바꾸지 않아요.',
+  q:["I won a prize, ___ I was proud.|so|because|but|나는 상을 받아서 자랑스러웠어.","I was proud ___ I won a prize.|because|so|or|나는 상을 받아서 자랑스러웠어.","___ I heard a noise, I was scared.|When|So|But|소리를 들었을 때 나는 무서웠어.","Our team practiced hard, ___ we won.|so|because|or|우리 팀은 열심히 연습해서 이겼어.","We won ___ we practiced hard.|because|so|but|우리는 열심히 연습해서 이겼어.","Before I went to bed, I ___ my teeth.|brushed|brush|brushes|자기 전에 나는 이를 닦았어.","After the game ended, we ___ home.|went|go|goes|경기가 끝난 뒤 우리는 집에 갔어.","I was scared ___ it was dark.|because|so|or|어두워서 나는 무서웠어.","It was dark, ___ I was scared.|so|because|when|어두워서 나는 무서웠어.","When I ___ the noise, I woke up.|heard|hear|hears|그 소리를 들었을 때 나는 잠에서 깼어."]},
+ {c:7,n:22,t:'to부정사의 명사적 용법',k:'want to, like to, To ~ is',i:'🌠',w:[['hope','바라다'],['become','되다'],['learn','배우다'],['cook','요리하다'],['dream','꿈']],
+  r:'<b>to + 동사원형</b>이 ‘~하는 것, ~하기’라는 뜻으로 쓰여요.<br>I want <b>to be</b> a doctor. · My dream is <b>to become</b> a pilot. · <b>To swim</b> is fun.<br>want, hope, decide, need, like + to 동사원형',
+  p:'I want to be ~ (○), I want be ~ (×), I want to was ~ (×)',
+  q:["I want ___ a doctor.|to be|be|to being|나는 의사가 되고 싶어.","She likes to ___.|cook|cooks|cooked|그녀는 요리하는 것을 좋아해.","We hope ___ you again.|to see|see|to saw|우리는 너를 다시 보기를 바라.","My dream is ___ a pilot.|to become|become|to became|내 꿈은 조종사가 되는 거야.","He decided ___ English.|to learn|learn|to learned|그는 영어를 배우기로 결심했어.","___ swim is fun.|To|For|With|수영하는 것은 재미있어.","I need ___ my homework.|to finish|finish|to finished|나는 숙제를 끝내야 해.","They want ___ soccer.|to play|play|to played|그들은 축구를 하고 싶어 해.","She hopes ___ a singer.|to become|become|to becomes|그녀는 가수가 되기를 바라.","I like ___ books.|to read|read|to reads|나는 책 읽는 것을 좋아해."]},
+ {c:7,n:23,t:'to부정사의 형용사적 / 부사적 용법',k:'~할, ~하려고, ~해서',i:'💰',w:[['chance','기회'],['something','무언가'],['glad','기쁜'],['sorry','미안한, 안타까운'],['money','돈']],
+  r:'명사 뒤에서 꾸며요(~할): something <b>to eat</b>, a book <b>to read</b><br>목적(~하려고): I went to the store <b>to buy</b> milk.<br>감정의 까닭(~해서): I’m glad <b>to see</b> you.',
+  p:'to 뒤에는 동사원형! to buy (○), to bought (×)',
+  q:["I have something ___ you.|to tell|tell|to told|너에게 말할 게 있어.","I want water ___.|to drink|drink|to drank|나는 마실 물을 원해.","It's time ___ to bed.|to go|go|to went|잘 시간이야.","I am glad ___ you.|to see|see|to saw|만나서 반가워.","I'm sorry ___ that.|to hear|hear|to heard|그 말을 들으니 안타까워.","She went to the store ___ milk.|to buy|buy|to bought|그녀는 우유를 사러 가게에 갔어.","He saved money ___ a bike.|to buy|buy|to buys|그는 자전거를 사려고 돈을 모았어.","This is a good chance ___ English.|to learn|learn|to learned|이건 영어를 배울 좋은 기회야.","We came here ___ you.|to help|help|to helped|우리는 너를 도우러 여기 왔어.","I have a book ___.|to read|read|to reads|나는 읽을 책이 있어."]},
+ {c:7,n:24,t:'의문사 + to부정사',k:'how to, what to, where to',i:'🦢',w:[['recipe','요리법'],['origami','종이접기'],['choose','고르다'],['explain','설명하다'],['fold','접다']],
+  r:'<b>how to</b> ~하는 방법 · <b>what to</b> 무엇을 ~할지 · <b>where to</b> 어디로 ~할지 · <b>when to</b> 언제 ~할지 · <b>which to</b> 어느 것을 ~할지<br>I know <b>how to</b> fold a paper crane.',
+  p:'how to + 동사원형! how to fold (○), how fold (×)',
+  q:["I don't know what ___ say.|to|for|will|무슨 말을 해야 할지 모르겠어.","Can you tell me how ___ fold this?|to|for|do|이걸 어떻게 접는지 알려 줄래?","She knows how to ___ origami.|make|makes|made|그녀는 종이접기 하는 법을 알아.","I can't decide which one ___ choose.|to|for|will|어느 것을 골라야 할지 결정을 못 하겠어.","He asked me where ___ go.|to|for|did|그는 나에게 어디로 가야 하는지 물었어.","I learned how ___ cook from the recipe.|to|for|do|나는 요리법을 보고 요리하는 법을 배웠어.","Do you know how to ___ this?|explain|explains|explained|이걸 어떻게 설명하는지 알아?","We don't know ___ to start.|when|who|whose|우리는 언제 시작해야 할지 몰라.","I know ___ to fold a paper crane.|how|what|who|나는 종이학 접는 법을 알아.","He doesn't know what ___ next.|to do|do|doing|그는 다음에 뭘 해야 할지 몰라."]},
+ {c:7,n:25,t:'동명사',k:'동사ing: ~하는 것',i:'📮',w:[['mind','꺼리다'],['keep','계속하다'],['quit','그만두다'],['stamp','우표'],['diary','일기']],
+  r:'<b>동사ing</b>가 ‘~하는 것, ~하기’라는 뜻으로 쓰여요.<br><b>Swimming</b> is good exercise. · My hobby is <b>taking</b> pictures.<br>enjoy, finish, keep, mind, quit + 동사ing · 전치사 뒤에도 동사ing: good at <b>dancing</b>',
+  p:'I enjoy collecting. (○), I enjoy to collect. (×)',
+  q:["I enjoy ___ stamps.|collecting|collect|to collecting|나는 우표 모으는 것을 즐겨.","She finished ___ her diary.|writing|write|to writing|그녀는 일기 쓰는 것을 끝냈어.","He kept ___.|running|run|to running|그는 계속 달렸어.","Do you mind ___ the window?|opening|open|to opening|창문 좀 열어 줄래?","___ is good exercise.|Swimming|Swim|Swims|수영은 좋은 운동이야.","My hobby is ___ pictures.|taking|take|took|내 취미는 사진 찍기야.","He quit ___ sweets.|eating|eat|to eating|그는 단것 먹는 것을 끊었어.","I like ___ books.|reading|readed|to reading|나는 책 읽는 것을 좋아해.","Thank you for ___ me.|helping|help|to help|도와줘서 고마워.","She is good at ___.|dancing|dance|to dance|그녀는 춤을 잘 춰."]},
+ {c:8,n:26,t:'명령문과 청유문',k:'~해라, ~하지 마라, ~하자',i:'🚦',w:[['hurry','서두르다'],['line','줄'],['touch','만지다'],['turn off','끄다'],['together','함께']],
+  r:'명령문: 주어 없이 <b>동사원형</b>으로 시작해요. Be careful! · Please turn off the light.<br>~하지 마라: <b>Don’t</b> + 동사원형<br>~하자: <b>Let’s</b> + 동사원형 · ~하지 말자: <b>Let’s not</b> + 동사원형',
+  p:'Be quiet! (○), Are quiet! (×) · Let’s (○), Lets (×)',
+  q:["___ careful!|Be|Are|Is|조심해!","___ touch the stove.|Don't|Not|No|난로를 만지지 마.","Let's ___ together.|sing|sings|to sing|함께 노래하자.","Please ___ off the light.|turn|turns|to turn|불 좀 꺼 줘.","___ up! We're late.|Hurry|Hurries|To hurry|서둘러! 우리 늦었어.","Let's not ___ in line.|push|pushes|to push|줄에서 밀지 말자.","___ quiet in the library.|Be|Are|Do|도서관에서는 조용히 해.","Don't ___ late.|be|are|is|늦지 마.","___ go to the park.|Let's|Let|Lets|공원에 가자.","Please ___ in line.|wait|waits|waiting|줄을 서서 기다려 주세요."]},
+ {c:8,n:27,t:'감탄문',k:'What a ~! How ~!',i:'🐶',w:[['amazing','놀라운'],['delicious','맛있는'],['beautiful','아름다운'],['view','경치'],['puppy','강아지']],
+  r:'<b>What</b> + a(n) + 형용사 + 명사 (+ 주어 + 동사)! → What a cute puppy (it is)!<br><b>How</b> + 형용사 / 부사 (+ 주어 + 동사)! → How beautiful (the view is)!',
+  p:'명사가 있으면 What, 형용사·부사만 있으면 How예요.',
+  q:["___ beautiful the view is!|How|What|Who|경치가 정말 아름답구나!","___ a cute puppy!|What|How|Who|정말 귀여운 강아지구나!","How ___ this cake is!|delicious|deliciously|deliciouses|이 케이크 정말 맛있다!","What an ___ story!|amazing|amazed|amazingly|정말 놀라운 이야기구나!","___ tall he is!|How|What|Why|그는 정말 키가 크구나!","What a beautiful ___!|view|views|viewing|정말 아름다운 경치구나!","How fast she ___!|runs|run|running|그녀는 정말 빨리 달리는구나!","What delicious cookies ___ are!|they|it|this|정말 맛있는 쿠키들이구나!","___ cute!|How|What|Which|정말 귀엽다!","What a ___ day!|great|greatly|greats|정말 멋진 날이야!"]},
+ {c:8,n:28,t:'부가의문문',k:'~, isn’t it? ~, don’t you?',i:'🍕',w:[['tasty','맛있는'],['kind','친절한'],['hot','더운, 뜨거운'],['famous','유명한'],['fun','재미있는']],
+  r:'문장 끝에 붙여 ‘그렇지?’ 하고 확인해요.<br>앞이 긍정이면 부정으로, 앞이 부정이면 긍정으로: It’s hot, <b>isn’t it</b>? · He isn’t famous, <b>is he</b>?<br>일반동사 → do / does / did · 조동사 → 그 조동사 · 주어는 대명사로',
+  p:'You like pizza, don’t you? (○), You like pizza, aren’t you? (×)',
+  q:["It's hot today, ___ it?|isn't|is|doesn't|오늘 덥다, 그렇지?","You like pizza, ___ you?|don't|do|aren't|너 피자 좋아하지, 그렇지?","She is kind, ___ she?|isn't|is|doesn't|그녀는 친절해, 그렇지?","They can swim, ___ they?|can't|can|don't|그들은 수영할 수 있지, 그렇지?","He isn't famous, ___ he?|is|isn't|does|그는 유명하지 않지, 그렇지?","The cake was tasty, ___ it?|wasn't|was|didn't|케이크 맛있었지, 그렇지?","You didn't go, ___ you?|did|didn't|were|너 안 갔지, 그렇지?","It will be fun, ___ it?|won't|will|isn't|재미있을 거야, 그렇지?","Mina is your friend, ___ she?|isn't|is|doesn't|미나는 네 친구지, 그렇지?","We are late, ___ we?|aren't|are|don't|우리 늦었지, 그렇지?"]}
+];
+const EBS2CH = [[1,'be동사 과거형'],[2,'일반동사 과거형'],[3,'미래형'],[4,'진행형'],[5,'의문사'],[6,'접속사'],[7,'to부정사와 동명사'],[8,'다양한 문장 형태']];
+/* ===== 3권 (5~6학년): 교재 차례의 단원 주제를 따르고, 낱말은 단원 주제에 맞춰 골랐어요 (교재 낱말 사진을 받으면 바꿔요) ===== */
+const EBS3 = [
+ {c:1,n:1,t:'1형식, 2형식',k:'주어 + 동사 / 주어 + 동사 + 보어',i:'🌅',w:[['appear','나타나다'],['remain','계속 ~이다'],['become','~이 되다'],['sound','~하게 들리다'],['smell','~한 냄새가 나다']],
+  r:'<b>1형식</b>: 주어 + 동사 (+ 꾸미는 말) → The sun rises. · Birds sing in the tree.<br><b>2형식</b>: 주어 + 동사 + <b>보어</b> → She became a doctor.<br>look, sound, smell, taste, feel(감각동사) 뒤에는 <b>형용사</b>: It sounds great.',
+  p:'You look happy. (○), You look happily. (×) · 감각동사 뒤에는 부사가 아니라 형용사!',
+  q:["The cake smells ___.|sweet|sweetly|sweetness|케이크에서 달콤한 냄새가 나.","That sounds ___.|great|greatly|greatness|그거 정말 좋겠다.","You look ___ today.|happy|happily|happiness|너 오늘 행복해 보여.","She became a ___.|doctor|doctoring|doctorly|그녀는 의사가 되었어.","The soup tastes ___.|salty|saltily|salt|수프가 짜.","He remained ___.|quiet|quietly|quietness|그는 계속 조용히 있었어.","A rainbow ___ in the sky.|appeared|appearing|appears to|하늘에 무지개가 나타났어.","This blanket feels ___.|soft|softly|softness|이 담요는 부드러워.","The leaves turned ___.|red|redly|redness|나뭇잎이 빨갛게 변했어.","The baby ___ in the bed.|sleeps|sleep|sleeping|아기가 침대에서 자."]},
+ {c:1,n:2,t:'3형식, 4형식',k:'~에게 …을 주다',i:'🎁',w:[['send','보내다'],['lend','빌려주다'],['teach','가르치다'],['bring','가져오다'],['letter','편지']],
+  r:'<b>3형식</b>: 주어 + 동사 + <b>목적어</b> → I love music.<br><b>4형식</b>: 주어 + 동사 + <b>~에게</b> + <b>…을</b> → She gave <b>me</b> <b>a book</b>.<br>4형식 → 3형식: give, send, lend, teach + <b>to</b> · buy, make, cook + <b>for</b> · ask + <b>of</b><br>She gave a book <b>to</b> me. · Dad made a kite <b>for</b> me.',
+  p:'‘~에게’ 자리에는 me, him, her처럼 목적격! She gave I a book. (×)',
+  q:["She gave ___ a book.|me|I|my|그녀는 나에게 책을 줬어.","He sent a letter ___ his grandma.|to|for|of|그는 할머니께 편지를 보냈어.","Dad made a kite ___ me.|for|to|of|아빠가 나에게 연을 만들어 주셨어.","Can you lend ___ your pencil?|me|I|mine|나에게 연필 좀 빌려줄래?","Ms. Kim teaches ___ English.|us|we|our|김 선생님은 우리에게 영어를 가르쳐 주셔.","Please bring me ___ water.|some|any|many|나에게 물 좀 가져다줘.","I bought a gift ___ my sister.|for|to|of|나는 여동생에게 선물을 사 줬어.","Mom read ___ a story.|us|we|our|엄마가 우리에게 이야기를 읽어 주셨어.","He showed his photos ___ me.|to|for|of|그는 나에게 사진들을 보여 줬어.","May I ask a question ___ you?|of|to|for|너에게 질문 하나 해도 될까?"]},
+ {c:1,n:3,t:'5형식 (사역동사, 지각동사)',k:'make / let / have, see / hear / watch + 목적어 + 동사원형',i:'👀',w:[['let','~하게 해 주다'],['laugh','웃다'],['clean','청소하다'],['call','부르다'],['wear','입다']],
+  r:'<b>5형식</b>: 주어 + 동사 + 목적어 + <b>목적격 보어</b><br>We call him <b>Max</b>. · The song makes me <b>happy</b>.<br><b>사역동사</b> make, let, have + 목적어 + <b>동사원형</b>: Mom let me <b>go</b> out.<br><b>지각동사</b> see, hear, watch, feel + 목적어 + <b>동사원형 / -ing</b>: I saw him <b>dance(dancing)</b>.<br>want, ask, tell + 목적어 + <b>to</b> 동사원형',
+  p:'Mom made me clean my room. (○), Mom made me to clean my room. (×)',
+  q:["Mom made me ___ my room.|clean|to clean|cleaned|엄마는 나에게 방을 청소하게 하셨어.","Dad let me ___ the game.|play|to play|played|아빠는 내가 게임을 하게 해 주셨어.","I saw him ___ on the stage.|dance|to dance|danced|나는 그가 무대에서 춤추는 걸 봤어.","I heard someone ___ my name.|call|to call|calls|나는 누군가 내 이름을 부르는 걸 들었어.","The joke made us ___.|laugh|to laugh|laughed|그 농담은 우리를 웃게 했어.","We call our dog ___.|Max|to Max|Max's|우리는 우리 개를 맥스라고 불러.","The news made her ___.|sad|sadly|sadness|그 소식은 그녀를 슬프게 했어.","The teacher had us ___ name tags.|wear|to wear|wore|선생님은 우리에게 이름표를 달게 하셨어.","Mom wants me ___ a coat.|to wear|wear|wore|엄마는 내가 코트를 입기를 원하셔.","I watched the birds ___ away.|fly|to fly|flew|나는 새들이 날아가는 걸 지켜봤어."]},
+ {c:2,n:4,t:'관사 a(n), the',k:'처음 말할 때 a(n), 다시 말할 때 the',i:'🌙',w:[['moon','달'],['hour','한 시간'],['umbrella','우산'],['piano','피아노'],['breakfast','아침 식사']],
+  r:'<b>a / an</b>: 처음 말하는 하나 · 모음 <b>소리</b> 앞에는 an → an hour, an umbrella<br><b>the</b>: 앞에서 말한 것, 서로 아는 것, 하나뿐인 것(the sun, the moon), 악기(play the piano)<br>관사를 쓰지 않을 때: 식사(have breakfast), 운동(play soccer), by + 교통수단(by bus)',
+  p:'hour는 h 소리가 나지 않아서 an hour (○), a hour (×)',
+  q:["I waited for ___ hour.|an|a|the|나는 한 시간 동안 기다렸어.","Look at ___ moon!|the|a|an|달 좀 봐!","I have a dog. ___ dog is white.|The|A|An|나는 개가 있어. 그 개는 하얀색이야.","She plays ___ piano.|the|a|an|그녀는 피아노를 쳐.","I need ___ umbrella.|an|a|the|나는 우산이 필요해.","We have ___ at seven.|breakfast|a breakfast|the breakfast|우리는 7시에 아침을 먹어.","He plays ___ after school.|soccer|the soccer|a soccer|그는 방과 후에 축구를 해.","I go to school by ___.|bus|a bus|the bus|나는 버스로 학교에 가.","She is ___ honest girl.|an|a|the|그녀는 정직한 아이야.","___ sun is very hot today.|The|A|An|오늘 해가 정말 뜨거워."]},
+ {c:2,n:5,t:'many, much / a few, a little',k:'셀 수 있는 것과 셀 수 없는 것의 양',i:'🧂',w:[['sugar','설탕'],['salt','소금'],['coin','동전'],['question','질문'],['information','정보']],
+  r:'셀 수 있는 명사(복수): <b>many</b> 많은 · <b>a few</b> 조금 있는 · <b>few</b> 거의 없는<br>셀 수 없는 명사: <b>much</b> 많은 · <b>a little</b> 조금 있는 · <b>little</b> 거의 없는<br>a lot of / lots of는 둘 다에 써요.',
+  p:'many coins (○), much coins (×) · much water (○), many water (×)',
+  q:["How ___ coins do you have?|many|much|little|동전 몇 개 있어?","There isn't ___ sugar.|much|many|few|설탕이 많지 않아.","I have ___ questions.|a few|a little|much|나는 질문이 몇 개 있어.","Add ___ salt, please.|a little|a few|many|소금을 조금 넣어 주세요.","We don't have ___ time.|much|many|a few|우리는 시간이 많지 않아.","He has ___ friends.|many|much|a little|그는 친구가 많아.","There is ___ milk in the cup.|a little|a few|many|컵에 우유가 조금 있어.","I need ___ information.|some|many|a few|나는 정보가 좀 필요해.","Only ___ students came.|a few|a little|much|학생 몇 명만 왔어.","How ___ water do you drink?|much|many|few|너는 물을 얼마나 마셔?"]},
+ {c:2,n:6,t:'some, any / all, every',k:'약간의, 모든',i:'🍪',w:[['snack','간식'],['bread','빵'],['student','학생'],['class','학급, 수업'],['plant','식물']],
+  r:'<b>some</b>: 긍정문, 권할 때 (Would you like some ~?)<br><b>any</b>: 부정문, 의문문 (I don’t have any ~. Do you have any ~?)<br><b>all</b> + 복수 명사 + 복수 동사: All students <b>are</b> here.<br><b>every</b> + 단수 명사 + 단수 동사: Every student <b>is</b> here.',
+  p:'Every student is ~ (○), Every students are ~ (×)',
+  q:["I have ___ snacks.|some|any|every|나는 간식이 좀 있어.","Do you have ___ bread?|any|every|all|빵 좀 있어?","I don't have ___ money.|any|some|every|나는 돈이 하나도 없어.","Would you like ___ cookies?|some|any|every|쿠키 좀 먹을래?","___ student has a book.|Every|All|Some of|학생마다 책을 한 권씩 가지고 있어.","All the students ___ in the class.|are|is|be|모든 학생이 교실에 있어.","Every plant ___ water.|needs|need|needing|모든 식물은 물이 필요해.","I water the plants every ___.|day|days|daies|나는 매일 식물에 물을 줘.","___ my friends like pizza.|All|Every|Any|내 친구들은 모두 피자를 좋아해.","There aren't ___ students here.|any|some|every|여기에는 학생이 아무도 없어."]},
+ {c:3,n:7,t:'현재분사',k:'동사ing: ~하는, ~하고 있는',i:'👶',w:[['crying','우는'],['sleeping','자고 있는'],['boiling','끓고 있는'],['falling','떨어지는'],['rising','떠오르는']],
+  r:'<b>현재분사(동사ing)</b>는 명사를 꾸미는 형용사처럼 써요. ‘~하는, ~하고 있는’<br>한 낱말이면 명사 <b>앞</b>: a <b>crying</b> baby<br>다른 말과 함께면 명사 <b>뒤</b>: the girl <b>singing on the stage</b>',
+  p:'a sleeping cat (○), a sleep cat (×)',
+  q:["Look at the ___ baby.|crying|cry|cried|우는 아기를 봐.","Don't wake the ___ cat.|sleeping|sleep|slept|자고 있는 고양이를 깨우지 마.","Be careful with the ___ water.|boiling|boil|boils|끓고 있는 물을 조심해.","I watched the ___ leaves.|falling|fall|fell|나는 떨어지는 나뭇잎을 지켜봤어.","We saw the ___ sun.|rising|rise|rose|우리는 떠오르는 해를 봤어.","The girl ___ on the stage is Mina.|singing|sing|sang|무대에서 노래하는 여자아이가 미나야.","Who is the boy ___ a red cap?|wearing|wear|wore|빨간 모자를 쓴 남자아이는 누구야?","The dog ___ at us is Max.|barking|bark|barked|우리를 보고 짖는 개가 맥스야.","There is a ___ star!|shooting|shoot|shot|별똥별이다!","I know the man ___ the bus.|driving|drive|drove|나는 버스를 운전하는 그 아저씨를 알아."]},
+ {c:3,n:8,t:'과거분사',k:'-ed / 불규칙: ~된, ~해진',i:'🪟',w:[['broken','깨진'],['fallen','떨어진'],['written','쓰인'],['stolen','도둑맞은'],['fried','튀긴']],
+  r:'<b>과거분사</b>도 명사를 꾸며요. ‘~된, ~해진’ (그렇게 당한 것)<br>규칙: -ed (fried, used) · 불규칙: broken, fallen, written, stolen, made<br>a <b>broken</b> window · a letter <b>written in English</b> · a toy <b>made in Korea</b>',
+  p:'a broken cup (깨진 컵) ○, a breaking cup (×)',
+  q:["Don't touch the ___ glass.|broken|breaking|broke|깨진 유리를 만지지 마.","Look at the ___ leaves.|fallen|falling|fell|떨어진 나뭇잎들을 봐.","I read a letter ___ in English.|written|writing|wrote|나는 영어로 쓰인 편지를 읽었어.","They found the ___ bike.|stolen|stealing|stole|그들은 도둑맞은 자전거를 찾았어.","I love ___ chicken.|fried|frying|fry|나는 튀긴 닭을 정말 좋아해.","This is a toy ___ in Korea.|made|making|makes|이건 한국에서 만들어진 장난감이야.","She bought a ___ car.|used|using|uses|그녀는 중고차를 샀어.","The window ___ by the ball is mine.|broken|breaking|broke|공에 깨진 창문은 내 거야.","I have a book ___ by my uncle.|written|writing|wrote|나는 삼촌이 쓴 책이 있어.","We ate ___ eggs for breakfast.|boiled|boiling|boil|우리는 아침으로 삶은 달걀을 먹었어."]},
+ {c:3,n:9,t:'현재분사와 과거분사의 활용',k:'boring / bored, exciting / excited',i:'🎢',w:[['boring','지루하게 하는'],['bored','지루해하는'],['exciting','신나게 하는'],['excited','신이 난'],['surprised','놀란']],
+  r:'감정을 <b>일으키는</b> 것 → 현재분사(-ing): The movie was <b>boring</b>.<br>감정을 <b>느끼는</b> 사람 → 과거분사(-ed): I was <b>bored</b>.<br>interesting / interested · surprising / surprised · tiring / tired',
+  p:'사람이 느끼면 -ed! I am interested in music. (○), I am interesting in music. (×)',
+  q:["The movie was ___.|boring|bored|bore|그 영화는 지루했어.","I was ___ during the movie.|bored|boring|bore|나는 영화 보는 동안 지루했어.","The ride was really ___.|exciting|excited|excite|그 놀이기구는 정말 신났어.","The kids were ___.|excited|exciting|excite|아이들은 신이 났어.","I was ___ at the news.|surprised|surprising|surprise|나는 그 소식에 놀랐어.","The news was ___.|surprising|surprised|surprise|그 소식은 놀라웠어.","I'm ___ in science.|interested|interesting|interest|나는 과학에 관심이 있어.","This book is ___.|interesting|interested|interest|이 책은 재미있어.","After the race, I felt ___.|tired|tiring|tire|경주가 끝나고 나는 피곤했어.","It was a ___ day.|tiring|tired|tire|힘든 하루였어."]},
+ {c:4,n:10,t:'현재완료 have / has + 과거분사',k:'과거부터 지금까지',i:'⏰',w:[['already','이미'],['just','방금'],['since','~부터, ~ 이래로'],['for','~ 동안'],['lose','잃어버리다']],
+  r:'<b>have / has + 과거분사</b>: 과거의 일이 지금까지 이어지거나 영향을 줄 때<br>I <b>have lived</b> here <b>for</b> three years. · She <b>has</b> just <b>finished</b> it.<br>he, she, it → <b>has</b> · 줄임말: I’ve, She’s<br>for + 기간(three years) · since + 시작한 때(2020)',
+  p:'yesterday, last week처럼 분명한 과거 때와는 현재완료를 쓰지 않아요.',
+  q:["I ___ lived here for three years.|have|has|am|나는 여기서 3년째 살고 있어.","She ___ just finished her homework.|has|have|is|그녀는 방금 숙제를 끝냈어.","We have ___ this movie.|seen|saw|see|우리는 이 영화를 본 적이 있어.","He has ___ his key.|lost|lose|losed|그는 열쇠를 잃어버렸어. (지금도 없어)","I have known her ___ 2020.|since|for|from|나는 2020년부터 그녀를 알아.","They have been friends ___ five years.|for|since|in|그들은 5년 동안 친구로 지냈어.","Mina has ___ eaten lunch.|already|yet|ago|미나는 벌써 점심을 먹었어.","The train has ___ left.|just|ago|yesterday|기차가 방금 떠났어.","I've ___ to Jeju twice.|been|be|was|나는 제주도에 두 번 가 봤어.","It ___ rained since Monday.|has|have|is|월요일부터 비가 계속 오고 있어."]},
+ {c:4,n:11,t:'현재완료의 의문문과 부정문',k:'Have you ever ~? / haven’t ~ yet',i:'🐼',w:[['ever','언젠가, 한 번이라도'],['never','한 번도 ~ 않다'],['yet','아직, 벌써'],['panda','판다'],['foreign','외국의']],
+  r:'의문문: <b>Have / Has</b> + 주어 + 과거분사 ~? → Yes, I have. / No, I haven’t.<br><b>Have you ever</b> seen a panda? (~해 본 적 있니?)<br>부정문: <b>have not (haven’t) / has not (hasn’t)</b> + 과거분사 · <b>never</b> + 과거분사<br>yet: 부정문 ‘아직’, 의문문 ‘벌써’',
+  p:'Have you finished? (○), Did you have finished? (×)',
+  q:["___ you ever seen a panda?|Have|Has|Did|판다를 본 적 있어?","Has she finished it? No, she ___.|hasn't|haven't|didn't|그녀는 그걸 끝냈니? 아니, 못 끝냈어.","I ___ been to a foreign country.|have never|never have|has never|나는 외국에 가 본 적이 한 번도 없어.","He hasn't ___ yet.|arrived|arrive|arriving|그는 아직 도착하지 않았어.","Have you done your homework ___?|yet|already|ago|벌써 숙제 다 했어?","Have they met before? Yes, they ___.|have|has|did|그들은 전에 만난 적 있니? 응, 있어.","She ___ called me yet.|hasn't|haven't|didn't|그녀는 아직 나에게 전화하지 않았어.","Has it ___ snowed here?|ever|yet|never|여기 눈이 온 적 있어?","I haven't ___ that book.|read|reads|reading|나는 그 책을 읽어 본 적이 없어.","___ Tom lived in Busan?|Has|Have|Is|톰은 부산에 살아 본 적 있니?"]},
+ {c:4,n:12,t:'현재완료의 의미와 해석',k:'경험, 계속, 완료, 결과',i:'🗺️',w:[['twice','두 번'],['once','한 번'],['experience','경험'],['result','결과'],['continue','계속하다']],
+  r:'현재완료는 네 가지로 해석해요.<br><b>경험</b> ~해 본 적 있다 (ever, never, once, twice) · <b>계속</b> ~해 왔다 (for, since)<br><b>완료</b> 막 ~했다 (just, already, yet) · <b>결과</b> ~해 버렸다 (그래서 지금 …하다)<br>He has gone to Seoul. = 서울에 가 버렸다(지금 여기 없다) · He has been to Seoul. = 서울에 가 본 적이 있다',
+  p:'has gone to(가 버렸다)와 has been to(가 본 적 있다)를 헷갈리지 않아요.',
+  q:["I have visited Paris ___.|once|ago|yesterday|나는 파리에 한 번 가 봤어. (경험)","She has been here ___ two hours.|for|since|ago|그녀는 두 시간째 여기 있어. (계속)","I have ___ cleaned my room.|just|ago|last|나는 방금 방 청소를 끝냈어. (완료)","He has ___ to Seoul. He isn't here.|gone|been|went|그는 서울에 가 버렸어. 여기 없어. (결과)","I have ___ to London twice.|been|gone|went|나는 런던에 두 번 가 봤어. (경험)","We have lived here ___ 2019.|since|for|ago|우리는 2019년부터 여기 살고 있어. (계속)","She has lost her phone, so she ___ it now.|doesn't have|didn't have|hasn't|그녀는 휴대폰을 잃어버려서 지금 없어. (결과)","Have you ___ tried kimchi?|ever|yet|already|김치 먹어 본 적 있어? (경험)","The class has ___ started.|already|ago|ever|수업이 벌써 시작했어. (완료)","I have ___ seen snow.|never|ever|yet|나는 눈을 한 번도 본 적이 없어. (경험)"]},
+ {c:5,n:13,t:'추측의 조동사',k:'must, may, might, can’t',i:'🔍',w:[['must','~임에 틀림없다'],['may','~일지도 모른다'],['might','~일지도 모른다'],['true','사실인'],['guess','추측하다']],
+  r:'<b>must</b> + 동사원형: ~임에 틀림없다 (강한 확신)<br><b>may / might</b>: ~일지도 모른다 (약한 추측)<br><b>can’t</b>: ~일 리가 없다<br>He must be tired. · It may rain. · That can’t be true.',
+  p:'조동사 뒤에는 동사원형! She must be ~ (○), She must is ~ (×)',
+  q:["He ran all day. He ___ be tired.|must|can't|may not|그는 하루 종일 달렸어. 피곤한 게 틀림없어.","Take an umbrella. It ___ rain.|may|must not|can't|우산 가져가. 비가 올지도 몰라.","That ___ be true. He was with me.|can't|must|may|그건 사실일 리가 없어. 그는 나랑 있었어.","She ___ be at home now.|might|mights|might to|그녀는 지금 집에 있을지도 몰라.","You must ___ hungry.|be|are|being|너 배고프겠구나.","Tom isn't here. He ___ be sick.|may|can't|mays|톰이 여기 없어. 아플지도 몰라.","That bag ___ be Mina's. It has her name.|must|can't|might not|그 가방은 미나 거야. 이름이 있어.","He ___ know the answer. He is smart.|might|can't|mustn't|그는 답을 알지도 몰라. 똑똑하거든.","It's only 6 a.m. The store ___ be open.|can't|must|might|겨우 아침 6시야. 가게가 열었을 리가 없어.","I guess she may ___ late.|be|is|was|그녀가 늦을지도 몰라."]},
+ {c:5,n:14,t:'의무와 충고의 조동사',k:'must, have to, should',i:'⛑️',w:[['rule','규칙'],['helmet','헬멧'],['seat belt','안전벨트'],['follow','따르다'],['advice','충고']],
+  r:'<b>must / have to</b>: ~해야 한다 (의무) · 과거는 had to<br><b>must not</b>: ~하면 안 된다 (금지) · <b>don’t have to</b>: ~할 필요가 없다<br><b>should</b>: ~하는 게 좋다 (충고) · should not(shouldn’t): ~하지 않는 게 좋다',
+  p:'must not(하면 안 돼)과 don’t have to(안 해도 돼)는 뜻이 달라요.',
+  q:["You ___ wear a helmet.|must|mustn't|don't have to|너는 헬멧을 써야 해.","We ___ follow the rules.|have to|has to|having to|우리는 규칙을 따라야 해.","She ___ wear a seat belt.|has to|have to|had to be|그녀는 안전벨트를 매야 해.","You ___ run in the hall.|must not|don't have to|must|복도에서 뛰면 안 돼.","Tomorrow is Sunday. You ___ get up early.|don't have to|must not|must|내일은 일요일이야. 일찍 일어날 필요 없어.","You look sick. You ___ see a doctor.|should|shouldn't|don't have to|너 아파 보여. 병원에 가 보는 게 좋겠어.","You ___ eat too much candy.|shouldn't|should|have to|사탕을 너무 많이 먹지 않는 게 좋아.","I ___ finish my homework last night.|had to|have to|must|나는 어젯밤 숙제를 끝내야 했어.","Thank you for your ___.|advice|advise|advices|충고해 줘서 고마워.","Do I ___ bring lunch?|have to|has to|must to|점심을 가져가야 하나요?"]},
+ {c:5,n:15,t:'조동사의 관용표현',k:'would like to, used to, had better',i:'🎻',w:[['would like','원하다'],['used to','~하곤 했다'],['had better','~하는 게 낫다'],['violin','바이올린'],['order','주문하다']],
+  r:'<b>would like</b> + 명사 / <b>would like to</b> + 동사원형: ~을 원하다, ~하고 싶다 (want보다 공손해요)<br><b>used to</b> + 동사원형: (예전에) ~하곤 했다, ~이었다<br><b>had better</b> + 동사원형: ~하는 게 낫다 · 부정: had better not',
+  p:'You had better go. (○), You had better to go. (×), You had not better go. (×)',
+  q:["I would like ___ a pizza.|to order|order|ordering|피자를 주문하고 싶어요.","Would you ___ some tea?|like|likes|liking|차 좀 드릴까요?","I ___ play the violin.|used to|use to|using to|나는 예전에 바이올린을 켜곤 했어.","There used to ___ a tree here.|be|is|was|여기에 나무가 한 그루 있었어.","You had better ___ now.|go|to go|going|너 지금 가는 게 좋겠어.","You had better ___ be late.|not|don't|no|늦지 않는 게 좋을 거야.","He ___ to live in Busan.|used|uses|using|그는 예전에 부산에 살았어.","I'd like ___ you a question.|to ask|ask|asking|질문 하나 드리고 싶어요.","We'd ___ hurry. It's late.|better|best|good|우리 서두르는 게 좋겠어. 늦었어.","What would you like ___ for lunch?|to eat|eat|eating|점심으로 뭐 먹고 싶어?"]},
+ {c:6,n:16,t:'수동태의 기본 형태',k:'be동사 + 과거분사 (+ by ~)',i:'🏰',w:[['build','짓다'],['paint','그리다'],['invent','발명하다'],['grow','기르다'],['visit','방문하다']],
+  r:'<b>능동태</b>: 주어가 직접 하는 것 → Tom cleans the room.<br><b>수동태</b>: 주어가 당하는 것 → The room <b>is cleaned by</b> Tom.<br>be동사 + 과거분사 + by + 행위자<br>be동사는 주어의 수와 시제에 맞춰요: is / are / was / were',
+  p:'This book is loved by kids. (○), This book is love by kids. (×)',
+  q:["This castle was ___ in 1800.|built|build|building|이 성은 1800년에 지어졌어.","The picture was ___ by my sister.|painted|paint|painting|그 그림은 우리 언니가 그렸어.","The phone was invented ___ Bell.|by|from|with|전화기는 벨이 발명했어.","Rice ___ grown in Korea.|is|are|be|쌀은 한국에서 재배돼.","These apples ___ grown by my grandpa.|are|is|be|이 사과들은 우리 할아버지가 기르셔.","The museum is ___ by many people.|visited|visit|visiting|그 박물관은 많은 사람이 방문해.","English ___ spoken in many countries.|is|are|does|영어는 많은 나라에서 쓰여.","The window ___ broken by Tom.|was|were|did|창문은 톰이 깼어.","This song is loved by ___.|them|they|their|이 노래는 그들에게 사랑받아.","The cookies ___ made by Mom.|were|was|did|그 쿠키들은 엄마가 만드셨어."]},
+ {c:6,n:17,t:'수동태의 쓰임과 형식',k:'부정문, 의문문, by의 생략',i:'📮',w:[['deliver','배달하다'],['invite','초대하다'],['pay','지불하다'],['fix','고치다'],['package','소포']],
+  r:'부정문: be동사 + <b>not</b> + 과거분사 → The package wasn’t delivered.<br>의문문: <b>be동사</b> + 주어 + 과거분사? → Was the car fixed?<br>누가 했는지 모르거나 중요하지 않으면 by ~를 생략해요. → My bike was stolen.',
+  p:'Was it fixed? (○), Did it fixed? (×), Did it be fixed? (×)',
+  q:["The package ___ delivered yesterday.|wasn't|didn't|isn't|소포는 어제 배달되지 않았어.","___ the car fixed?|Was|Did|Does|차는 수리됐니?","Were you invited to the party? Yes, I ___.|was|did|were|너 파티에 초대받았니? 응, 받았어.","The bill ___ not paid.|was|did|does|그 요금은 지불되지 않았어.","My bike was ___ last night.|stolen|stole|steal|어젯밤에 내 자전거를 도둑맞았어.","Is this room ___ every day?|cleaned|clean|cleaning|이 방은 매일 청소되니?","The letters ___ not sent.|were|did|was|그 편지들은 보내지지 않았어.","Was the window ___ by Tom?|broken|broke|break|창문은 톰이 깼니?","These toys aren't ___ in Korea.|made|make|making|이 장난감들은 한국에서 만들지 않아.","Where ___ this picture taken?|was|did|were|이 사진은 어디서 찍혔어?"]},
+ {c:6,n:18,t:'수동태의 다양한 시제',k:'is done / was done / will be done',i:'🏗️',w:[['finish','끝내다'],['open','열다'],['bridge','다리'],['tomorrow','내일'],['hold','열다, 개최하다']],
+  r:'현재: <b>am / is / are</b> + 과거분사<br>과거: <b>was / were</b> + 과거분사<br>미래: <b>will be</b> + 과거분사 → The bridge will be finished next year.<br>조동사: can be, must be + 과거분사',
+  p:'The work will be done. (○), The work will is done. (×)',
+  q:["The bridge will ___ finished next year.|be|is|was|그 다리는 내년에 완공될 거야.","The store ___ opened tomorrow.|will be|will|is be|그 가게는 내일 문을 열 거야.","The festival ___ held last week.|was|is|will be|축제는 지난주에 열렸어.","The festival is ___ every year.|held|hold|holding|축제는 해마다 열려.","The work must be ___ today.|done|do|did|그 일은 오늘 끝내야 해.","This can ___ used again.|be|is|being|이건 다시 쓸 수 있어.","The new library ___ built in 2030.|will be|was|is being|새 도서관은 2030년에 지어질 거야.","The pictures ___ taken yesterday.|were|are|will be|그 사진들은 어제 찍혔어.","The homework will be ___ by Friday.|finished|finish|finishing|숙제는 금요일까지 끝날 거야.","Lunch is ___ at noon.|served|serve|served by|점심은 정오에 나와."]},
+ {c:7,n:19,t:'비교급의 기본 규칙',k:'-er / more ~ + than',i:'🐘',w:[['heavy','무거운'],['fast','빠른'],['careful','조심스러운'],['expensive','비싼'],['strong','힘센']],
+  r:'두 개를 비교할 때: 형용사 / 부사의 <b>비교급 + than</b> (~보다 더 …한)<br>-er: tall → taller · e로 끝나면 -r: large → larger · 자음 + y → -ier: heavy → heavier · big → bigger<br>긴 낱말은 <b>more</b> + 원급: more careful, more expensive<br>불규칙: good / well → <b>better</b> · bad → <b>worse</b> · many / much → <b>more</b>',
+  p:'more faster (×) · 비교급은 한 번만! faster (○)',
+  q:["An elephant is ___ than a horse.|heavier|heavyer|more heavy|코끼리는 말보다 더 무거워.","A cheetah runs ___ than a lion.|faster|more fast|fastly|치타는 사자보다 더 빨리 달려.","This bag is ___ than that one.|more expensive|expensiver|most expensive|이 가방이 저것보다 더 비싸.","Please be ___ next time.|more careful|carefuler|carefully|다음에는 더 조심해.","My dad is ___ than me.|stronger|more strong|strongest|아빠는 나보다 더 힘이 세.","Your idea is ___ than mine.|better|gooder|more good|네 생각이 내 것보다 더 좋아.","Today is ___ than yesterday.|worse|badder|more bad|오늘이 어제보다 더 나빠.","My room is ___ than yours.|bigger|biger|more big|내 방이 네 방보다 더 커.","She is taller ___ her mom.|than|then|to|그녀는 엄마보다 키가 더 커.","This box is ___ than that one.|larger|largeer|more large|이 상자가 저것보다 더 커."]},
+ {c:7,n:20,t:'최상급',k:'the -est / the most ~',i:'🏔️',w:[['mountain','산'],['highest','가장 높은'],['popular','인기 있는'],['world','세계'],['ocean','바다, 대양']],
+  r:'셋 이상에서 가장 ~할 때: <b>the</b> + 최상급<br>-est: tall → the tallest · heavy → the heaviest · big → the biggest<br>긴 낱말: <b>the most</b> popular · 불규칙: good → <b>the best</b> · bad → <b>the worst</b><br>범위: <b>in</b> + 장소·집단 (in the world, in my class) · <b>of</b> + 복수 (of the three)',
+  p:'the most fastest (×) · the fastest (○)',
+  q:["Mt. Everest is the ___ mountain in the world.|highest|higher|most high|에베레스트산은 세계에서 가장 높은 산이야.","She is the ___ singer in Korea.|most popular|popularest|more popular|그녀는 한국에서 가장 인기 있는 가수야.","This is the ___ day of my life.|best|goodest|better|오늘은 내 인생 최고의 날이야.","The Pacific is the ___ ocean.|biggest|bigest|most big|태평양은 가장 큰 바다야.","Tom is the tallest ___ my class.|in|of|than|톰은 우리 반에서 가장 키가 커.","He is the fastest ___ the three.|of|in|than|그는 셋 중에서 가장 빨라.","That was the ___ movie ever.|worst|baddest|worse|그건 지금까지 최악의 영화였어.","This is ___ heaviest box.|the|a|an|이게 가장 무거운 상자야.","Who is the ___ person in your family?|oldest|older|most old|가족 중에 누가 가장 나이가 많아?","It is the most ___ place in the world.|beautiful|beautifulest|more beautiful|그곳은 세계에서 가장 아름다운 곳이야."]},
+ {c:7,n:21,t:'비교급의 문장 변형',k:'as ~ as, 비교급 and 비교급, the 비교급 the 비교급',i:'⚖️',w:[['as','~만큼'],['busy','바쁜'],['dark','어두운'],['cold','추운'],['soon','곧']],
+  r:'<b>as + 원급 + as</b>: ~만큼 …한 · <b>not as + 원급 + as</b>: ~만큼 …하지 않은<br><b>비교급 and 비교급</b>: 점점 더 ~한 → It is getting colder and colder.<br><b>The 비교급, the 비교급</b>: ~할수록 더 …한 → The more, the better.<br><b>as + 원급 + as possible</b>: 가능한 한 ~하게',
+  p:'as tall as (○), as taller as (×) · as와 as 사이에는 원급!',
+  q:["I am as tall ___ my brother.|as|than|so|나는 우리 형만큼 키가 커.","She is as ___ as her mom.|busy|busier|busiest|그녀는 엄마만큼 바빠.","This bag is not as heavy ___ that one.|as|than|so|이 가방은 저것만큼 무겁지 않아.","It is getting ___ and colder.|colder|cold|coldest|날씨가 점점 더 추워지고 있어.","It's getting darker and ___.|darker|dark|darkest|점점 더 어두워지고 있어.","The more you practice, the ___ you get.|better|good|best|연습할수록 더 잘하게 돼.","The ___, the better.|sooner|soon|soonest|빠를수록 좋아.","Come home as soon as ___.|possible|possibly|possibility|가능한 한 빨리 집에 와.","My cat is not as big ___ your dog.|as|than|then|우리 고양이는 너희 개만큼 크지 않아.","He runs as ___ as a cheetah.|fast|faster|fastest|그는 치타만큼 빨리 달려."]},
+ {c:8,n:22,t:'It ~ to부정사',k:'가주어 It, 진주어 to부정사',i:'🧗',w:[['dangerous','위험한'],['important','중요한'],['necessary','필요한'],['possible','가능한'],['climb','오르다']],
+  r:'to부정사 주어가 길면 주어 자리에 <b>It</b>을 두고 to부정사를 뒤로 보내요.<br>To learn English is fun. → <b>It</b> is fun <b>to learn</b> English.<br>이때 It은 ‘그것’이라고 해석하지 않아요(가주어).',
+  p:'It is important to sleep well. (○), This is important to sleep well. (×)',
+  q:["___ is fun to learn English.|It|This|That's|영어를 배우는 것은 재미있어.","It is dangerous ___ in the river.|to swim|swim|swam|강에서 수영하는 것은 위험해.","It is important ___ well.|to sleep|sleep|slept|잘 자는 것은 중요해.","It is not easy ___ this mountain.|to climb|climb|climbed|이 산을 오르는 것은 쉽지 않아.","Is it possible ___ there by bus?|to get|get|got|거기 버스로 갈 수 있어?","It is necessary ___ water every day.|to drink|drink|drank|매일 물을 마시는 것은 꼭 필요해.","It was hard ___ up early.|to get|get|got|일찍 일어나는 건 힘들었어.","It ___ exciting to ride a roller coaster.|is|are|has|롤러코스터를 타는 것은 신나.","It is good to ___ books.|read|reads|reading|책을 읽는 것은 좋아.","It is kind ___ others.|to help|help|helped|다른 사람을 돕는 것은 친절한 일이야."]},
+ {c:8,n:23,t:'to부정사의 의미상의 주어',k:'for + 목적격 / of + 목적격',i:'🤝',w:[['difficult','어려운'],['easy','쉬운'],['kind','친절한'],['wise','현명한'],['silly','어리석은']],
+  r:'to부정사의 행동을 <b>누가</b> 하는지 밝힐 때 to 앞에 써요.<br>보통: <b>for</b> + 목적격 → It is easy <b>for me</b> to swim.<br>사람의 성격을 말하는 형용사(kind, nice, wise, silly, polite) 뒤: <b>of</b> + 목적격 → It is kind <b>of you</b> to help me.',
+  p:'It is kind of you. (○), It is kind for you. (×)',
+  q:["It is easy ___ me to swim.|for|of|to|나에게 수영은 쉬워.","It is kind ___ you to help me.|of|for|to|나를 도와주다니 너는 참 친절하구나.","It is difficult ___ him to read this.|for|of|with|그가 이걸 읽기는 어려워.","It was wise ___ her to say no.|of|for|to|그녀가 거절한 건 현명했어.","It was silly ___ me to forget it.|of|for|with|그걸 잊다니 내가 어리석었어.","It is hard for ___ to wake up early.|me|I|my|나는 일찍 일어나기 힘들어.","It is nice ___ them to invite us.|of|for|with|우리를 초대해 주다니 그들은 참 친절해.","It is important for ___ to listen.|us|we|our|우리가 귀 기울이는 것은 중요해.","It's time for ___ to go to bed.|you|your|yours|너 잘 시간이야.","It was polite ___ him to say thank you.|of|for|to|고맙다고 하다니 그는 예의 바르구나."]},
+ {c:8,n:24,t:'to부정사와 동명사 (1)',k:'want to / enjoy -ing',i:'🧩',w:[['plan','계획하다'],['expect','기대하다'],['avoid','피하다'],['practice','연습하다'],['puzzle','퍼즐']],
+  r:'<b>to부정사</b>만 목적어로 쓰는 동사: want, hope, plan, decide, expect, promise, need<br><b>동명사</b>만 목적어로 쓰는 동사: enjoy, finish, avoid, practice, mind, keep, give up<br>둘 다 쓰고 뜻이 같은 동사: like, love, start, begin',
+  p:'I plan to visit. (○), I plan visiting. (×) · I avoid eating. (○), I avoid to eat. (×)',
+  q:["I plan ___ my aunt.|to visit|visiting|visit|나는 이모 댁에 갈 계획이야.","She enjoys ___ puzzles.|doing|to do|do|그녀는 퍼즐 푸는 것을 즐겨.","We expect ___ the game.|to win|winning|win|우리는 경기에서 이기길 기대해.","He avoids ___ junk food.|eating|to eat|eat|그는 정크푸드 먹는 것을 피해.","I practice ___ the piano every day.|playing|to play|play|나는 매일 피아노 치는 걸 연습해.","They decided ___ a dog.|to get|getting|get|그들은 개를 기르기로 결정했어.","Did you finish ___ the book?|reading|to read|read|그 책 다 읽었어?","I promise ___ late again.|not to be|not being|to not being|다시는 늦지 않겠다고 약속할게.","She started ___ at the sad ending.|crying|cried|cry|그녀는 슬픈 결말에 울기 시작했어.","Don't give up ___.|trying|to try|try|노력하는 걸 포기하지 마."]},
+ {c:8,n:25,t:'to부정사와 동명사 (2)',k:'remember / forget / stop + to부정사 or 동명사',i:'🛑',w:[['remember','기억하다'],['forget','잊다'],['stop','멈추다'],['try','노력하다, 시도하다'],['lock','잠그다']],
+  r:'목적어에 따라 뜻이 달라지는 동사<br><b>remember / forget + to</b>: (앞으로) ~할 것을 기억하다 / 잊다<br><b>remember / forget + -ing</b>: (예전에) ~한 것을 기억하다 / 잊다<br><b>stop + -ing</b>: ~하던 것을 멈추다 · <b>stop + to</b>: ~하려고 멈추다<br><b>try + to</b>: ~하려고 노력하다 · <b>try + -ing</b>: 시험 삼아 ~해 보다',
+  p:'Remember to lock the door. (잠글 것을 기억해) · I remember locking it. (잠근 걸 기억해)',
+  q:["Remember ___ the door.|to lock|locking|lock|문 잠그는 거 잊지 마.","I remember ___ you before.|meeting|to meet|meet|나는 전에 너를 만났던 걸 기억해.","Don't forget ___ your homework.|to bring|bringing|bring|숙제 가져오는 거 잊지 마.","I'll never forget ___ the ocean for the first time.|seeing|to see|see|처음 바다를 봤던 걸 절대 잊지 못할 거야.","He stopped ___ and looked at me.|eating|to eat|eat|그는 먹던 걸 멈추고 나를 봤어.","She stopped ___ a picture of the flowers.|to take|taking|take|그녀는 꽃 사진을 찍으려고 멈춰 섰어.","I tried ___ the box, but it was too heavy.|to lift|lifting|lift|나는 상자를 들려고 애썼지만 너무 무거웠어.","Try ___ this cake. It's good.|eating|to eating|ate|이 케이크 한번 먹어 봐. 맛있어.","Please stop ___ noise.|making|to make|make|시끄럽게 좀 하지 마.","I forgot ___ Mom. She was angry.|to call|calling|call|엄마께 전화하는 걸 잊었어. 엄마가 화나셨어."]},
+ {c:9,n:26,t:'상관접속사',k:'both A and B, either A or B, neither A nor B, not only A but also B',i:'🔗',w:[['both','둘 다'],['either','둘 중 하나'],['neither','둘 다 아닌'],['not only','~뿐만 아니라'],['as well as','~뿐만 아니라 …도']],
+  r:'<b>both A and B</b>: A와 B 둘 다 (복수 동사)<br><b>either A or B</b>: A나 B 중 하나 · <b>neither A nor B</b>: A도 B도 아닌<br><b>not only A but also B</b> = <b>B as well as A</b>: A뿐만 아니라 B도<br>either / neither / not only ~ but also는 동사를 B에 맞춰요.',
+  p:'짝을 맞춰요! both ~ and, either ~ or, neither ~ nor',
+  q:["Both Tom ___ Mina like music.|and|or|nor|톰과 미나 둘 다 음악을 좋아해.","You can have either milk ___ juice.|or|and|nor|우유나 주스 중 하나를 마실 수 있어.","Neither he ___ I was there.|nor|or|and|그도 나도 거기 없었어.","She is not only smart ___ also kind.|but|and|or|그녀는 똑똑할 뿐만 아니라 친절하기도 해.","___ my mom and dad are teachers.|Both|Either|Neither|우리 엄마 아빠는 둘 다 선생님이셔.","Both of them ___ tall.|are|is|be|그들은 둘 다 키가 커.","___ you or I am wrong.|Either|Both|Neither of|너와 나 둘 중 한 명은 틀렸어.","He speaks English as well ___ Korean.|as|so|than|그는 한국어뿐만 아니라 영어도 해.","Neither Tom nor his friends ___ here.|are|is|be|톰도 그의 친구들도 여기 없어.","Not only you but also she ___ invited.|is|are|be|너뿐만 아니라 그녀도 초대받았어."]},
+ {c:9,n:27,t:'명사절을 이끄는 접속사',k:'that, if, whether',i:'💭',w:[['think','생각하다'],['know','알다'],['wonder','궁금해하다'],['sure','확신하는'],['whether','~인지 아닌지']],
+  r:'<b>that</b> + 주어 + 동사: ~라는 것 → I think <b>that</b> he is kind. (that은 생략할 수 있어요)<br><b>if / whether</b> + 주어 + 동사: ~인지 (아닌지) → I wonder <b>if</b> it will rain.<br>의문사 + 주어 + 동사(간접의문문): I don’t know <b>where he lives</b>.',
+  p:'I don’t know where he lives. (○), I don’t know where does he live. (×)',
+  q:["I think ___ he is kind.|that|if|what|나는 그가 친절하다고 생각해.","I wonder ___ it will rain.|if|that|what|비가 올지 궁금해.","I'm not sure ___ she will come or not.|whether|that|because|그녀가 올지 안 올지 잘 모르겠어.","I know ___ you did your best.|that|if|whether|네가 최선을 다했다는 걸 알아.","Do you know where ___?|he lives|does he live|he live|그가 어디 사는지 알아?","Can you tell me what time ___?|it is|is it|it be|지금 몇 시인지 알려 줄래?","The problem is ___ we have no time.|that|if|whether|문제는 우리에게 시간이 없다는 거야.","I don't know ___ he likes me.|if|that|what|그가 나를 좋아하는지 모르겠어.","I hope ___ you get well soon.|that|if|whether|빨리 낫길 바라.","Ask him ___ he can help us.|if|that|what|그에게 우리를 도와줄 수 있는지 물어봐."]},
+ {c:9,n:28,t:'접속부사',k:'however, therefore, for example, besides',i:'📝',w:[['however','하지만'],['therefore','그러므로'],['for example','예를 들어'],['besides','게다가'],['instead','대신에']],
+  r:'접속부사는 두 <b>문장</b>을 뜻으로 이어 줘요. 보통 문장 앞에 쓰고 뒤에 쉼표(,)를 찍어요.<br><b>However</b> 하지만 · <b>Therefore</b> 그러므로 · <b>For example</b> 예를 들어 · <b>Besides</b> 게다가 · <b>Instead</b> 대신에',
+  p:'It rained. However, we went out. (○) · 앞뒤 내용이 반대면 However, 결과면 Therefore!',
+  q:["It rained. ___, we went out.|However|Therefore|For example|비가 왔어. 하지만 우리는 밖에 나갔어.","He studied hard. ___, he passed the test.|Therefore|However|Instead|그는 열심히 공부했어. 그래서 시험에 합격했어.","I like fruit. ___, I like apples and grapes.|For example|However|Instead|나는 과일을 좋아해. 예를 들어 사과와 포도를 좋아해.","The hotel was clean. ___, it was cheap.|Besides|However|Instead|그 호텔은 깨끗했어. 게다가 값도 쌌어.","We didn't take a bus. ___, we walked.|Instead|Besides|Therefore|우리는 버스를 타지 않았어. 대신 걸었어.","The bag is nice. ___, it is too expensive.|However|Besides|For example|그 가방은 멋져. 하지만 너무 비싸.","It was very cold. ___, we stayed home.|Therefore|For example|However|아주 추웠어. 그래서 우리는 집에 있었어.","She is smart. ___, she is very kind.|Besides|Instead|However|그녀는 똑똑해. 게다가 아주 친절해.","Some animals sleep in winter. ___, bears do.|For example|Therefore|Instead|어떤 동물들은 겨울잠을 자. 예를 들어 곰이 그래.","I didn't watch TV. ___, I read a book.|Instead|Therefore|Besides|나는 TV를 보지 않았어. 대신 책을 읽었어."]}
+];
+const EBS3CH = [[1,'문장의 형식'],[2,'관사와 수량 표현'],[3,'분사'],[4,'현재완료'],[5,'조동사'],[6,'수동태'],[7,'비교급과 최상급'],[8,'to부정사와 동명사'],[9,'접속사']];
+/* 권 = { 권 번호, 단원, Chapter, 배우는 학년 } */
+const EBSBOOKS = [
+ {b:1, data:EBS1, ch:EBS1CH, when:'3~4학년', icon:'📗'},
+ {b:2, data:EBS2, ch:EBS2CH, when:'4~5학년', icon:'📘'},
+ {b:3, data:EBS3, ch:EBS3CH, when:'5~6학년', icon:'📙'}
+];
+(function () {
+  if (typeof MKE !== 'function' || typeof GRADES === 'undefined' || typeof SUBJ === 'undefined' || !SUBJ.gram) return;
+  const pad = n => (n < 10 ? '0' : '') + n;
+  /* 1·2·3권을 한 줄로 이어요. gi = 1권 1~28, 2권 29~56, 3권 57~84 (sem = 권이라 1권을 다 끝내야 2권이 오늘의 학습에 나와요) */
+  const ALL = [];
+  EBSBOOKS.forEach(B => { const off = ALL.length;
+    MKE('ebs' + B.b, B.data, ECOL).forEach((u, i) => { const d = B.data[i];
+      ALL.push(Object.assign(u, { ul: B.b + '권 Unit ' + pad(d.n), bn: d.n, gi: off + i + 1, num: d.n, sem: B.b, g: 30, book: B.b, ch: d.c,
+        ko: d.k,
+        rule: u.rule + '<br><br>' + B.icon + ' <b>' + (B.b === 1 ? '교재 ' : '') + 'Unit ' + pad(d.n) + ' 낱말</b>: ' + d.w.map(w => w[0] + ' (' + w[1] + ')').join(' · '),
+        words: d.w.map(w => ({ en: w[0], ko: w[1], nopic: 1 })).concat(u.words.slice(0, 3)) })); }); });
+  const BASE = 30;   /* 1~3권 = GRADES[30] 하나 (권마다 묶음으로 보여요) */
+  const P = () => { const v = +((STATE.gramBook || {}).u); return v >= 1 && v <= ALL.length ? v : 2; };   /* 교재에서 끝낸 단원 (기본: 1권 Unit 02) */
+  const nm = u => u.book + '권 Unit ' + pad(u.bn);
+  /* 마무리: 교재 Chapter마다 하나 (Chapter를 다 열었을 때만) */
+  { const _wg = wrapGroups; wrapGroups = function (g) {
+      const G = GRADES[g]; if (!G || !G.ebs) return _wg.apply(this, arguments);
+      const out = []; EBSBOOKS.forEach(B => B.ch.forEach(c => { const f = u => u.book === B.b && u.ch === c[0], full = ALL.filter(f), got = G.units.filter(f);
+        if (got.length && got.length === full.length) out.push({ k: out.length, units: got, id: 'wrapebs' + B.b + '-' + c[0], label: B.b + '권 Chapter ' + c[0] + ' ' + c[1] + ' (Unit ' + pad(got[0].bn) + '~' + pad(got[got.length - 1].bn) + ')' }); }));
+      return out; }; }
+  function apply() {
+    const p = P(), list = ALL.filter(u => u.gi <= p), last = ALL[p - 1];
+    [12, 13, 14].forEach(g => { if (GRADES[g] && GRADES[g].subj === 'gram') delete GRADES[g]; });   /* 예전 1~3단계는 숨겨요 */
+    const prev = GRADES[BASE];
+    GRADES[BASE] = { units: prev ? prev.units : [], color: '#8A5CF0', icon: EBSBOOKS[last.book - 1].icon, books: [], subj: 'gram', ebs: 1, label: '교재', short: last.book + '권', pick: '권', wrap: 99,
+      sems: EBSBOOKS.map(B => [B.b, B.b + '권 (' + B.when + ')']),
+      cnt: list.length + '단원 열림 · ' + nm(last) + '까지 (1~3권 전체 ' + ALL.length + '단원)' };
+    const U = GRADES[BASE].units; U.length = 0; list.forEach(u => U.push(u));
+    SUBJ.gram.sub = '교재 따라 쓰는 영문법 1권 → 2권 → 3권 · 교재에서 배운 단원까지 열려요';
+    SUBJ.gram.pick = '권을';
+    try { if (typeof GRADE !== 'undefined' && !GRADES[GRADE]) { GRADE = BASE; UNITS = GRADES[BASE].units; } } catch (e) {}
+  }
+  apply();
+  /* 과목 화면: 교재 진도 고르기 + 앞으로의 길 */
+  function panel() {
+    if (CURSUBJ !== 'gram' || !document.getElementById('hero') || document.getElementById('ebsprog')) return;
+    const anchor = document.querySelector('#app .grades'); if (!anchor) return;
+    const p = P(), nx = ALL[p];
+    let opt = ''; EBSBOOKS.forEach(B => B.ch.forEach(c => { opt += '<optgroup label="' + B.b + '권 Chapter ' + c[0] + ' ' + c[1] + '">' + ALL.filter(u => u.book === B.b && u.ch === c[0]).map(u => '<option value="' + u.gi + '"' + (u.gi === p ? ' selected' : '') + '>' + nm(u) + ' ' + u.title + '</option>').join('') + '</optgroup>'; }));
+    const roadmap = EBSBOOKS.map(B => { const n = ALL.filter(u => u.book === B.b && u.gi <= p).length;
+      return '<li><b>' + B.icon + ' ' + B.b + '권</b> <small>(' + B.when + ' · ' + n + '/' + B.data.length + ' 열림)</small> · ' + B.ch.map(c => c[1]).join(' · ') + '</li>'; }).join('');
+    anchor.insertAdjacentHTML('beforebegin', '<section class="panel" id="ebsprog" style="margin:10px 0"><h3 style="margin:0 0 6px">📘 교재와 함께 해요</h3>'
+      + '<p class="lead" style="margin:0 0 8px">교재에서 끝낸 단원까지 공부방에서 열려요. 교재로 배우고, 여기서 한 번 더 익혀요.</p>'
+      + '<label style="display:block;font-weight:700;margin-bottom:6px">교재에서 어디까지 했나요?</label>'
+      + '<select id="ebssel" style="width:100%;font:inherit;padding:8px;border-radius:10px;border:2px solid var(--ink,#1B2750)">' + opt + '</select>'
+      + (nx ? '<p style="margin:8px 0 0;font-size:.9rem">🔒 다음 단원: <b>' + nm(nx) + ' ' + nx.title + '</b> — 교재에서 배우고 나면 여기서 골라 주세요.</p>' : '<p style="margin:8px 0 0;font-size:.9rem">🎉 1~3권을 모두 열었어요!</p>')
+      + '<details style="margin-top:8px"><summary>전체 차례 (1권 → 2권 → 3권)</summary><ul style="margin:6px 0 0;padding-left:1.2em;line-height:1.7">' + roadmap + '</ul><p style="margin:6px 0 0;font-size:.85rem">교재 순서대로만 열려요. 다음 권의 문법은 먼저 나오지 않아요.</p></details></section>');
+    document.getElementById('ebssel').onchange = e => { STATE.gramBook = { u: +e.target.value, t: Date.now() }; try { persist(); } catch (x) {} apply(); start('gram'); };
+  }
+  { const _st = start; start = function () { const r = _st.apply(this, arguments); try { panel(); } catch (e) {} return r; }; }
+  try { if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
+  window.__ebs = { ALL, apply, P };
+})();
+</script>
+<!-- ===== 영어 문법: 교재 따라 쓰는 영문법 (2026-10-25) 끝 ===== -->
+<!-- ===== 영어 단어: 그날 배운 낱말 (2026-10-25) 시작 ===== -->
+<script>
+/* ===== 영어 단어 = 그날 영어 공부에서 나온 낱말로 하루 한 판 =====
+   · 영어(교과서) · 영어 듣기 · 영어 문법 · 영어 독해에서 오늘(그리고 아직 복습하지 않은 최근 3일) 공부한 단원의 낱말을 모아요. 많아도 12개.
+   · 한 판 = 뜻 4문제 + 문장 빈칸 3문제 + 철자 3문제 (10문제, 5분쯤). 하루 한 판이라 과하지 않아요.
+   · 복습한 낱말은 날짜를 적어 두고, 아직 복습하지 않은 낱말이 먼저 나와서 놓치는 낱말이 없어요.
+   · 영어 공부를 아직 안 한 날은 아직 복습하지 않은 지난 낱말로, 그것도 없으면 예전 '낱말 섞어 복습' 묶음으로 해요.
+   · 예전 20묶음(vw-01~)은 목록에서 숨겨요(기록은 그대로). */
+(function () {
+  if (typeof GRADES === 'undefined' || !GRADES[40] || typeof MKV !== 'function' || typeof buildQuiz !== 'function') return;
+  const OLD = GRADES[40].units.slice();
+  const SUBS = ['eng', 'lis', 'gram', 'voca'];
+  const okw = w => w && w.en && w.ko && !/[|=\/]/.test(w.en + w.ko) && w.en.split(' ').length <= 3 && !/[.?!]$/.test(w.en);
+  const unitById = () => { const m = {}; Object.keys(GRADES).forEach(g => (GRADES[g].units || []).forEach(u => { if (u && u.id) m[g + '|' + u.id] = u; }));
+    try { (window.__ebs ? __ebs.ALL : []).forEach(u => { m['30|' + u.id] = u; }); } catch (e) {} return m; };
+  const dk = d => dkey(d);
+  function recentWords() {
+    const M = unitById(), seen = (STATE.wseen = STATE.wseen || {}), out = [], has = new Set(), now = new Date();
+    for (let back = 0; back < 4 && out.length < 12; back++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - back), L = ((STATE.log || {})[dk(d)] || []).slice().reverse();
+      /* 그날 공부한 단원마다 낱말 목록을 만들고, 과목이 골고루 들어가게 하나씩 번갈아 뽑아요 */
+      const lists = [], usedU = new Set();
+      L.forEach(key => { const [g, id] = key.split('|'); let sub = ''; try { sub = GS(g); } catch (e) {} if (SUBS.indexOf(sub) < 0 || usedU.has(g + '|' + id)) return;
+        const u = M[g + '|' + id]; if (!u) return; usedU.add(g + '|' + id);
+        lists.push((u.words || []).filter(okw).filter(w => !(back > 0 && seen[w.en.toLowerCase()] && seen[w.en.toLowerCase()] >= dk(d)))); });   /* 지난날 낱말은 그 뒤에 복습했으면 빼요 */
+      for (let r = 0; out.length < 12 && lists.some(a => a.length > r); r++)
+        lists.forEach(a => { const w = a[r]; if (!w || out.length >= 12) return; const k = w.en.toLowerCase(); if (has.has(k)) return; has.add(k); out.push({ en: w.en, ko: w.ko, p: w.p }); });
+    }
+    return out;
+  }
+  /* 문장 찾기: 영어 과목들의 예문에서 낱말이 들어간 짧은 문장 */
+  let SENTS = null;
+  function sentPool() { if (SENTS) return SENTS; SENTS = [];
+    const add = (en, ko) => { if (en && ko && !/[|=\/\[\]]/.test(en + ko) && en.split(' ').length >= 3 && en.split(' ').length <= 10) SENTS.push({ en, ko }); };
+    Object.keys(GRADES).forEach(g => { let sub = ''; try { sub = GS(g); } catch (e) {} if (SUBS.indexOf(sub) < 0) return;
+      GRADES[g].units.forEach(u => { (u.sents || []).forEach(s => add(s.en, s.ko)); (u.expr || []).forEach(x => add(x[0], x[1])); (u.items || []).forEach(x => add(x.full, x.ko)); }); });
+    try { (window.__ebs ? __ebs.ALL : []).forEach(u => (u.items || []).forEach(x => add(x.full, x.ko))); } catch (e) {}
+    return SENTS; }
+  function findS(w) { const esc = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), re = new RegExp('(^|[^A-Za-z’\'])(' + esc + ')(?![A-Za-z])', 'i');
+    const c = sentPool().filter(s => re.test(s.en)).sort((a, b) => a.en.length - b.en.length); if (!c.length) return null;
+    const s = c[0], m = re.exec(s.en), k = m.index + m[1].length; return { en: s.en.slice(0, k) + '[' + s.en.slice(k, k + m[2].length) + ']' + s.en.slice(k + m[2].length), ko: s.ko }; }
+  function build() {
+    const t = new Date(), id = 'wday-' + dk(t).replace(/-/g, '');
+    let ws = recentWords(), from = '오늘 영어 공부';
+    if (ws.length < 4) {   /* 아직 영어 공부를 안 했으면: 예전 묶음에서 아직 안 끝낸 것 */
+      const o = OLD.find(u => !prog[u.id + '-0']) || OLD[0]; if (!o) return null;
+      ws = (o.words || []).filter(okw).slice(0, 12); from = '지난 영어 낱말'; }
+    const sents = []; ws.forEach(w => { if (sents.length < 6) { const s = findS(w.en); if (s && !sents.some(x => x.en === s.en)) sents.push(s); } });
+    if (sents.length < 2) sents.push({ en: 'I [like] English.', ko: '나는 영어를 좋아해.' }, { en: 'It is a [good] day.', ko: '좋은 날이야.' });
+    const str = '오늘의 낱말|' + from + '에서 나온 낱말|🔤|' + ws.map(w => w.en + '=' + w.ko + (w.p ? '=' + w.p : '')).join('/') + '|' + sents.map(s => s.en + '=' + s.ko).join('/');
+    const u = MKV('wd', str, 0);
+    const md = (t.getMonth() + 1) + '월 ' + t.getDate() + '일';
+    Object.assign(u, { id, wday: 1, wrev: 1, ul: md, title: '오늘의 낱말 · ' + md, ko: from + ' 낱말 ' + ws.length + '개', color: '#7A5AF8', sem: 1, num: 1, g: 40,
+      note: from + '에서 나온 낱말 ' + ws.length + '개를 한 번에 다시 만나요. 뜻 → 문장 → 철자 순서로 풀어요.',
+      names: { 0: ['오늘의 낱말', '뜻 4문제 · 문장 3문제 · 철자 3문제'], 1: ['문장 속 낱말 더 하기', '문장의 빈칸에 알맞은 낱말을 골라요'], 2: ['철자 더 하기', '글자를 채우고 문장을 만들어요'] } });
+    return u;
+  }
+  function apply() { const u = build(); if (!u) return; const U = GRADES[40].units; U.length = 0; U.push(u);
+    GRADES[40].cnt = '날마다 그날 배운 영어 낱말로 한 판'; GRADES[40].wrap = 99; GRADES[40].sems = [[1, '']];
+    if (SUBJ.word) { SUBJ.word.title = '영어 단어'; SUBJ.word.sub = '그날 영어·듣기·문법·독해에서 나온 낱말로 하루 한 판 (뜻 · 문장 · 철자)'; } }
+  /* 오늘의 낱말 한 판 = 뜻 4 + 문장 3 + 철자 3 */
+  { const _bq = buildQuiz; buildQuiz = function (u, l) {
+      if (u && u.wday && String(l) === '0') { const pick = (x, n) => { try { return shuffle(_bq(u, x)).slice(0, n); } catch (e) { return []; } };
+        const a = pick(0, 4), b = pick(1, 3), c = pick(2, 3), all = a.concat(b, c); return all.length ? all : _bq(u, 0); }
+      return _bq.apply(this, arguments); }; }
+  /* 복습한 낱말 적어 두기 */
+  { const _ss = saveStamp; saveStamp = function (u, l, stars) { const r = _ss.apply(this, arguments);
+      try { if (u && u.wday) { const S = (STATE.wseen = STATE.wseen || {}), t = dkey(new Date()); (u.words || []).forEach(w => { S[w.en.toLowerCase()] = t; }); persist(); } } catch (e) {} return r; }; }
+  /* ===== 영어 4과목을 끝낸 뒤에 열려요 =====
+     오늘의 학습에 있는 영어(교과서)·영어 듣기·영어 문법·영어 독해를 오늘 모두 끝내야 영어 단어 문제를 시작할 수 있어요.
+     (아직 남은 차시가 없는 과목, 오늘 쉬는 과목은 빼고 세요) 그래야 그날 나온 낱말이 모두 모여요. */
+  const NEED = [['eng', '영어'], ['lis', '영어 듣기'], ['gram', '영어 문법'], ['voca', '영어 독해']];
+  function needLeft() { const tk = dkey(new Date()), S = (STATE.td && STATE.td.d === tk && STATE.td.s) || {};
+    return NEED.filter(([k]) => { if (!SUBJ[k] || !SUBJ[k].ready) return false; try { if (typeof TODAYON === 'function' && !TODAYON(k)) return false; } catch (e) {}
+      const open = Object.keys(GRADES).filter(g => { try { return GS(g) === k; } catch (e) { return false; } }).some(g => GRADES[g].units.some(u => SLOTS.some(l => !prog[u.id + '-' + l])));
+      return open && !S[k]; }); }
+  function lockView(left) {
+    show('<button class="back" data-go="start">← 처음 화면</button><section class="panel" style="text-align:center"><div style="font-size:3rem">🔒</div><h2 style="margin:6px 0">영어 단어는 조금 뒤에 열려요</h2>'
+      + '<p class="lead">오늘 영어 공부에서 나온 낱말을 모아서 풀어요. 아래 과목을 먼저 끝내 주세요.</p>'
+      + '<div class="row center" style="gap:8px;flex-wrap:wrap">' + left.map(([k, nm]) => '<button class="btn" data-go="subj:' + k + '">' + nm + '</button>').join('') + '</div>'
+      + '<p style="margin-top:10px"><button class="btn main" data-go="start">오늘의 학습으로</button></p></section>', '#7A5AF8'); }
+  { const _ri = routeInner; routeInner = function (v, a, b) {
+      try { const isWord = (v === 'today' && +a === 40) || (['lesson', 'quiz', 'say', 'game'].indexOf(v) >= 0 && +GRADE === 40);
+        if (isWord) { const left = needLeft(); if (left.length) { VIEW = 'wlock'; return lockView(left); } } } catch (e) {}
+      return _ri.apply(this, arguments); }; }
+  /* 오늘의 학습 카드: 잠겨 있으면 남은 과목 수를 보여 줘요 */
+  function markCard() { try { const left = needLeft(); const c = [...document.querySelectorAll('#app .todaycard')].find(x => { const b = x.querySelector('.tt b'); return b && SUBJ.word && b.textContent.trim() === SUBJ.word.name; });
+      if (!c || c.classList.contains('did') || c.classList.contains('done')) return; const tl = c.querySelector('.tl');
+      if (left.length) { c.classList.add('wlock'); c.style.opacity = '.62'; if (tl) tl.textContent = '🔒 ' + left.map(x => x[1]).join(' · ') + '을(를) 끝내면 열려요 (' + (NEED.length - left.length) + '/' + NEED.length + ')'; } } catch (e) {} }
+  apply();
+  { const _st = start; start = function () { try { SENTS = SENTS; apply(); } catch (e) {} const r = _st.apply(this, arguments); try { markCard(); } catch (e) {} return r; }; }
+  try { if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
+  window.__wday = { build, apply, recentWords, needLeft };
+})();
+</script>
+<!-- ===== 영어 단어: 그날 배운 낱말 (2026-10-25) 끝 ===== -->
 </body>
 </html>
