@@ -11344,7 +11344,8 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
   document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('.ensay'); if(!b) return; e.preventDefault(); e.stopPropagation(); say(b.dataset.t); },true);
   const SAID=new WeakSet();
   function enAudio(){ if(!isEn()) return; const q=Q.qs[Q.i]; if(!q||typeof q!=='object'||q.t!=='c') return;
-    $app.querySelectorAll('.choice').forEach(c=>{ if(c.querySelector('.ensay,.lgsay')) return; const sg=enSeg(c.innerText); if(sg.length) c.insertAdjacentHTML('beforeend','<span class="ensay" role="button" aria-label="'+E(sg[0])+' 소리 듣기" data-t="'+E(sg.join(' '))+'">🔊</span>'); });
+    /* 보기 안의 🔊: 보기가 영어 낱말(세 낱말까지)일 때만 붙여요. 영어 문법 보기(They're, was …)에는 붙이지 않아요 (2026-10-25) */
+    if(subjNow()!=='gram') $app.querySelectorAll('.choice').forEach(c=>{ if(c.querySelector('.ensay,.lgsay')) return; const t=c.innerText.replace(/[‘’]/g,"'").trim(); if(!/^[A-Za-z][A-Za-z'.\- ]*[A-Za-z.!?]?$/.test(t)||t.split(/\s+/).length>3) return; c.insertAdjacentHTML('beforeend','<span class="ensay" role="button" aria-label="'+E(t)+' 소리 듣기" data-t="'+E(t)+'">🔊</span>'); });
     const stim=$app.querySelector('.stim'); if(!stim) return;
     const has=[...stim.querySelectorAll('[data-say]')];
     let main=q.listen||q.say||'';
@@ -12462,8 +12463,7 @@ details .row > .btn,details .row > label.btn{white-space:normal!important;word-b
    · 단원(Unit) = 교재 Unit. 단원마다 교재 Word Preview 낱말 5개로 예문을 만들어요.
      차시: ① 규칙 알아보기(골라 쓰기) ② 바른 문장 찾기(고쳐 쓰기) ③ 문장 만들기 ④ 놀이 ⑤ 마무리 도전 — 교재 STEP 1·2·3와 같은 흐름이에요.
    · 교재 Chapter가 끝나면 다른 과목처럼 '마무리'가 나와요(그 Chapter 단원을 섞어 15문제).
-   · 교재 진도 맞추기: 과목 화면에서 "교재에서 Unit 몇까지 했어요"를 고르면 그 단원까지만 열려요.
-     교재로 먼저 배우고 공부방에서 한 번 더 익혀요. 아직 배우지 않은 단원·다른 권의 문법은 먼저 나오지 않아요.
+   · 잠금 없음: 교재와 공부방 중 어느 쪽을 먼저 해도 돼요. 단원이 모두 열려 있고, 오늘의 학습은 1권 Unit 01부터 차례대로 나와요.
    · 문장에는 지금까지 배운 문법만 써요(현재형만, will·과거형·-ing·의문사·명령문·비교급·to부정사 없이).
    · 2권·3권도 교재 차례대로 같은 방식으로 모두 들어 있어요. 1권 끝 → 2권 Unit 01 → … → 3권 Unit 28.
      2·3권 낱말은 교재를 아직 사지 않아서 단원 주제에 맞춰 골라 두었어요. 교재를 사면 Word Preview 낱말로 바꿔요.
@@ -12830,51 +12830,32 @@ const EBSBOOKS = [
   const ALL = [];
   EBSBOOKS.forEach(B => { const off = ALL.length;
     MKE('ebs' + B.b, B.data, ECOL).forEach((u, i) => { const d = B.data[i];
-      ALL.push(Object.assign(u, { ul: B.b + '권 Unit ' + pad(d.n), bn: d.n, gi: off + i + 1, num: d.n, sem: B.b, g: 30, book: B.b, ch: d.c,
+      ALL.push(Object.assign(u, { ul: 'Unit ' + pad(d.n), bn: d.n, gi: off + i + 1, num: d.n, sem: B.b, g: 30, book: B.b, ch: d.c,
         ko: d.k,
-        rule: u.rule + '<br><br>' + B.icon + ' <b>' + (B.b === 1 ? '교재 ' : '') + 'Unit ' + pad(d.n) + ' 낱말</b>: ' + d.w.map(w => w[0] + ' (' + w[1] + ')').join(' · '),
         words: d.w.map(w => ({ en: w[0], ko: w[1], nopic: 1 })).concat(u.words.slice(0, 3)) })); }); });
   const BASE = 30;   /* 1~3권 = GRADES[30] 하나 (권마다 묶음으로 보여요) */
-  const P = () => { const v = +((STATE.gramBook || {}).u); return v >= 1 && v <= ALL.length ? v : 2; };   /* 교재에서 끝낸 단원 (기본: 1권 Unit 02) */
-  const nm = u => u.book + '권 Unit ' + pad(u.bn);
-  /* 마무리: 교재 Chapter마다 하나 (Chapter를 다 열었을 때만) */
+  /* 잠금 없이 1~3권 84단원이 모두 열려 있어요 (2026-10-25). 교재와 공부방 중 어느 쪽을 먼저 해도 돼요.
+     오늘의 학습은 1권 Unit 01부터 차례대로 나와서 다음 권의 문법이 먼저 나오지 않아요. */
+  /* 마무리: 교재 Chapter마다 하나 */
   { const _wg = wrapGroups; wrapGroups = function (g) {
       const G = GRADES[g]; if (!G || !G.ebs) return _wg.apply(this, arguments);
-      const out = []; EBSBOOKS.forEach(B => B.ch.forEach(c => { const f = u => u.book === B.b && u.ch === c[0], full = ALL.filter(f), got = G.units.filter(f);
-        if (got.length && got.length === full.length) out.push({ k: out.length, units: got, id: 'wrapebs' + B.b + '-' + c[0], label: B.b + '권 Chapter ' + c[0] + ' ' + c[1] + ' (Unit ' + pad(got[0].bn) + '~' + pad(got[got.length - 1].bn) + ')' }); }));
+      const out = []; EBSBOOKS.forEach(B => B.ch.forEach(c => { const got = G.units.filter(u => u.book === B.b && u.ch === c[0]);
+        if (got.length) out.push({ k: out.length, units: got, id: 'wrapebs' + B.b + '-' + c[0], label: B.b + '권 Chapter ' + c[0] + ' ' + c[1] + ' (Unit ' + pad(got[0].bn) + '~' + pad(got[got.length - 1].bn) + ')' }); }));
       return out; }; }
   function apply() {
-    const p = P(), list = ALL.filter(u => u.gi <= p), last = ALL[p - 1];
     [12, 13, 14].forEach(g => { if (GRADES[g] && GRADES[g].subj === 'gram') delete GRADES[g]; });   /* 예전 1~3단계는 숨겨요 */
     const prev = GRADES[BASE];
-    GRADES[BASE] = { units: prev ? prev.units : [], color: '#8A5CF0', icon: EBSBOOKS[last.book - 1].icon, books: [], subj: 'gram', ebs: 1, label: '교재', short: last.book + '권', pick: '권', wrap: 99,
+    GRADES[BASE] = { units: prev ? prev.units : [], color: '#8A5CF0', icon: '📗', books: [], subj: 'gram', ebs: 1, label: '교재', short: '1~3권', pick: '권', wrap: 99,
       sems: EBSBOOKS.map(B => [B.b, B.b + '권 (' + B.when + ')']),
-      cnt: list.length + '단원 열림 · ' + nm(last) + '까지 (1~3권 전체 ' + ALL.length + '단원)' };
-    const U = GRADES[BASE].units; U.length = 0; list.forEach(u => U.push(u));
-    SUBJ.gram.sub = '교재 따라 쓰는 영문법 1권 → 2권 → 3권 · 교재에서 배운 단원까지 열려요';
+      cnt: '1권 → 2권 → 3권 · 전체 ' + ALL.length + '단원' };
+    const U = GRADES[BASE].units; U.length = 0; ALL.forEach(u => U.push(u));
+    SUBJ.gram.sub = '교재 따라 쓰는 영문법 1권 → 2권 → 3권 · 교재와 같은 차례';
     SUBJ.gram.pick = '권을';
     try { if (typeof GRADE !== 'undefined' && !GRADES[GRADE]) { GRADE = BASE; UNITS = GRADES[BASE].units; } } catch (e) {}
   }
   apply();
-  /* 과목 화면: 교재 진도 고르기 + 앞으로의 길 */
-  function panel() {
-    if (CURSUBJ !== 'gram' || !document.getElementById('hero') || document.getElementById('ebsprog')) return;
-    const anchor = document.querySelector('#app .grades'); if (!anchor) return;
-    const p = P(), nx = ALL[p];
-    let opt = ''; EBSBOOKS.forEach(B => B.ch.forEach(c => { opt += '<optgroup label="' + B.b + '권 Chapter ' + c[0] + ' ' + c[1] + '">' + ALL.filter(u => u.book === B.b && u.ch === c[0]).map(u => '<option value="' + u.gi + '"' + (u.gi === p ? ' selected' : '') + '>' + nm(u) + ' ' + u.title + '</option>').join('') + '</optgroup>'; }));
-    const roadmap = EBSBOOKS.map(B => { const n = ALL.filter(u => u.book === B.b && u.gi <= p).length;
-      return '<li><b>' + B.icon + ' ' + B.b + '권</b> <small>(' + B.when + ' · ' + n + '/' + B.data.length + ' 열림)</small> · ' + B.ch.map(c => c[1]).join(' · ') + '</li>'; }).join('');
-    anchor.insertAdjacentHTML('beforebegin', '<section class="panel" id="ebsprog" style="margin:10px 0"><h3 style="margin:0 0 6px">📘 교재와 함께 해요</h3>'
-      + '<p class="lead" style="margin:0 0 8px">교재에서 끝낸 단원까지 공부방에서 열려요. 교재로 배우고, 여기서 한 번 더 익혀요.</p>'
-      + '<label style="display:block;font-weight:700;margin-bottom:6px">교재에서 어디까지 했나요?</label>'
-      + '<select id="ebssel" style="width:100%;font:inherit;padding:8px;border-radius:10px;border:2px solid var(--ink,#1B2750)">' + opt + '</select>'
-      + (nx ? '<p style="margin:8px 0 0;font-size:.9rem">🔒 다음 단원: <b>' + nm(nx) + ' ' + nx.title + '</b> — 교재에서 배우고 나면 여기서 골라 주세요.</p>' : '<p style="margin:8px 0 0;font-size:.9rem">🎉 1~3권을 모두 열었어요!</p>')
-      + '<details style="margin-top:8px"><summary>전체 차례 (1권 → 2권 → 3권)</summary><ul style="margin:6px 0 0;padding-left:1.2em;line-height:1.7">' + roadmap + '</ul><p style="margin:6px 0 0;font-size:.85rem">교재 순서대로만 열려요. 다음 권의 문법은 먼저 나오지 않아요.</p></details></section>');
-    document.getElementById('ebssel').onchange = e => { STATE.gramBook = { u: +e.target.value, t: Date.now() }; try { persist(); } catch (x) {} apply(); start('gram'); };
-  }
-  { const _st = start; start = function () { const r = _st.apply(this, arguments); try { panel(); } catch (e) {} return r; }; }
   try { if (typeof VIEW !== 'undefined' && VIEW === 'start') start(CURSUBJ); } catch (e) {}
-  window.__ebs = { ALL, apply, P };
+  window.__ebs = { ALL, apply };
 })();
 </script>
 <!-- ===== 영어 문법: 교재 따라 쓰는 영문법 (2026-10-25) 끝 ===== -->
