@@ -2505,7 +2505,7 @@ function mathQuiz(u,l){
   while(qs.length<N&&g++<200){ if(!order.length) order=shuffle(fs); const q=order.pop()(), key=q.inst+q.stim, hs=q.ch.map(c=>c.h);
     if(seen.has(key)||new Set(hs).size<hs.length||q.ch.length<2) continue; seen.add(key); qs.push(q); }
   if(l===1||l==='s'){   /* 직접 써 보기와 틀린 계산 찾기를 두 문제 넣어요 */
-    const typ=()=>{ for(let k=0;k<30;k++){ const q=one(G[0].concat(G[1]))(), ok=q.ch.find(c=>c.ok).h.replace(/<[^>]+>/g,''), m=/^(\d+)(\D{0,4})$/.exec(ok); if(m) return {t:'w',exact:1,loose:1,nosay:1,inst:'답을 직접 써 보세요.'+(m[2].trim()?' 수만 쓰면 돼요. (단위: '+m[2].trim()+')':''),w:{en:m[1],ko:(q.inst==='계산해 보세요.'?'':'<div class="mtxt">'+q.inst+'</div>')+q.stim,nopic:1,say:m[1]},ex:q.ex}; } return null; };
+    const typ=()=>{ for(let k=0;k<30;k++){ const q=one(G[0].concat(G[1]))(), okh=q.ch.find(c=>c.ok).h, ok=okh.replace(/<[^>]+>/g,''), m=!/class="fr"/.test(okh)&&/^(\d+)(\D{0,4})$/.exec(ok); if(m) return {t:'w',exact:1,loose:1,nosay:1,inst:'답을 직접 써 보세요.'+(m[2].trim()?' 수만 쓰면 돼요. (단위: '+m[2].trim()+')':''),w:{en:m[1],ko:(q.inst==='계산해 보세요.'?'':'<div class="mtxt">'+q.inst+'</div>')+q.stim,nopic:1,say:m[1]},ex:q.ex}; } return null; };
     const err=()=>{ const mk=()=>{ if(u.mk==='mul'){ const a=rnd(12,45), b=rnd(2,8); return [a+' × '+b,a*b]; } const b=rnd(2,8), q=rnd(11,24); return [b*q+' ÷ '+b,q]; };
       const E=[mk(),mk(),mk()], w=rnd(0,2), d=one([1,-1,10,-10,2]); return {t:'c',inst:'계산이 틀린 것을 고르세요.',stim:'',ch:E.map((e,k)=>({h:'<span class="mth">'+e[0]+' = '+(k===w?e[1]+d:e[1])+'</span>',ok:k===w})),ex:'바르게 계산하면 '+E[w][0]+' = '+E[w][1]}; };
     const a=typ(), b=(u.mk==='mul'||u.mk==='div')?err():typ(); [a,b].filter(Boolean).forEach((q,k)=>{ qs[qs.length-1-k]=q; });
@@ -9297,6 +9297,8 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
     /* 수학은 같은 종류의 문제를 숫자만 바꿔 새로 만들어요 */
     if(u&&u.math&&typeof x.l==='number'){ try{ const fresh=buildQuiz(u,x.l).filter(y=>y.inst===x.inst&&y.t==='c'); if(fresh.length) q=fresh[Math.floor(Math.random()*fresh.length)]; }catch(e){} }
     if(!q){ try{ q=wUnpack(x.p); if(q.t==='c'&&q.ch&&q.ch.length>2) q.ch=chKeep(q.ch)||mix(q.ch); }catch(e){ return null; } }
+    /* 2026-11-04: 예전에 분수 답(예: 1과 3/6)을 숫자 "136"으로 바꿔 쓰기 문제로 낸 것이 있어서, 그런 수학 쓰기 문제는 같은 단원의 고르기 문제로 새로 내요 */
+    if(u&&u.math&&q.t==='w'&&q.w&&/class="fr"/.test(q.w.ko||'')&&/^\d{2,}$/.test(String(q.w.en||''))){ try{ const f=buildQuiz(u,typeof x.l==='number'?x.l:0).filter(y=>y.t==='c'); if(f.length) q=f[Math.floor(Math.random()*f.length)]; }catch(e){} }
     q._wr=x.k; q._u=x.uid; q._sj=u?subjOf(u):''; q.inst='🔁 <b>'+(u?E(u.title):'틀렸던 문제')+'</b> · '+(['처음','두 번째','마지막'][x.b]||'')+' 다시 풀기 · '+q.inst; return q; }
   function startWrong(){ const qs=mix(wrongDue()).slice(0,10).map(wrongQ).filter(Boolean); if(!qs.length) return boxView('오늘 다시 풀 문제가 없어요! 🎉'); runQ('wrong','틀린 문제 다시 풀기','#D9534F',qs); }
 
