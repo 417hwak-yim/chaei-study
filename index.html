@@ -14033,5 +14033,371 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
       ws.forEach(w => { if (w !== keep && !near(w, keep)) { delete w.p; w.nopic = 1; } }); }); }));
 } catch (e) {} })();
 </script>
+<!-- ===== 채이의 그림 공방 (2026-11-04) 시작 ===== -->
+<style id="drw-css">
+/* 그림 공방: '잘 그리기'가 아니라 '자주, 즐겁게, 늘어나는 걸 보기'. 공부방 위에 따로 창으로 열려요 */
+#drw{position:fixed;inset:0;z-index:9000;background:#FFFBF3;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:"Gowun Dodum","Jua",sans-serif;color:#1B2750}
+#drw *{box-sizing:border-box}
+#drw .dw{max-width:520px;margin:0 auto;padding:12px 14px calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+#drw .dtop{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;background:#FFFBF3;padding:6px 0;z-index:2}
+#drw .dtop b{font-family:"Jua",sans-serif;font-size:1.25rem;color:#E0457B}
+#drw .db{font:inherit;font-family:"Jua",sans-serif;border:2.5px solid #1B2750;border-radius:14px;background:#fff;color:#1B2750;padding:9px 12px;font-size:1rem;box-shadow:0 3px 0 #1B2750;cursor:pointer;touch-action:manipulation}
+#drw .db:active{transform:translateY(2px);box-shadow:0 1px 0 #1B2750}
+#drw .db[disabled]{opacity:.45}
+#drw .db.p{background:#FF7AA8;color:#fff}#drw .db.m{background:#43C6A6;color:#fff}#drw .db.y{background:#FFD45C}
+#drw .dcard{background:#fff;border:2.5px solid #1B2750;border-radius:18px;padding:12px;box-shadow:0 4px 0 #1B2750}
+#drw h3{margin:0 0 6px;font-family:"Jua",sans-serif;font-size:1.12rem}
+#drw p{margin:0;line-height:1.65;word-break:keep-all}
+#drw .soft{color:#5A668C;font-size:.92rem}
+#drw .mis{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;text-align:left;margin-top:8px}
+#drw .mis .e{font-size:2rem}#drw .mis b{display:block;font-family:"Jua",sans-serif;font-size:1.05rem}#drw .mis small{color:#5A668C;font-size:.85rem;line-height:1.4;display:block}
+#drw .mis.ok{background:#E9FBF4;border-color:#2E9E7A;box-shadow:0 3px 0 #2E9E7A}
+#drw .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#drw .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* 그리기판 */
+#drw .padw{position:relative;width:100%;max-width:380px;margin:0 auto;aspect-ratio:1/1;border:3px solid #1B2750;border-radius:14px;overflow:hidden;background:#fff;touch-action:none}
+#drw .padw canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+#drw .cover{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#FFE4EE 0 18px,#FFD3E3 18px 36px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:"Jua",sans-serif;font-size:1.2rem;color:#C2185B;pointer-events:none;text-align:center;padding:12px}
+#drw .tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}
+#drw .sw{width:32px;height:32px;border-radius:50%;border:2.5px solid #1B2750;padding:0;cursor:pointer}
+#drw .sw.on{box-shadow:0 0 0 3px #fff,0 0 0 6px #1B2750}
+#drw .tb{font-size:.9rem;padding:6px 9px;border-radius:10px;box-shadow:0 2px 0 #1B2750}
+#drw .tb.on{background:#1B2750;color:#fff}
+#drw .timer{font-family:"Jua",sans-serif;font-size:1.6rem;text-align:center;color:#E0457B}
+#drw .prompt{font-family:"Jua",sans-serif;font-size:1.3rem;text-align:center}
+/* 별 붙이기 */
+#drw .starw{position:relative;width:100%;max-width:380px;margin:0 auto;border:3px solid #1B2750;border-radius:14px;overflow:hidden;background:#fff}
+#drw .starw img{display:block;width:100%;height:auto}
+#drw .star{position:absolute;transform:translate(-50%,-50%);font-size:2rem;pointer-events:none;filter:drop-shadow(0 2px 0 #fff)}
+/* 앨범 */
+#drw .alb{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#drw .alb figure{margin:0;position:relative;border:2px solid #1B2750;border-radius:10px;overflow:hidden;background:#fff;cursor:pointer}
+#drw .alb img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+#drw .alb figcaption{font-size:.72rem;padding:2px 4px;color:#5A668C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#drw .alb .star{font-size:1.1rem}
+#drw .hand{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+#drw .hand figure{flex:0 0 42%;margin:0;border:2px solid #1B2750;border-radius:10px;overflow:hidden;background:#fff}
+#drw .hand img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+#drw .hand figcaption{text-align:center;font-family:"Jua",sans-serif;font-size:.9rem;padding:3px}
+/* 픽셀 */
+#drw .pxg{display:grid;grid-template-columns:repeat(16,1fr);width:100%;max-width:380px;margin:0 auto;border:3px solid #1B2750;border-radius:8px;overflow:hidden;touch-action:none;background:#fff}
+#drw .pxg i{aspect-ratio:1/1;border-right:1px solid #EEF0F6;border-bottom:1px solid #EEF0F6}
+#drw .tpl{display:flex;gap:6px;overflow-x:auto;padding:2px}
+#drw .tpl button{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.78rem;padding:5px}
+#drw .tip li{margin:4px 0;line-height:1.6}
+#drw input.ttl{width:100%;font:inherit;font-size:1rem;border:2px solid #1B2750;border-radius:10px;padding:8px 10px}
+#drw .big{position:fixed;inset:0;background:rgba(27,39,80,.8);display:flex;align-items:center;justify-content:center;padding:16px;z-index:3}
+#drw .big .starw{max-width:460px}
+/* 따라 그리기: 지난 단계는 남색, 이번 단계는 분홍으로 그려지는 모습 */
+#drw .trbox{background:#fff;border:3px solid #1B2750;border-radius:14px;padding:6px;max-width:380px;width:100%;margin:0 auto}
+#drw .trsvg{display:block;margin:0 auto}#drw .trsvg .trp *{stroke:#1B2750;stroke-width:3.5}#drw .trsvg .trc *{stroke:#FF4F8B;stroke-width:5.5;stroke-dasharray:1;stroke-dashoffset:1;animation:trdraw 1.4s ease forwards}
+@keyframes trdraw{to{stroke-dashoffset:0}}
+#drw .trlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#drw .trpick{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px}#drw .trpick b{font-size:1rem}#drw .trpick small{font-size:.75rem;color:#5A668C}
+#drw .trpick.rec{border-color:#FF4F8B;box-shadow:0 3px 0 #FF4F8B;background:#FFF5F9}
+/* 첫 화면 카드 */
+#app .drcard{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;margin:10px 0 0;padding:10px 12px;border-radius:16px;text-align:left;font:inherit;color:#1B2750;background:#F3F7FF;border:2px solid #6C8CF5;box-shadow:0 3px 0 #6C8CF5;cursor:pointer}
+#app .drcard b{display:block;font-family:Jua,sans-serif;font-weight:400;font-size:1.05rem;color:#3B5BDB;line-height:1.3}#app .drcard small{display:block;font-size:.8rem;color:#5A668C;line-height:1.4}#app .drcard .st{display:inline-block;font-size:.78rem;font-weight:800;color:#C2185B;margin-bottom:2px}#app .drcard.did .st{color:#2E9E7A}
+#app .drcard.drweek{border-color:#E0457B;box-shadow:0 3px 0 #E0457B;background:#FFF5F9}#app .drcard .go{font-size:1.6rem}
+</style>
+<script>
+/* ===== 🎨 채이의 그림 공방 =====
+   채이는 그림을 잘 그리고 싶은데 '못 그린다'며 속상해해요. 그래서 목표를 '잘 그리기'에서 바꿔요.
+   · 잘·못을 가를 수 없는 놀이 미션 (안 보고 그리기, 30초 그리기, 낙서 이어 그리기, 생각 그림) — 일주일에 2번 (첫 화면 카드에 📌)
+   · 매달 첫 미션은 '내 손 그리기' → 📈 성장 앨범에 달마다 나란히 (늘어나는 걸 눈으로)
+   · 다 그리면 '마음에 드는 곳 한 군데'에 스스로 ⭐ (구체적인 자기 칭찬). 점수·평가는 없어요
+   · 👨‍👩 어른용 칭찬 도우미: '잘 그렸다' 대신 본 것을 말해 주는 말 예시
+   · 🟦 픽셀 그리기판: 칸을 채우면 누구나 완성 (언제든)
+   기록: STATE.draw.log (날짜·종류), 그림 파일은 이 폰의 IndexedDB 'chaei-draw' (기록 옮기기에는 그림 파일이 함께 가지 않아요) */
+(function () {
+  const p2 = n => String(n).padStart(2, '0'), dk = d => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+  const DS = () => { STATE.draw = STATE.draw || { log: [] }; STATE.draw.log = STATE.draw.log || []; return STATE.draw; };
+  const save = () => { try { persist(); } catch (e) {} };
+  const monday = () => { const n = new Date(); return dk(new Date(n.getFullYear(), n.getMonth(), n.getDate() - ((n.getDay() + 6) % 7))); };
+  const weekN = () => Math.floor((new Date(monday() + 'T00:00') - new Date(2026, 0, 5)) / 6048e5);
+  const month = () => dk(new Date()).slice(0, 7);
+  const WEEKGOAL = 2;
+  const wkLog = () => DS().log.filter(x => x.m && x.d >= monday());
+  const handDone = () => DS().log.some(x => x.t === 'hand' && x.d.slice(0, 7) === month());
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+  /* ---------- 미션 ---------- */
+  const MS = {
+    trace: { e: '✏️', n: '따라 그리기', s: '한 단계씩 새 선이 나와요. 종이에 연필로 따라 그리면 그리는 순서가 손에 붙어요!' },
+    hand: { e: '✋', n: '성장 그리기 · 내 손', s: '한 달에 한 번, 내 손을 보고 천천히 그려요. 달마다 모아서 나란히 보면 늘어난 게 보여요!' },
+    blind: { e: '🙈', n: '안 보고 그리기', s: '그리는 동안 판이 가려져요! 물건만 보고 1분 동안 선을 이어 그려요. 웃기게 나와야 성공!' },
+    speed: { e: '⏱️', n: '30초 그리기', s: '30초씩 3장! 시간이 짧으니까 대충 그리는 게 정답이에요.' },
+    doodle: { e: '〰️', n: '낙서 이어 그리기', s: '꼬불꼬불 선이 하나 나와요. 이 선으로 무엇이든 만들어 봐요.' },
+    idea: { e: '💡', n: '생각 그림', s: '예쁘게보다 알아보게! 생각을 그림으로 보여 줘요.' } };
+  /* 한 주 두 번: ✏️ 따라 그리기(그리는 법 익히기) + 한 가지 (매달 처음엔 ✋ 내 손, 아니면 💡 생각 그림·〰️ 낙서 번갈아). 🙈·⏱️는 '가끔 하는 놀이' */
+  const weekPair = () => ['trace', handDone() || wkLog().some(x => x.t === 'hand') ? (weekN() % 2 ? 'doodle' : 'idea') : 'hand'];
+  const BLIND = ['내 손', '컵', '신발', '필통', '인형', '가족 얼굴', '바나나', '의자'];
+  const SPEED = [['고양이', '자전거', '아이스크림'], ['물고기', '집', '우산'], ['강아지', '나무', '로켓'], ['토끼', '자동차', '케이크'], ['새', '꽃', '기차'], ['거북', '해와 구름', '모자']];
+  const IDEA = [['🗯️ 4컷 만화: 나의 아침', 4], ['🗺️ 우리 집에서 학교까지 지도', 1], ['🍕 분수 3/4을 그림으로 보여 주기', 1], ['🔬 오늘 본 식물이나 동물 관찰 그림', 1], ['🗯️ 4컷 만화: 서이랑 있었던 일', 4], ['🏪 내가 만든 가게의 간판과 메뉴', 1], ['🗯️ 4컷 만화: 만약 내가 하늘을 날 수 있다면', 4], ['📏 내 방을 위에서 내려다본 모습', 1]];
+  const pickW = a => a[((weekN() % a.length) + a.length) % a.length];
+
+  /* ---------- 그림 저장 (이 폰 안) ---------- */
+  let DBP = null;
+  const db = () => DBP = DBP || new Promise((res, rej) => { try { const r = indexedDB.open('chaei-draw', 1); r.onupgradeneeded = () => r.result.createObjectStore('pics', { keyPath: 'id' }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch (e) { rej(e); } });
+  const putPic = o => db().then(d => new Promise(r => { const t = d.transaction('pics', 'readwrite'); t.objectStore('pics').put(o); t.oncomplete = () => r(true); t.onerror = () => r(false); })).catch(() => false);
+  const allPics = () => db().then(d => new Promise(r => { const q = d.transaction('pics').objectStore('pics').getAll(); q.onsuccess = () => r((q.result || []).sort((a, b) => a.id < b.id ? -1 : 1)); q.onerror = () => r([]); })).catch(() => []);
+
+  /* ---------- 창 ---------- */
+  let $w = null, pushed = false, timers = [];
+  const clearT = () => { timers.forEach(t => clearInterval(t)); timers = []; };
+  function openDrw(view) { if (!$w) { $w = document.createElement('div'); $w.id = 'drw'; $w.setAttribute('role', 'dialog'); $w.setAttribute('aria-label', '그림 공방'); document.body.appendChild($w); document.body.style.overflow = 'hidden';
+      try { history.pushState({ drw: 1 }, ''); pushed = true; window.addEventListener('popstate', onPop); } catch (e) {} }
+    (view || home)(); }
+  const onPop = () => { pushed = false; closeDrw(); };
+  function closeDrw() { clearT(); if ($w) { $w.remove(); $w = null; } document.body.style.overflow = ''; window.removeEventListener('popstate', onPop); if (pushed) { pushed = false; try { history.back(); } catch (e) {} } refreshCard(); }
+  const page = (title, body, back) => { clearT(); $w.innerHTML = '<div class="dw"><div class="dtop"><b>' + title + '</b><button class="db" data-dx="' + (back ? 'home' : 'close') + '">' + (back ? '← 공방으로' : '닫기') + '</button></div>' + body + '</div>'; $w.scrollTop = 0; };
+
+  /* ---------- 공방 첫 화면 ---------- */
+  function home() { const pair = weekPair(), wl = wkLog(), n = DS().log.length;
+    const doneT = t => wl.some(x => x.t === t);
+    page('🎨 채이의 그림 공방',
+      '<div class="dcard"><h3>이번 주 그림 시간 ' + Math.min(WEEKGOAL, wl.length) + ' / ' + WEEKGOAL + (wl.length >= WEEKGOAL ? ' ✅' : '') + '</h3><p class="soft">그림은 <b>연습하면 누구나 늘어요.</b> 따라 그리기로 그리는 법을 하나씩 익혀요. 지금까지 ' + n + '번 그렸어요!</p>'
+      + pair.map(t => '<button class="db mis' + (doneT(t) ? ' ok' : '') + '" data-go="' + t + '"><span class="e">' + MS[t].e + '</span><span><b>' + MS[t].n + (doneT(t) ? ' ✓' : '') + '</b><small>' + MS[t].s + '</small></span><span>▶</span></button>').join('')
+      + '<p class="soft" style="margin-top:8px">🎲 가끔 하는 놀이 👇</p><div class="row" style="margin-top:6px">' + Object.keys(MS).filter(t => !pair.includes(t) && t !== 'hand').map(t => '<button class="db tb" data-go="' + t + '">' + MS[t].e + ' ' + MS[t].n + '</button>').join('') + '</div></div>'
+      + '<div class="grid2"><button class="db y" data-go="pixel">🟦 픽셀 그리기</button><button class="db m" data-go="album">📈 그림 앨범</button></div>'
+      + '<details class="dcard"><summary style="font-family:Jua,sans-serif;cursor:pointer">👨‍👩 어른용: 칭찬 도우미</summary><ul class="tip">'
+      + '<li>"잘 그렸네" 대신 <b>본 것</b>을 말해 주세요: "이 꼬리 선에서 움직이는 게 느껴져", "색을 이렇게 섞은 게 재밌다", "이 부분은 어떻게 생각해 냈어?"</li>'
+      + '<li>채이가 ⭐를 붙인 곳을 먼저 물어봐 주세요. "여기가 마음에 들었구나, 왜?"</li>'
+      + '<li>고쳐 주거나 다른 아이 그림과 견주지 않아요. 안 보고 그리기·30초 그리기는 어른도 같이 하고 같이 웃어요.</li>'
+      + '<li>📈 성장 앨범의 \'내 손\'을 몇 달에 한 번 같이 넘겨 보며 "지난달보다 손가락 마디가 보이네!"처럼 달라진 점을 찾아 주세요.</li></ul></details>'); }
+
+  /* ---------- 그리기판 ---------- */
+  const COLS = ['#1B2750', '#E5484D', '#F5A524', '#FFD43B', '#2FB36B', '#2F80ED', '#8B5CF6', '#9C6B3F', '#FF7AA8', '#9AA3B5'];
+  function makePad(wrap, guide) { const W = 600, cv = document.createElement('canvas'); cv.width = W; cv.height = W; wrap.appendChild(cv); const x = cv.getContext('2d', { willReadFrequently: true });
+    /* 도구: pen 선 · crayon 🖍️ 색연필(결이 있는 굵은 선) · fill 🪣 색 채우기(선으로 둘러싼 곳을 누르면 안이 칠해져요) · er 지우개 */
+    const st = { col: COLS[0], w: 6, mode: 'pen', lines: [], cur: null, locked: false };
+    const redraw = () => { x.fillStyle = '#fff'; x.fillRect(0, 0, W, W); if (guide) guide(x, W); st.lines.forEach(L => L.k === 'fill' ? flood(L) : seg(L)); };
+    const seg = L => { if (L.cr) return crayon(L, 0); x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = L.er ? '#fff' : L.c; x.lineWidth = L.w; x.beginPath(); L.p.forEach((q, i) => i ? x.lineTo(q[0], q[1]) : x.moveTo(q[0], q[1])); if (L.p.length === 1) x.lineTo(L.p[0][0] + .1, L.p[0][1]); x.stroke(); };
+    /* 색연필: 선을 따라 작은 점을 흩뿌려 결을 만들어요 (점 자리는 정해진 순서라 되돌리기 해도 똑같이 다시 그려져요) */
+    const crayon = (L, from) => { x.fillStyle = L.c; x.globalAlpha = .7;
+      for (let i = Math.max(0, from); i < L.p.length; i++) { let s = (L.s + i * 7919) % 233280; const R = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+        const a = L.p[Math.max(0, i - 1)], b = L.p[i], dx = b[0] - a[0], dy = b[1] - a[1], n = Math.max(1, Math.ceil(Math.hypot(dx, dy) / 2));
+        for (let j = 0; j < n; j++) { const cx = a[0] + dx * j / n, cy = a[1] + dy * j / n; for (let k = 0; k < 10; k++) { const ang = R() * 6.283, rr = Math.sqrt(R()) * L.w / 2; x.fillRect(cx + Math.cos(ang) * rr - 1.3, cy + Math.sin(ang) * rr - 1.3, 2.6, 2.6); } } }
+      x.globalAlpha = 1; };
+    /* 색 채우기: 누른 곳과 비슷한 색이 이어진 곳을 칠해요. 선 가장자리의 흐린 픽셀까지 1칸 더 칠해서 흰 테두리가 남지 않게 */
+    const flood = L => { const x0 = Math.max(0, Math.min(W - 1, Math.floor(L.x))), y0 = Math.max(0, Math.min(W - 1, Math.floor(L.y))), im = x.getImageData(0, 0, W, W), d = im.data, i0 = (y0 * W + x0) * 4;
+      const h = parseInt(L.c.slice(1), 16), r = h >> 16 & 255, g = h >> 8 & 255, b = h & 255, tr = d[i0], tg = d[i0 + 1], tb = d[i0 + 2];
+      if (Math.abs(tr - r) + Math.abs(tg - g) + Math.abs(tb - b) < 12) return;
+      const same = p => { const i = p * 4; return Math.abs(d[i] - tr) + Math.abs(d[i + 1] - tg) + Math.abs(d[i + 2] - tb) <= 96; };
+      const mark = new Uint8Array(W * W), stk = [y0 * W + x0];
+      while (stk.length) { const p = stk.pop(); if (mark[p]) continue; const yy = (p / W) | 0; let lx = p, rx = p; const row0 = yy * W, row1 = row0 + W - 1;
+        while (lx > row0 && !mark[lx - 1] && same(lx - 1)) lx--; while (rx < row1 && !mark[rx + 1] && same(rx + 1)) rx++;
+        for (let q = lx; q <= rx; q++) { mark[q] = 1; if (yy > 0 && !mark[q - W] && same(q - W)) stk.push(q - W); if (yy < W - 1 && !mark[q + W] && same(q + W)) stk.push(q + W); } }
+      for (let p = 0; p < W * W; p++) { const c = p % W; if (mark[p] || (c > 0 && mark[p - 1]) || (c < W - 1 && mark[p + 1]) || (p >= W && mark[p - W]) || (p < W * W - W && mark[p + W])) { const i = p * 4; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255; } }
+      x.putImageData(im, 0, 0); };
+    const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * W]; };
+    cv.addEventListener('pointerdown', e => { if (st.locked) return; e.preventDefault(); const q = pos(e);
+      if (st.mode === 'fill') { const F = { k: 'fill', x: q[0], y: q[1], c: st.col }; st.lines.push(F); flood(F); return; }
+      try { cv.setPointerCapture(e.pointerId); } catch (x) {} st.cur = { c: st.col, w: st.mode === 'er' ? 26 : st.mode === 'crayon' ? 24 : st.w, er: st.mode === 'er', cr: st.mode === 'crayon' ? 1 : 0, s: Math.floor(Math.random() * 233280), p: [q] }; st.lines.push(st.cur); seg(st.cur); });
+    cv.addEventListener('pointermove', e => { if (!st.cur || st.locked) return; e.preventDefault(); const q = pos(e), L = st.cur, a = L.p[L.p.length - 1]; L.p.push(q);
+      if (L.cr) return crayon(L, L.p.length - 1);
+      x.lineCap = 'round'; x.strokeStyle = L.er ? '#fff' : L.c; x.lineWidth = L.w; x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(q[0], q[1]); x.stroke(); });
+    const up = () => { st.cur = null; }; cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up); cv.addEventListener('pointerleave', up);
+    redraw();
+    return { st, cv, redraw, undo: () => { st.lines.pop(); redraw(); }, clear: () => { st.lines = []; redraw(); }, used: () => st.lines.length > 0,
+      data: () => { const o = document.createElement('canvas'); o.width = 480; o.height = 480; o.getContext('2d').drawImage(cv, 0, 0, 480, 480); return o.toDataURL('image/jpeg', .72); } }; }
+  const toolsHTML = () => '<div class="tools">' + COLS.map((c, i) => '<button class="sw' + (i ? '' : ' on') + '" data-col="' + c + '" style="background:' + c + '" aria-label="색"></button>').join('') + '</div>'
+    + '<div class="tools"><button class="db tb on" data-md="pen" data-w="6">✏️ 가는 선</button><button class="db tb" data-md="pen" data-w="14">🖊️ 굵은 선</button><button class="db tb" data-md="crayon">🖍️ 색연필</button><button class="db tb" data-md="fill">🪣 색 채우기</button><button class="db tb" data-md="er">🧽 지우개</button><button class="db tb" data-un="1">↩️ 되돌리기</button></div>'
+    + '<p class="soft dmhint" style="text-align:center;font-size:.85rem;min-height:1.3em"></p>';
+  const MDHINT = { pen: '', crayon: '🖍️ 문질러서 색연필처럼 칠해요', fill: '🪣 선으로 둘러싼 곳 안을 누르면 한 번에 칠해져요', er: '🧽 지우고 싶은 곳을 문질러요' };
+  function bindTools(P) { const hint = $w.querySelector('.dmhint');
+    $w.querySelectorAll('[data-col]').forEach(b => b.onclick = () => { P.st.col = b.dataset.col; if (P.st.mode === 'er') { P.st.mode = 'pen'; $w.querySelectorAll('[data-md]').forEach(y => y.classList.toggle('on', y.dataset.md === 'pen' && +y.dataset.w === P.st.w)); if (hint) hint.textContent = ''; }
+      $w.querySelectorAll('[data-col]').forEach(y => y.classList.toggle('on', y === b)); });
+    $w.querySelectorAll('[data-md]').forEach(b => b.onclick = () => { P.st.mode = b.dataset.md; if (b.dataset.w) P.st.w = +b.dataset.w; $w.querySelectorAll('[data-md]').forEach(y => y.classList.toggle('on', y === b)); if (hint) hint.textContent = MDHINT[P.st.mode] || ''; });
+    const un = $w.querySelector('[data-un]'); if (un) un.onclick = () => P.undo(); }
+  function countdown(sec, el, done) { let t = sec; el.textContent = '⏱️ ' + t + '초'; const id = setInterval(() => { t--; el.textContent = '⏱️ ' + Math.max(0, t) + '초'; if (t <= 0) { clearInterval(id); done(); } }, 1000); timers.push(id); return id; }
+
+  /* 미션 화면 공통: 그리기 → 끝 → ⭐ 붙이기 */
+  function drawMission(t) { const M = MS[t];
+    if (t === 'trace') return traceMenu();
+    if (t === 'speed') return speedRun(0, []);
+    let guide = null, top = '', sub = '';
+    if (t === 'hand') { top = '✋ 내 손을 책상에 올려놓고, 보면서 천천히 그려요.'; sub = '손가락 마디, 손톱, 주름을 찾아보세요. 시간 제한은 없어요. 종이에 그렸다면 📷 사진으로 올려도 돼요.'; }
+    if (t === 'blind') { const what = pickW(BLIND); top = '🙈 오늘 그릴 것: <b>' + what + '</b>'; sub = '시작을 누르면 판이 가려져요. 화면은 보지 말고 ' + what + '만 보면서 1분 동안 선을 이어 그려요!'; }
+    if (t === 'doodle') { const seed = Date.now() % 100000; let s = seed; const R = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+      const pts = Array(8).fill(0).map((q, i) => [90 + (i % 2 ? 260 : 0) + R() * 160, 70 + i * 60 + R() * 40]);
+      guide = (x, W) => { x.strokeStyle = '#1B2750'; x.lineWidth = 7; x.lineCap = 'round'; x.beginPath(); x.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length - 1; i++) x.quadraticCurveTo(pts[i][0], pts[i][1], (pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2); x.stroke(); };
+      top = '〰️ 이 꼬불꼬불 선으로 무엇을 만들까요?'; sub = '돌려 보고, 뒤집어 보고… 동물? 사람? 괴물? 정답은 없어요!'; }
+    if (t === 'idea') { const I = pickW(IDEA); top = I[0]; sub = I[1] === 4 ? '네 칸에 차례대로 그려요. 졸라맨도 좋아요! 말풍선을 넣어도 돼요.' : '예쁘게보다 <b>알아보게</b>! 글자나 화살표를 써도 돼요.';
+      if (I[1] === 4) guide = (x, W) => { x.strokeStyle = '#C9CFDD'; x.lineWidth = 4; x.strokeRect(10, 10, W - 20, W - 20); x.beginPath(); x.moveTo(W / 2, 10); x.lineTo(W / 2, W - 10); x.moveTo(10, W / 2); x.lineTo(W - 10, W / 2); x.stroke(); x.fillStyle = '#C9CFDD'; x.font = 'bold 28px sans-serif'; [[24, 44], [W / 2 + 14, 44], [24, W / 2 + 34], [W / 2 + 14, W / 2 + 34]].forEach((q, i) => x.fillText(i + 1, q[0], q[1])); }; }
+    page(M.e + ' ' + M.n, '<div class="dcard"><p class="prompt" style="font-size:1.1rem">' + top + '</p><p class="soft" style="margin-top:4px">' + sub + '</p></div>'
+      + (t === 'blind' ? '<div class="timer" id="dtm">1분</div>' : '') + '<div class="padw" id="dpad"></div>' + toolsHTML()
+      + '<div class="row">' + (t === 'blind' ? '<button class="db p" id="dgo">🙈 가리고 시작!</button>' : '') + '<button class="db m" id="dfin"' + (t === 'blind' ? ' hidden' : '') + '>다 그렸어요 ✔</button>'
+      + (t === 'hand' ? '<label class="db y" style="cursor:pointer">📷 종이 그림 사진<input type="file" accept="image/*" id="dph" hidden></label>' : '') + '</div>', true);
+    const P = makePad($w.querySelector('#dpad'), guide); bindTools(P);
+    const fin = () => { if (!P.used()) return toastD('먼저 조금이라도 그려 봐요!'); starStep(t, P.data(), t === 'blind' ? top.replace(/<[^>]+>/g, '').replace('🙈 오늘 그릴 것: ', '') : t === 'idea' ? top.replace(/^\S+\s/, '') : ''); };
+    $w.querySelector('#dfin').onclick = fin;
+    if (t === 'blind') { P.st.locked = true; $w.querySelector('#dgo').onclick = e => { e.target.remove(); P.st.locked = false; const c = document.createElement('div'); c.className = 'cover'; c.innerHTML = '<span style="font-size:2.4rem">🙈</span>판은 보지 말고<br>물건만 보면서 그려요!'; $w.querySelector('#dpad').appendChild(c);
+        countdown(60, $w.querySelector('#dtm'), () => { c.remove(); P.st.locked = true; $w.querySelector('#dtm').textContent = '짜잔! 어떤 그림이 나왔나요? 😆'; $w.querySelector('#dfin').hidden = false; }); }; }
+    const ph = $w.querySelector('#dph'); if (ph) ph.onchange = () => { const f = ph.files && ph.files[0]; if (!f) return; const img = new Image(); img.onload = () => { const o = document.createElement('canvas'), s = Math.min(img.width, img.height); o.width = 480; o.height = 480;
+        o.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 480, 480); URL.revokeObjectURL(img.src); starStep(t, o.toDataURL('image/jpeg', .72), '종이 그림'); }; img.src = URL.createObjectURL(f); }; }
+  function speedRun(k, out) { const L = pickW(SPEED);
+    if (k >= 3) return starStep('speed', out[0], L[0], out.slice(1).map((d, i) => ({ img: d, title: L[i + 1] })));
+    page('⏱️ 30초 그리기 ' + (k + 1) + ' / 3', '<p class="prompt">' + ['🐾', '✏️', '🎈'][k] + ' <b>' + L[k] + '</b>!</p><div class="timer" id="dtm">30초</div><div class="padw" id="dpad"></div>' + toolsHTML() + '<div class="row"><button class="db p" id="dgo">시작! ⏱️</button></div>', true);
+    const P = makePad($w.querySelector('#dpad')); bindTools(P); P.st.locked = true;
+    $w.querySelector('#dgo').onclick = e => { e.target.remove(); P.st.locked = false; countdown(30, $w.querySelector('#dtm'), () => { P.st.locked = true; $w.querySelector('#dtm').textContent = '⏰ 끝! 대충이라 더 재밌죠?';
+        const b = document.createElement('button'); b.className = 'db m'; b.textContent = k < 2 ? '다음 그림 ▶' : '다 했어요 ✔'; b.onclick = () => speedRun(k + 1, out.concat(P.data())); $w.querySelector('.row').appendChild(b); }); }; }
+  /* ⭐ 마음에 드는 곳 한 군데 + 제목 → 저장 */
+  function starStep(t, img, title, extra, meta) { let at = null;
+    page('⭐ 마음에 드는 곳', '<div class="dcard"><p>오늘 그림에서 <b>마음에 드는 곳을 한 군데</b> 눌러 ⭐를 붙여요. 어디든 좋아요. 선 하나, 색 하나도!</p></div>'
+      + '<div class="starw" id="dsw"><img src="' + img + '" alt="오늘 그림"></div><input class="ttl" id="dtt" maxlength="30" placeholder="그림 이름 (안 써도 돼요)" value="' + esc(title || '') + '"><div class="row"><button class="db m" id="dsv">공방에 걸기 🖼️</button></div>', true);
+    const sw = $w.querySelector('#dsw'); sw.onclick = e => { const r = sw.getBoundingClientRect(); at = [Math.round((e.clientX - r.left) / r.width * 100), Math.round((e.clientY - r.top) / r.height * 100)]; let s = sw.querySelector('.star'); if (!s) { s = document.createElement('span'); s.className = 'star'; s.textContent = '⭐'; sw.appendChild(s); } s.style.left = at[0] + '%'; s.style.top = at[1] + '%'; };
+    $w.querySelector('#dsv').onclick = async () => { if (!at) return toastD('⭐를 한 군데 붙여 줘요!'); const d = dk(new Date()), base = Date.now(), T = $w.querySelector('#dtt').value.trim();
+      const items = [{ img, title: T }].concat(extra || []); for (let i = 0; i < items.length; i++) await putPic({ id: d + '-' + (base + i), d, t, title: items[i].title || '', pid: (meta || {}).pid || '', img: items[i].img, star: i ? null : at });
+      const wasWeek = wkLog().length; DS().log.push(Object.assign({ d, t, m: t !== 'pixel' ? 1 : 0 }, meta || {})); if (DS().log.length > 500) DS().log.splice(0, DS().log.length - 500); save();
+      doneMsg(t, wasWeek); }; }
+  function doneMsg(t, wasWeek) { const n = DS().log.length, wk = wkLog().length;
+      page('🎉 걸었어요!', '<div class="dcard" style="text-align:center"><div style="font-size:3rem">🖼️</div><p style="font-size:1.1rem">벌써 <b>' + n + '번째</b> 그림이에요!<br>' + (t === 'trace' ? '그리는 순서가 손에 하나 더 붙었어요! 다음엔 폰을 안 보고도 그려 볼까요? 😉' : t === 'hand' ? '이번 달 손 그림이 📈 성장 앨범에 들어갔어요. 다음 달 손이랑 견주어 봐요!' : t === 'blind' ? '안 보고 그린 그림은 원래 웃겨요. 그게 바로 성공! 😆' : t === 'speed' ? '30초 그림 3장 끝! 빨리 그릴수록 손이 용감해져요.' : '손이 한 번 더 연습했어요. 자주 그릴수록 손이 늘어요!') + '</p>'
+        + (wk >= WEEKGOAL && wasWeek < WEEKGOAL ? '<p style="margin-top:8px;color:#2E9E7A"><b>✅ 이번 주 그림 시간 끝!</b></p>' : '') + '</div><div class="grid2"><button class="db" data-dx="home">🎨 공방으로</button><button class="db m" data-go="album">📈 앨범 보기</button></div>', true); }
+
+  /* ---------- 앨범 ---------- */
+  async function album() { page('📈 그림 앨범', '<p class="soft">불러오는 중…</p>', true); const A = await allPics(); if (!$w) return;
+    const hands = A.filter(x => x.t === 'hand'), byM = {}; hands.forEach(x => { byM[x.d.slice(0, 7)] = x; });
+    const fig = x => '<figure data-big="' + x.id + '"><img src="' + x.img + '" alt="">' + (x.star ? '<span class="star" style="left:' + x.star[0] + '%;top:' + x.star[1] + '%">⭐</span>' : '') + '<figcaption>' + x.d.slice(5).replace('-', '/') + ' ' + esc(x.title || (MS[x.t] || {}).n || '픽셀') + '</figcaption></figure>';
+    page('📈 그림 앨범', '<div class="dcard"><h3>✋ 성장 앨범 · 내 손</h3>' + (Object.keys(byM).length ? '<p class="soft">왼쪽이 처음, 오른쪽이 최근이에요. 달라진 곳을 찾아봐요!</p><div class="hand">' + Object.keys(byM).sort().map(m => '<figure><img src="' + byM[m].img + '" alt=""><figcaption>' + (+m.slice(5)) + '월</figcaption></figure>').join('') + '</div>' : '<p class="soft">매달 첫 그림 시간에 내 손을 그려요. 두 달만 모여도 차이가 보여요!</p>') + '</div>'
+      + (() => { const by = {}; A.filter(x => x.t === 'trace' && x.pid).forEach(x => (by[x.pid] = by[x.pid] || []).push(x)); const ks = Object.keys(by).filter(k => by[k].length > 1);
+          return ks.length ? '<div class="dcard"><h3>✏️ 따라 그리기 · 처음과 최근</h3><p class="soft">같은 그림을 다시 그렸어요. 어디가 달라졌나요?</p>' + ks.map(k => { const a = by[k], f = a[0], l = a[a.length - 1];
+            return '<div class="hand"><figure><img src="' + f.img + '" alt=""><figcaption>처음 ' + f.d.slice(5).replace('-', '/') + '</figcaption></figure><figure><img src="' + l.img + '" alt=""><figcaption>최근 ' + l.d.slice(5).replace('-', '/') + '</figcaption></figure></div>'; }).join('') + '</div>' : ''; })()
+      + '<div class="dcard"><h3>🖼️ 모든 그림 (' + A.length + '장)</h3>' + (A.length ? '<div class="alb">' + A.slice().reverse().map(fig).join('') + '</div>' : '<p class="soft">아직 그림이 없어요. 첫 그림을 걸어 봐요!</p>') + '</div>', true);
+    $w.querySelectorAll('[data-big]').forEach(f => f.onclick = () => { const x = A.find(y => y.id === f.dataset.big); if (!x) return; const b = document.createElement('div'); b.className = 'big'; b.innerHTML = '<div class="starw"><img src="' + x.img + '" alt="">' + (x.star ? '<span class="star" style="left:' + x.star[0] + '%;top:' + x.star[1] + '%">⭐</span>' : '') + '</div>'; b.onclick = () => b.remove(); $w.appendChild(b); }); }
+
+  /* ---------- 픽셀 그리기 ---------- */
+  const PX = ['', '#1B2750', '#FFFFFF', '#E5484D', '#F5A524', '#FFD43B', '#2FB36B', '#2F80ED', '#8B5CF6', '#FF7AA8', '#9C6B3F', '#C9CFDD'];
+  /* 따라 만들기 그림 (16×16, 숫자 = 색 번호) — 이름과 그림이 꼭 맞게 */
+  const TPL = { '하트': '0000000000000000|0011100001110000|0133310013331000|1333331133333100|1333333333333100|1333333333333100|0133333333331000|0013333333310000|0001333333100000|0000133331000000|0000013310000000|0000001100000000|0000000000000000|0000000000000000|0000000000000000|0000000000000000',
+    '토끼': '0001100000110000|0012910001921000|0012910001921000|0012910001921000|0001222222210000|0012222222221000|0122122222122100|0122222222222100|0129222112229100|0122222222222100|0012222222221000|0001111111110000|0000000000000000|0000000000000000|0000000000000000|0000000000000000',
+    '버섯': '0000011111100000|0001133333311000|0013332233333100|0133322233322310|0133333333322310|1333223333333331|1333223333333331|0111111111111110|0000122222210000|0000122122210000|0000122122210000|0000122222210000|0000011111100000|0000000000000000|0000000000000000|0000000000000000',
+    '별': '0000000110000000|0000001551000000|0000001551000000|0000015555100000|1111115555111111|1555555555555551|0155555555555510|0015555555555100|0001555555551000|0001555555551000|0015555115555100|0015551001555100|0155510000155510|0111100000011110|0000000000000000|0000000000000000',
+    '컵': '0000000000000000|0000000000000000|0011111111110000|0012222222210000|0019999999911100|0019999999910010|0019999999910010|0019999999911100|0019999999910000|0011999999110000|0001111111100000|0000000000000000|0000000000000000|0000000000000000|0000000000000000|0000000000000000',
+    '물고기': '0000000000000000|0000000000000000|0000011110000000|0001177771100011|0017777777710171|0177177777771771|0177777777777771|0177777777771771|0017777777710171|0001177771100011|0000011110000000|0000000000000000|0000000000000000|0000000000000000|0000000000000000|0000000000000000' };
+  function pixel() { const G = Array(256).fill(0); let col = 1, tpl = null, down = false;
+    page('🟦 픽셀 그리기', '<div class="dcard"><p>칸을 눌러(쓱 문질러도 돼요) 색을 채워요. <b>칸만 채우면 누구나 완성!</b> 아래 그림을 따라 만들어도 좋아요.</p></div>'
+      + '<div class="tpl"><button class="db tb" data-tp="">✏️ 내 마음대로</button>' + Object.keys(TPL).map(k => '<button class="db tb" data-tp="' + k + '">' + mini(TPL[k]) + k + '</button>').join('') + '</div>'
+      + '<div id="dtp" class="soft" style="text-align:center"></div><div class="pxg" id="dpx">' + G.map((v, i) => '<i data-i="' + i + '"></i>').join('') + '</div>'
+      + '<div class="tools">' + PX.map((c, i) => i ? '<button class="sw' + (i === 1 ? ' on' : '') + '" data-pc="' + i + '" style="background:' + c + '"></button>' : '<button class="db tb" data-pc="0">🧽</button>').join('') + '</div>'
+      + '<div class="row"><button class="db" id="dpclr">🗑️ 처음부터</button><button class="db m" id="dpsv">다 만들었어요 ✔</button></div>', true);
+    const grid = $w.querySelector('#dpx'), cells = [...grid.children];
+    const paint = i => { if (i < 0 || i > 255 || G[i] === col) return; G[i] = col; cells[i].style.background = PX[col] || ''; };
+    const at = e => { const el = document.elementFromPoint(e.clientX, e.clientY); return el && el.dataset && el.dataset.i != null && el.parentNode === grid ? +el.dataset.i : -1; };
+    grid.addEventListener('pointerdown', e => { e.preventDefault(); down = true; paint(at(e)); }); grid.addEventListener('pointermove', e => { if (down) { e.preventDefault(); paint(at(e)); } });
+    window.addEventListener('pointerup', () => down = false);
+    $w.querySelectorAll('[data-pc]').forEach(b => b.onclick = () => { col = +b.dataset.pc; $w.querySelectorAll('[data-pc]').forEach(y => y.classList.toggle('on', y === b)); });
+    $w.querySelectorAll('[data-tp]').forEach(b => b.onclick = () => { tpl = b.dataset.tp; $w.querySelector('#dtp').innerHTML = tpl ? '따라 만들기: ' + mini(TPL[tpl], 64) + ' <b>' + tpl + '</b>' : ''; });
+    $w.querySelector('#dpclr').onclick = () => { G.fill(0); cells.forEach(c => c.style.background = ''); };
+    $w.querySelector('#dpsv').onclick = () => { if (!G.some(Boolean)) return toastD('칸을 몇 개 채워 봐요!'); const o = document.createElement('canvas'); o.width = 480; o.height = 480; const x = o.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 480, 480);
+      G.forEach((v, i) => { if (v) { x.fillStyle = PX[v]; x.fillRect((i % 16) * 30, Math.floor(i / 16) * 30, 30, 30); } }); starStep('pixel', o.toDataURL('image/jpeg', .85), tpl || ''); }; }
+  function mini(t, sz) { sz = sz || 32; const o = document.createElement('canvas'); o.width = 16; o.height = 16; const x = o.getContext('2d'); t.split('|').forEach((r, y) => [...r].forEach((c, i) => { const v = parseInt(c, 36); if (v) { x.fillStyle = PX[v]; x.fillRect(i, y, 1, 1); } }));
+    return '<img src="' + o.toDataURL() + '" width="' + sz + '" height="' + sz + '" style="image-rendering:pixelated;vertical-align:middle" alt="">'; }
+
+  let tT = 0; function toastD(t) { let d = $w && $w.querySelector('.dtoast'); if (!$w) return; if (!d) { d = document.createElement('div'); d.className = 'dtoast'; d.style.cssText = 'position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);background:#fff;border:2.5px solid #1B2750;border-radius:14px;padding:12px 16px;font-family:Jua,sans-serif;z-index:5;box-shadow:0 4px 0 #1B2750'; $w.appendChild(d); } d.textContent = t; clearTimeout(tT); tT = setTimeout(() => d.remove(), 1500); }
+
+  /* ---------- ✏️ 따라 그리기: 폰은 '선생님'(한 단계씩 새 선이 그려지는 걸 보여 줘요), 종이는 '그리는 곳' ----------
+     그림마다 단계: [설명, SVG 선]. 마지막 단계는 '내 것으로 바꾸기'(선 없음). 쉬운 것부터 (lv 1 → 3) */
+  const TR = [
+    { id: 'cat', n: '고양이', e: '🐱', lv: 1, s: [
+      ['큰 동그라미를 하나 그려요. 고양이 얼굴이에요.', '<circle cx="100" cy="112" r="58"/>'],
+      ['위쪽 양옆에 뾰족한 세모 귀 두 개!', '<path d="M54 82 L58 34 L88 62"/><path d="M146 82 L142 34 L112 62"/>'],
+      ['가운데보다 조금 위에 동그란 눈 두 개.', '<circle cx="78" cy="106" r="7"/><circle cx="122" cy="106" r="7"/>'],
+      ['눈 사이 아래에 작은 세모 코, 그 밑에 ω 모양 입.', '<path d="M93 124 L107 124 L100 132 Z"/><path d="M100 132 Q94 144 84 138"/><path d="M100 132 Q106 144 116 138"/>'],
+      ['양쪽 볼에 수염을 세 줄씩 쭉!', '<path d="M70 128 L40 122 M70 134 L40 136 M70 140 L44 150"/><path d="M130 128 L160 122 M130 134 L160 136 M130 140 L156 150"/>']], my: '리본, 줄무늬, 표정을 바꿔서 나만의 고양이로!' },
+    { id: 'fish', n: '물고기', e: '🐟', lv: 1, s: [
+      ['옆으로 긴 타원을 그려요. 물고기 몸이에요.', '<ellipse cx="90" cy="100" rx="60" ry="38"/>'],
+      ['오른쪽 끝에 세모 꼬리를 붙여요.', '<path d="M148 100 L182 72 L182 128 Z"/>'],
+      ['왼쪽에 동그란 눈, 앞쪽 끝에 작은 입.', '<circle cx="58" cy="92" r="7"/><path d="M32 106 Q38 110 44 106"/>'],
+      ['위와 아래에 둥근 지느러미.', '<path d="M80 63 Q100 40 118 66"/><path d="M86 137 Q98 154 112 135"/>'],
+      ['몸에 ) 모양 비늘을 세 줄!', '<path d="M90 85 Q100 100 90 115 M108 85 Q118 100 108 115 M126 88 Q134 100 126 112"/>']], my: '물방울, 줄무늬, 친구 물고기를 더 그려 봐요!' },
+    { id: 'house', n: '집', e: '🏠', lv: 1, s: [
+      ['아래쪽에 큰 네모. 집의 벽이에요.', '<rect x="45" y="90" width="110" height="85"/>'],
+      ['네모 위에 지붕 세모를 얹어요.', '<path d="M35 92 L100 35 L165 92 Z"/>'],
+      ['가운데 아래에 긴 네모 문, 손잡이도 콕.', '<rect x="88" y="128" width="26" height="47"/><circle cx="108" cy="152" r="2.5"/>'],
+      ['문 양옆에 십자 창문 두 개.', '<rect x="56" y="104" width="24" height="24"/><path d="M68 104 V128 M56 116 H80"/><rect x="122" y="104" width="24" height="24"/><path d="M134 104 V128 M122 116 H146"/>'],
+      ['지붕 위에 굴뚝, 꼬불꼬불 연기!', '<path d="M128 60 V40 H144 V74"/><path d="M136 32 Q130 24 138 18 Q146 12 140 4"/>']], my: '꽃, 나무, 해, 우리 가족을 집 앞에 그려 봐요!' },
+    { id: 'bear', n: '곰', e: '🐻', lv: 2, s: [
+      ['큰 동그라미 얼굴.', '<circle cx="100" cy="112" r="58"/>'],
+      ['위쪽 양옆에 동그란 귀, 귀 안에 작은 동그라미.', '<circle cx="54" cy="64" r="20"/><circle cx="146" cy="64" r="20"/><circle cx="54" cy="64" r="9"/><circle cx="146" cy="64" r="9"/>'],
+      ['얼굴 아래쪽 가운데에 가로로 긴 타원 (주둥이).', '<ellipse cx="100" cy="132" rx="26" ry="20"/>'],
+      ['주둥이 위에 눈 두 개, 주둥이 안 위쪽에 코.', '<circle cx="78" cy="100" r="6"/><circle cx="122" cy="100" r="6"/><ellipse cx="100" cy="124" rx="9" ry="6"/>'],
+      ['코 아래로 짧은 선, 그리고 웃는 입.', '<path d="M100 130 V138 M100 138 Q92 146 86 140 M100 138 Q108 146 114 140"/>']], my: '모자, 목도리, 꿀단지를 그려 줘요!' },
+    { id: 'rabbit', n: '토끼', e: '🐰', lv: 2, s: [
+      ['옆으로 살짝 넓은 타원 얼굴.', '<ellipse cx="100" cy="128" rx="54" ry="48"/>'],
+      ['위로 길쭉한 귀 두 개, 안에 가는 타원.', '<ellipse cx="78" cy="50" rx="14" ry="40"/><ellipse cx="122" cy="50" rx="14" ry="40"/><ellipse cx="78" cy="54" rx="6" ry="27"/><ellipse cx="122" cy="54" rx="6" ry="27"/>'],
+      ['동그란 눈 두 개.', '<circle cx="80" cy="120" r="6"/><circle cx="120" cy="120" r="6"/>'],
+      ['작은 세모 코와 ω 입.', '<path d="M95 136 L105 136 L100 142 Z"/><path d="M100 142 Q94 152 86 148 M100 142 Q106 152 114 148"/>'],
+      ['양쪽 볼에 수염을 두 줄씩!', '<path d="M72 138 L44 132 M72 146 L46 152"/><path d="M128 138 L156 132 M128 146 L154 152"/>']], my: '당근을 들려 주거나 귀를 한쪽만 접어 봐요!' },
+    { id: 'cupcake', n: '컵케이크', e: '🧁', lv: 2, s: [
+      ['아래가 좁은 사다리꼴 컵.', '<path d="M55 110 L145 110 L130 178 L70 178 Z"/>'],
+      ['컵에 세로줄 세 개.', '<path d="M80 110 L86 178 M100 110 V178 M120 110 L114 178"/>'],
+      ['컵 위에 구름처럼 몽글몽글 크림.', '<path d="M50 112 Q40 90 62 82 Q60 58 86 60 Q96 38 116 58 Q142 56 138 82 Q160 90 150 112 Z"/>'],
+      ['맨 위에 동그란 체리와 꼭지.', '<circle cx="100" cy="40" r="11"/><path d="M100 29 Q104 16 116 12"/>'],
+      ['크림에 짧은 선으로 스프링클 톡톡!', '<path d="M75 90 l6 -4 M100 80 l6 3 M122 92 l5 -5 M88 100 l6 2 M112 104 l6 -3"/>']], my: '초를 꽂아 생일 케이크로 만들어 봐요!' },
+    { id: 'dog', n: '강아지', e: '🐶', lv: 3, s: [
+      ['동그라미 얼굴.', '<circle cx="100" cy="108" r="52"/>'],
+      ['양옆에 아래로 축 늘어진 귀.', '<path d="M58 80 Q30 90 40 140 Q56 136 62 110"/><path d="M142 80 Q170 90 160 140 Q144 136 138 110"/>'],
+      ['동그란 눈 두 개.', '<circle cx="80" cy="100" r="6"/><circle cx="120" cy="100" r="6"/>'],
+      ['가운데에 큰 타원 코, 그 밑에 웃는 입.', '<ellipse cx="100" cy="122" rx="12" ry="8"/><path d="M100 130 V138 M100 138 Q92 146 84 140 M100 138 Q108 146 116 140"/>'],
+      ['메롱 혀와 눈 위 얼룩무늬!', '<path d="M94 142 Q100 160 106 142"/><path d="M118 80 Q132 70 138 86 Q130 96 118 92 Z"/>']], my: '목걸이, 뼈다귀, 꼬리를 그려 줘요!' },
+    { id: 'penguin', n: '펭귄', e: '🐧', lv: 3, s: [
+      ['세로로 긴 큰 타원. 펭귄 몸이에요.', '<ellipse cx="100" cy="112" rx="55" ry="72"/>'],
+      ['안에 조금 작은 타원 배.', '<ellipse cx="100" cy="124" rx="36" ry="54"/>'],
+      ['위쪽에 눈 두 개, 그 사이 아래에 세모 부리.', '<circle cx="84" cy="74" r="6"/><circle cx="116" cy="74" r="6"/><path d="M90 88 L110 88 L100 100 Z"/>'],
+      ['양옆에 둥근 날개.', '<path d="M46 100 Q28 130 50 150"/><path d="M154 100 Q172 130 150 150"/>'],
+      ['아래에 납작한 발 두 개!', '<path d="M74 182 Q82 194 92 182 M108 182 Q118 194 126 182"/>']], my: '목도리, 얼음 조각, 물고기를 그려 줘요!' } ];
+  const trSVG = (D, upto, cur, sz) => { let g = ''; D.s.forEach((st, i) => { if (i > upto) return; g += '<g class="' + (i === cur ? 'trc' : 'trp') + '">' + st[1].replace(/<(path|circle|ellipse|rect)/g, '<$1 pathLength="1"') + '</g>'; });
+    return '<svg class="trsvg" viewBox="0 0 200 200" width="' + (sz || '100%') + '" fill="none" stroke-linecap="round" stroke-linejoin="round">' + g + '</svg>'; };
+  const trCount = id => DS().log.filter(x => x.t === 'trace' && x.pid === id).length;
+  const trNext = () => TR.find(D => !trCount(D.id)) || TR.slice().sort((a, b) => trLast(a.id) < trLast(b.id) ? -1 : 1)[0];
+  const trLast = id => (DS().log.filter(x => x.t === 'trace' && x.pid === id).pop() || { d: '' }).d;
+  function traceMenu() { const R = trNext();
+    page('✏️ 따라 그리기', '<div class="dcard"><p>폰은 <b>선생님</b>, 종이는 <b>그리는 곳</b>이에요. 한 단계씩 새 선이 그려지면 옆에 놓은 종이에 연필로 따라 그려요.<br><span class="soft">✏️ 처음엔 연하게, 마음에 들면 진하게! 지우개는 얼마든지 써도 돼요.</span></p></div>'
+      + '<div class="trlist">' + TR.map(D => { const c = trCount(D.id); return '<button class="db trpick' + (D === R ? ' rec' : '') + '" data-tr="' + D.id + '">' + trSVG(D, 99, -1, 64) + '<b>' + D.e + ' ' + D.n + '</b><small>' + '⭐'.repeat(D.lv) + (c ? ' · ' + c + '번 그림' : '') + (D === R ? ' · 오늘 추천' : '') + '</small></button>'; }).join('') + '</div>', true);
+    $w.querySelectorAll('[data-tr]').forEach(b => b.onclick = () => traceHow(TR.find(D => D.id === b.dataset.tr))); }
+  function traceHow(D) { const c = trCount(D.id);
+    page(D.e + ' ' + D.n + ' 그리기', '<div class="dcard" style="text-align:center">' + trSVG(D, 99, -1, 150) + '<p style="margin-top:6px">' + D.s.length + '단계 + 내 것으로 바꾸기' + (c ? '<br><span class="soft">전에 ' + c + '번 그렸어요. 그때보다 늘었는지 앨범에서 견주어 봐요!</span>' : '') + '</p></div>'
+      + '<button class="db p" id="trp" style="font-size:1.1rem">📄 종이에 따라 그리기 <small style="display:block;font-size:.8rem;opacity:.9">추천! 연필과 종이를 준비해요</small></button>'
+      + '<button class="db" id="trs">📱 화면 위에 대고 그리기 <small style="display:block;font-size:.8rem;color:#5A668C">흐린 선 위를 손가락으로 따라가요 (몸풀기)</small></button>', true);
+    $w.querySelector('#trp').onclick = () => traceStep(D, 0); $w.querySelector('#trs').onclick = () => traceScreen(D); }
+  function traceStep(D, k) { const last = k >= D.s.length;
+    page(D.e + ' ' + D.n + ' · ' + (last ? '마지막' : (k + 1) + ' / ' + D.s.length + '단계'),
+      '<div class="dcard"><p class="prompt" style="font-size:1.15rem">' + (last ? '🎨 내 것으로 바꾸기' : D.s[k][0]) + '</p>' + (last ? '<p class="soft" style="text-align:center;margin-top:4px">' + D.my + '</p>' : '') + '</div>'
+      + '<div class="trbox">' + trSVG(D, last ? 99 : k, last ? -1 : k) + '</div>'
+      + (last ? '<div class="dcard"><p>다 그렸으면 종이 그림을 📷 사진으로 올려요. 앨범에 모아 두면 다음에 같은 그림을 그릴 때 늘어난 게 보여요!</p></div><div class="row"><label class="db m" style="cursor:pointer">📷 내 그림 사진 올리기<input type="file" accept="image/*" id="dph" hidden></label><button class="db" id="trno">사진 없이 끝내기</button></div>'
+        : '<div class="row"><button class="db" id="trb"' + (k ? '' : ' disabled') + '>◀ 이전</button><button class="db y" id="trr">🔁 다시 보기</button><button class="db p" id="trn">다음 ▶</button></div>'), true);
+    if (!last) { $w.querySelector('#trb').onclick = () => traceStep(D, k - 1); $w.querySelector('#trn').onclick = () => traceStep(D, k + 1); $w.querySelector('#trr').onclick = () => traceStep(D, k); return; }
+    const ph = $w.querySelector('#dph'); ph.onchange = () => { const f = ph.files && ph.files[0]; if (!f) return; const img = new Image(); img.onload = () => { const o = document.createElement('canvas'), s = Math.min(img.width, img.height); o.width = 480; o.height = 480;
+        o.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 480, 480); URL.revokeObjectURL(img.src); starStep('trace', o.toDataURL('image/jpeg', .72), D.n, null, { pid: D.id }); }; img.src = URL.createObjectURL(f); };
+    $w.querySelector('#trno').onclick = () => { const d = dk(new Date()), wasWeek = wkLog().length; DS().log.push({ d, t: 'trace', m: 1, pid: D.id }); save(); doneMsg('trace', wasWeek); }; }
+  /* 화면 위에 대고 그리기: 다 된 그림을 흐리게 깔아 두고 그 위를 따라가요 */
+  function traceScreen(D) { const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="600" height="600" fill="none" stroke="#C9CFDD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' + D.s.map(s => s[1]).join('') + '</svg>', im = new Image();
+    im.onload = () => { if (!$w) return; page(D.e + ' ' + D.n + ' · 대고 그리기', '<div class="dcard"><p>흐린 선 위를 천천히 따라 그려요. 다 그리면 🖍️ 색연필이나 🪣 색 채우기로 칠해 봐요!</p></div><div class="padw" id="dpad"></div>' + toolsHTML() + '<div class="row"><button class="db m" id="dfin">다 그렸어요 ✔</button></div>', true);
+      const P = makePad($w.querySelector('#dpad'), (x, W) => x.drawImage(im, 0, 0, W, W)); bindTools(P);
+      $w.querySelector('#dfin').onclick = () => { if (!P.used()) return toastD('먼저 조금이라도 그려 봐요!'); starStep('trace', P.data(), D.n + ' (대고 그리기)', null, { pid: D.id, scr: 1 }); }; };
+    im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
+  /* 공방 안 누르기 */
+  document.addEventListener('click', e => { if (!$w || !$w.contains(e.target)) return; const b = e.target.closest('[data-go],[data-dx]'); if (!b) return;
+    if (b.dataset.dx === 'close') return closeDrw(); if (b.dataset.dx === 'home') return home();
+    const g = b.dataset.go; if (g === 'album') return album(); if (g === 'pixel') return pixel(); if (MS[g]) return drawMission(g); });
+
+  /* ---------- 첫 화면 카드: 읽을거리 묶음 바로 아래 ---------- */
+  function cardHTML() { const n = Math.min(WEEKGOAL, wkLog().length), ok = n >= WEEKGOAL;
+    return '<button type="button" class="drcard' + (ok ? ' did' : ' drweek') + '" data-drw="1"><span><span class="st">' + (ok ? '✅ 이번 주 그림 시간 끝' : '📌 이번 주 그림 시간 ' + n + ' / ' + WEEKGOAL) + '</span><b>🎨 채이의 그림 공방</b><small>'
+      + (ok ? '더 그리고 싶으면 언제든! 🟦 픽셀 그리기도 있어요' : '한 단계씩 따라 그리면 그리는 법이 손에 붙어요 ✏️') + '</small></span><span class="go">🖍️</span></button>'; }
+  function placeCard() { try { if (typeof CURSUBJ !== 'undefined' && CURSUBJ) return; const app = document.getElementById('app'); if (!app || !app.querySelector('.todaywrap')) return;
+      const old = app.querySelector('.drcard'), html = cardHTML();
+      if (old) { if (old.dataset.h !== html) { old.outerHTML = html; const n = app.querySelector('.drcard'); if (n) n.dataset.h = html; } return; }
+      const g = app.querySelector('.hgrp.read'), bd = app.querySelector('.bdcard'); const at = bd || (g && g.lastElementChild) || app.querySelector('.todaybox'); if (!at) return;
+      at.insertAdjacentHTML(bd || g ? 'afterend' : 'beforebegin', html); const n = app.querySelector('.drcard'); if (n) n.dataset.h = html; } catch (e) {} }
+  function refreshCard() { placeCard(); }
+  /* 첫 화면이 다시 그려질 때마다 (없을 때만 넣고, 내용이 같으면 손대지 않아서 끝없이 다시 그리지 않아요) */
+  { let qd = 0; const go = () => { const a = document.getElementById('app'); if (!a) return setTimeout(go, 300); new MutationObserver(() => { if (!qd) { qd = 1; setTimeout(() => { qd = 0; placeCard(); }, 80); } }).observe(a, { childList: true, subtree: true }); placeCard(); }; go(); }
+  document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-drw]'); if (!b) return; e.preventDefault(); e.stopImmediatePropagation(); try { SFX.play('ok'); } catch (x) {} openDrw(); }, true);
+  window.__drw = { open: openDrw, home, album, pixel, mission: drawMission, TPL };
+})();
+</script>
+<!-- ===== 채이의 그림 공방 끝 ===== -->
 </body>
 </html>
