@@ -12096,7 +12096,10 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
       const row=document.createElement('div'); row.className='spkrow'; row.dataset.t=t.trim();
       /* 서이 공부방처럼: ‘🎤 말하기’를 누르고 말하면 기기가 듣고 맞으면 저절로 ✔ 표시가 생겨요. 마이크를 못 쓰는 기기에서만 ‘말했어요’ 단추가 나와요 */
       row.innerHTML=(SRC&&micOk?'<button type="button" class="spk">🎤 말하기</button>':'<button type="button" class="spkd">말했어요</button>')+'<span class="spkmark" aria-label="확인"></span><small class="spkmsg" hidden></small>';
-      wd.appendChild(row); });
+      wd.appendChild(row);
+      /* 2026-11-09: 낱말 카드에 녹음 단추(🎙️ 따라 말하기)와 🎤 말하기가 함께 있어 겹쳐 보였어요. 기기가 알아들을 수 있으면 🎤 하나만 남겨요 */
+      if(SRC&&micOk) wd.querySelectorAll('.lgrec').forEach(x=>x.remove()); });
+    if(SRC&&micOk) document.querySelectorAll('#app .tip').forEach(tp=>{ if(tp.innerHTML.indexOf('🎙️를 누르고 말하면')>=0 && !tp.closest('.talk')) tp.innerHTML=tp.innerHTML.replace(/ ?🎙️를 누르고 말하면 <b>내 목소리 → 원어민 소리<\/b>를 차례로 들려줘요\. 비슷하게 들릴 때까지 해 봐요!/,' 🎤 말하기를 누르고 말하면 기기가 듣고, 맞으면 ✔ 표시가 생겨요.'); });
     kNow=k;
   }
   /* 두 번 해도 기기가 못 알아들으면 '말했어요' 단추를 함께 보여 줘요 (기기마다 알아듣는 힘이 달라요) */
