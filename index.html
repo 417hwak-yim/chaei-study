@@ -9438,7 +9438,7 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
     ok.onclick=()=>{ try{ if(rec) rec.stop(); }catch(e){} const v=ta.value.trim(); if(v.length<5){ res.innerHTML='<p class="rvnote">조금만 더 길게 설명해 볼까요? 한두 문장이면 돼요.</p>'; return; }
       const nv=v.replace(/\s/g,''), used=T.keys.filter(k=>nv.indexOf(k.replace(/\s/g,''))>=0);
       res.innerHTML='<div class="xpchk"><p><b>핵심 낱말 '+T.keys.length+'개 가운데 '+used.length+'개</b>를 썼어요! '+(used.length>=Math.ceil(T.keys.length/2)?'🌟 아주 잘 설명했어요.':'💡 빠진 낱말을 넣어 한 번 더 말해 봐요.')+'</p><div class="xpkeys">'+T.keys.map(k=>'<span class="'+(used.indexOf(k)>=0?'on':'')+'">'+(used.indexOf(k)>=0?'✔ ':'')+E(k)+'</span>').join('')+'</div><div class="xpmodel"><b>🦉 부엉 박사의 설명</b><p>'+E(T.text)+'</p></div></div>';
-      const R=RV(), rec1={d:TODAY(),uid:u.id,l,t:v.slice(0,300),k:[used.length,T.keys.length]}, li=R.xp.length-1;
+      const R=RV(), rec1={d:TODAY(),uid:u.id,l,t:(window.xpClean?window.xpClean(v):v).slice(0,300),k:[used.length,T.keys.length]}, li=R.xp.length-1;
       if(li>=0&&R.xp[li].d===rec1.d&&R.xp[li].uid===rec1.uid&&R.xp[li].l===rec1.l) R.xp[li]=rec1; else R.xp.push(rec1);   /* 같은 날 같은 차시는 마지막 것 하나만 */ if(R.xp.length>40) R.xp=R.xp.slice(-40); persist(); try{ sfx('ok'); }catch(e){} }; }
 
   /* ---------- 5) 수학 풀이 과정 ---------- */
@@ -9552,7 +9552,7 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
       +'<h3 class="rvh">영어 낱말</h3><p>배운 낱말 <b>'+L.length+'개</b> · 🌳 완전히 내 것 '+tree+'개 · 🌱 새싹 '+sprout+'개 · 오늘 복습할 낱말 <b>'+due+'개</b></p><p class="rvnote">🌳 완전히 내 것 = 1·3·7·14일 뒤 복습을 연달아 맞힌 낱말 (복습 시작 2주 뒤부터 생겨요)</p>'
       +'<h3 class="rvh">틀린 문제 노트</h3><p>노트에 있는 문제 <b>'+R.wr.length+'개</b> · 오늘 풀 문제 '+Math.min(10,wrongDue().length)+'개'+(wrongDue().length>10?' (밀린 문제 '+(wrongDue().length-10)+'개는 다음 날로)':'')+' · 졸업한 문제 '+(R.grad||0)+'개</p><p class="rvnote">졸업 = 다음 날·3일 뒤·7일 뒤 세 번 연달아 맞혀 노트에서 빠진 문제</p>'
       +'<h3 class="rvh">주말 누적 평가</h3>'+(wk?'<p>'+dstr(wk.d)+' · '+wk.r+' / '+wk.n+'</p>'+wk.u.map(x=>{ const un=unitById(x[0]); return un?'<div class="rvwrow '+(x[1]/x[2]>=.67?'ok':'no')+'"><b>'+E(un.title)+'</b><em>'+x[1]+' / '+x[2]+'</em></div>':''; }).join(''):'<p>아직 본 평가가 없어요. 일요일 보따리에서 열려요.</p>')
-      +'<h3 class="rvh">💬 설명해 보기 기록</h3>'+(R.xp.length?R.xp.slice(-3).reverse().map(x=>{ const un=unitById(x.uid); return '<div class="xprec"><small>'+dstr(x.d)+' · '+(un?E(un.title):'')+' · 핵심 낱말 '+x.k[0]+'/'+x.k[1]+'</small><p>“'+E(x.t)+'”</p></div>'; }).join(''):'<p>아직 기록이 없어요. 국어·수학·과학·사회 차시를 끝낸 화면에서 할 수 있어요.</p>')
+      /* 설명해 보기 기록은 리포트에서 뺐어요 (2026-11-08) */
       +'</section>';
     show(h,'#1B2750'); $app.querySelectorAll('[data-rvunit]').forEach(b=>b.onclick=()=>goUnit(b.dataset.rvunit)); }
 
@@ -14321,9 +14321,16 @@ setTimeout(function(){ try{ const M=mgState(); if(!M||!M.pend) return; let mx=GS
 window.srJoin = function (rs) { const out = [];
   for (let k = 0; k < rs.length; k++) { const t = String((rs[k][0] && rs[k][0].transcript) || '').trim(); if (!t) continue; const p = out[out.length - 1];
     if (p !== undefined && t.startsWith(p)) out[out.length - 1] = t; else if (p !== undefined && p.startsWith(t)) continue; else out.push(t); }
-  let s = out.join(' ').replace(/\s+/g, ' ');
-  for (let i = 0; i < 3; i++) s = s.replace(/((?:\S+\s+){1,7}?\S+)(?:\s+\1)+/g, '$1');
-  return s; };
+  return window.xpClean(out.join(' ')); };
+/* 2026-11-08: 말로 쓴 글에서 되풀이를 지워요. "출처는 출처는 꼭 출처는 꼭 밝혀" → "출처는 꼭 밝혀", 문단이 통째로 두 번 → 한 번 */
+window.xpClean = function (str) { const w = String(str || '').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean); if (w.length < 2) return w.join(' ');
+  const same = (a, b, last) => a === b || (last && b.startsWith(a)) || (last && a.startsWith(b));
+  let changed = true, guard = 0;
+  while (changed && guard++ < 400) { changed = false;
+    outer: for (let len = 1; len <= Math.min(80, Math.floor(w.length / 2)); len++) for (let i = 0; i + 2 * len <= w.length; i++) { let ok = true;
+        for (let k = 0; k < len; k++) if (!same(w[i + k], w[i + len + k], len > 1 && k === len - 1)) { ok = false; break; }
+        if (ok) { w.splice(i, len); changed = true; break outer; } } }
+  return w.join(' '); };
 </script>
 <style id="rvjudge-css">.bg .rvjudge.bgj{margin:-2px 0 8px;font-size:.84rem;color:#4A5568;line-height:1.5;word-break:keep-all}.rvbars .rvjudge{margin:-2px 0 8px;font-size:.85rem;color:#4A5568;line-height:1.5;word-break:keep-all}.rvwrow .rvtrend{grid-column:1/-1;margin:0;font-size:.88rem;line-height:1.5}.rvlv{font-weight:600;opacity:.65;font-size:.78rem}</style><script>
 /* 2026-11-01: 첫 화면이 그려지면 '보던 화면' 기록도 첫 화면으로 바꿔요 (오늘의 학습 카드로 차시에 갔다가 돌아온 뒤 새로고침하면 엉뚱한 학습 화면이 열리던 것).
@@ -15041,7 +15048,7 @@ redraw();
 .mucard .go{font-size:1.6rem}
 #mus{position:fixed;inset:0;z-index:9001;background:#FFFBF3;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:"Gowun Dodum","Jua",sans-serif;color:#1B2750;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #mus .mtop{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:#FFFBF3;border-bottom:2px solid #F0E6D2}
-#mus .mtop b{font-family:Jua,sans-serif;font-weight:400;font-size:1.15rem;min-width:0}
+#mus .mtop b{font-family:Jua,sans-serif;font-weight:400;font-size:1.15rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #mus .mwrap{max-width:560px;margin:0 auto;padding:12px 10px 40px;display:flex;flex-direction:column;gap:12px}
 #mus .mb{font:inherit;font-weight:700;font-size:.95rem;padding:9px 14px;border-radius:12px;border:2px solid #1B2750;background:#fff;color:#1B2750;box-shadow:0 2px 0 #1B2750;cursor:pointer;word-break:keep-all}
 #mus .mb.g{background:#2E9E7A;border-color:#1F7A5C;color:#fff;box-shadow:0 2px 0 #1F7A5C}
@@ -15062,6 +15069,7 @@ redraw();
 #mus .songs button b{font-weight:700}
 #mus .songs button small{color:#5A668C;font-size:.78rem;white-space:nowrap}
 #mus .songs .xm{border-color:#C9A227;background:#FFFBEA}
+#mus .songs .sgh{margin:6px 2px 0;font-family:Jua,sans-serif;font-size:.95rem;color:#1F7A5C}
 /* 악보 */
 #mus .score{display:flex;flex-wrap:wrap;gap:3px 2px;align-items:flex-end;padding:8px 6px;border-radius:12px;background:#fff;border:2px solid #F0E6D2;max-height:150px;overflow-y:auto}
 #mus .score .br{flex-basis:100%;height:0}
@@ -15111,7 +15119,29 @@ redraw();
     { id: 'jingle', t: '징글벨', x: 1, s: '3 3 3- 3 3 3- / 3 5 1. 2_ 3--- / 4 4 4. 4_ 4 3 3 3_ 3_ / 3 2 2 3 2- 5- / 3 3 3- 3 3 3- / 3 5 1. 2_ 3--- / 4 4 4. 4_ 4 3 3 3_ 3_ / 5 5 4 2 1---' },
     { id: 'silent', t: '고요한 밤 거룩한 밤', x: 1, s: "5. 6_ 5 3-- / 5. 6_ 5 3-- / 2'- 2' 7-- / 1'- 1' 5-- / 6- 6 1'. 7_ 6 / 5. 6_ 5 3-- / 6- 6 1'. 7_ 6 / 5. 6_ 5 3-- / 2'- 2' 4'. 2'_ 7 / 1'-- 3'-- / 1' 5 3 5. 4_ 2 / 1-----" },
     { id: 'joy', t: '기쁘다 구주 오셨네', x: 1, s: "1'- 7. 6_ 5-. 4_ 3- 2- 1-. / 5_ 6-. 6_ 7-. 7_ 1'--- / 1' 1' 7 6 5 5. 4_ 3- / 1' 1' 7 6 5 5. 4_ 3- / 3 3 3 3 3_ 4_ 5-. 4_ 3 2 2 2_ 2_ 3_ 4_ 3- / 3_ 1 1'- 6 5. 4_ 3 4 3- 2- 1--" },
-    { id: 'wish', t: '우리 다 함께 크리스마스', x: 1, s: "5 1' 1'_ 2'_ 1'_ 7_ 6 6 6 / 2' 2'_ 3'_ 2'_ 1'_ 7 5 5 / 3' 3'_ 4'_ 3'_ 2'_ 1' 6 5_ 5_ / 6 2' 7 1'--" }
+    { id: 'wish', t: '우리 다 함께 크리스마스', x: 1, s: "5 1' 1'_ 2'_ 1'_ 7_ 6 6 6 / 2' 2'_ 3'_ 2'_ 1'_ 7 5 5 / 3' 3'_ 4'_ 3'_ 2'_ 1' 6 5_ 5_ / 6 2' 7 1'--" },
+    { id: 'tanne', t: '소나무야 (탄넨바움)', x: 1, s: "5 1'. 1'_ 1'- 2' 3'. 3'_ 3'- / 3' 2' 3' 4'- 7 2'- 1'- / 5' 5' 3' 6'- 5' 5' 4' 4'- / 4' 4' 2' 5'- 4' 4' 3' 3'- / 5 1'. 1'_ 1'- 2' 3'. 3'_ 3'- / 3' 2' 3' 4'- 7 2'- 1'--" },
+    { id: 'angels', t: '천사들의 노래가', x: 1, s: "3' 3' 3' 5' 5'. 4'_ 3'- / 3' 2' 3' 5' 3'. 2'_ 1'- / 3' 3' 3' 5' 5'. 4'_ 3'- / 3' 2' 3' 5' 3'. 2'_ 1'- / 5'- 6'_ 5'_ 4'_ 3'_ 4'- 5'_ 4'_ 3'_ 2'_ 3'- 4'_ 3'_ 2'_ 1'_ 2'. 5_ / 1' 2' 3' 4' 3'- 2'- 1'-- / 5'- 6'_ 5'_ 4'_ 3'_ 4'- 5'_ 4'_ 3'_ 2'_ 3'- 4'_ 3'_ 2'_ 1'_ 2'. 5_ / 1' 2' 3' 4' 3'- 2'- 1'---" },
+    { id: 'adeste', t: '참 반가운 신도여', x: 1, s: "1' 1'- 5 1' 2'- 5- / 3' 2' 3' 4' 3'- 2' / 1' 1'- 7 6 7 1' 2' 3' 7. 6_ 5- / 5' 4' 3' 4' 3'- 2' 3' 1' 2' 7. 6_ 5- / 1' 1' 7 1' 2'- 1' 5 / 3' 3' 2' 3' 4'- 3' 2'- / 3' 4' 3' 2' 1'- 7 1' / 4'- 3' 2'- 1'---" },
+    /* 우리 동요: 홍난파 곡 (1941년 별세, 저작권 끝남). 『조선동요백곡집』 악보에서 옮겼어요. 가사는 넣지 않아요 */
+    { id: 'pong', g: 'k', sp: .55, t: '퐁당퐁당', s: "1 2 3 3 1 3 5_ 6_ 5 / 1 2 3 3 1 3 5_ 6_ 5 / 6- 5 3 6- 5 3 / 2 2 1 2 3 5 5- / 6. 6_ 5 6 1' 1' 1'- / 5. 5_ 3 2 1--- / 2. 3_ 1 3 5 5 5- / 2 3_ 4_ 3 2 1---" },
+    { id: 'haet', g: 'k', sp: .55, t: '햇볕은 쨍쨍', s: "1. 3_ 5- 5- 5- / 3 4 5 3 1- 1- / 1' 7 1' 6 5 6 5 3 / 1' 7 1' 6 5 6 5 3 / 6 6 5 5 3 3 5 5 / 2. 1_ 2 3 1- 1-" },
+    { id: 'spring', g: 'k', t: '고향의 봄', s: "5 5 3_ 4_ 5 6 6 5- / 5 1' 3' 2'_ 1'_ 2'--- / 3' 3' 2' 2' 1' 2'_ 1'_ 6 6 / 5 5 5 3_ 2_ 1--- / 2 2 3 1 2 2 3 5 / 6 1' 3' 2'_ 1'_ 2'--- / 3' 3' 2' 2' 1' 2'_ 1'_ 6 6 / 5 5 5 3_ 2_ 1---" },
+    { id: 'bandal', g: 'k', sp: .55, t: '낮에 나온 반달', s: "5- 1' 3'- 2' / 1'- 6 5-- / 6- 1' 5- 3 / 6----- / 5- 6 5- 3' / 2' 1' 6 5-- / 3- 3 5- 1 / 2----- / 3- 3 2- 1 / 6- 6 5- 5 / 6- 1' 6- 3 / 5----- / 6- 6 5- 6 / 1'- 2' 3'- 3' / 2'- 6 5- 2' / 1'-----" },
+    /* 세계 동요 (옛 민요) */
+    { id: 'london', t: '런던 다리', s: "5. 6_ 5 4 3 4 5- / 2 3 4- 3 4 5- / 5. 6_ 5 4 3 4 5- / 2- 5- 3 1--" },
+    { id: 'row', t: '노를 저어라', s: "1. 1. 1 2_ 3. / 3 2_ 3 4_ 5-- / 1'_ 1'_ 1'_ 5_ 5_ 5_ 3_ 3_ 3_ 1_ 1_ 1_ / 5 4_ 3 2_ 1--" },
+    { id: 'saints', t: '성자들의 행진', s: "1 3 4 5--- / 1 3 4 5--- / 1 3 4 5- 3- 1- 3- 2--- / 3 3 2 1-- 1 3 5- 5 4--- / 3 4 5- 3- 1- 2- 1---" },
+    { id: 'susanna', t: '오! 수재너', s: "1_ 2_ 3 5 5. 6_ 5 3 1. 2_ 3 3 2 1 2-- / 1_ 2_ 3 5 5. 6_ 5 3 1. 2_ 3 3 2 2 1-- / 4- 4- 6 6- 6 5 5 3 1 2-- / 1_ 2_ 3 5 5. 6_ 5 3 1. 2_ 3 3 2 2 1--" },
+    { id: 'jacques', t: '프레르 자크 (돌림노래)', s: "1' 2' 3' 1' 1' 2' 3' 1' / 3' 4' 5'- 3' 4' 5'- / 5'_ 6'_ 5'_ 4'_ 3' 1' 5'_ 6'_ 5'_ 4'_ 3' 1' / 1' 5 1'- 1' 5 1'-" },
+    { id: 'spider', t: '작은 거미', s: "5 1' 1' 1' 2' 3'- 3' 3' 2' 1' 2' 3' 1'-- / 3' 3'- 4' 5'-- 5' 4' 3' 4' 5' 3'-- / 1' 1'- 2' 3'-- 3' 2' 1' 2' 3' 1'-- / 5 5 1' 1' 1' 2' 3'- 3' 3' 2' 1' 2' 3' 1'--" },
+    { id: 'farm', t: '올드 맥도널드', s: "1' 1' 1' 5 6 6 5- / 3' 3' 2' 2' 1'--- / 5 1' 1' 1' 5 6 6 5- / 3' 3' 2' 2' 1'--- / 5_ 5_ 1' 1' 1'- 5_ 5_ 1' 1' 1'- / 1'_ 1'_ 1' 1'_ 1'_ 1' 1'_ 1'_ 1'_ 1'_ 1' 1' / 1' 1' 1' 5 6 6 5- / 3' 3' 2' 2' 1'---" },
+    /* 클래식 */
+    { id: 'joy9', g: 'c', t: '환희의 송가 (베토벤)', s: "3' 3' 4' 5' 5' 4' 3' 2' 1' 1' 2' 3' 3'. 2'_ 2'- / 3' 3' 4' 5' 5' 4' 3' 2' 1' 1' 2' 3' 2'. 1'_ 1'- / 2' 2' 3' 1' 2' 3'_ 4'_ 3' 1' 2' 3'_ 4'_ 3' 2' 1' 2' 5- / 3' 3' 4' 5' 5' 4' 3' 2' 1' 1' 2' 3' 2'. 1'_ 1'-" },
+    { id: 'brahms', g: 'c', t: '브람스 자장가', s: "3 3 5- 3 3 5- / 3 5 1' 7- 6 6 5- / 2 3 4- 2 3 4- / 2 4 7 6 5 7 1'- / 1 1 1'- 6 4 5- / 3 1 4 5 6 5- / 1 1 1'- 6 4 5- / 3 1 4 3 2 1--" },
+    /* 크리스마스 더 */
+    { id: 'noel', x: 1, t: '저 들 밖에 한밤중에', s: "3_ 2_ 1. 2_ 3 4 5- 6_ 7_ 1'- 7 6 5- / 6_ 7_ 1' 7 6 5 6 7 1' 5 4 3- / 3_ 2_ 1. 2_ 3 4 5- 6_ 7_ 1'- 7 6 5- / 6_ 7_ 1' 7 6 5 6 7 1' 5 4 3- / 3_ 2_ 1. 2_ 3 4 5-- 1' 7 6- 6 5-- / 1' 7 6 5 6 7 1' 5 4 3--" },
+    { id: 'deck', x: 1, t: '팔라라라 (Deck the Halls)', s: "5'. 4'_ 3' 2' 1' 2' 3' 1' / 2'_ 3'_ 4'_ 2'_ 3'. 2'_ 1' 7 1'-- / 5'. 4'_ 3' 2' 1' 2' 3' 1' / 2'_ 3'_ 4'_ 2'_ 3'. 2'_ 1' 7 1'-- / 2'. 3'_ 4' 2' 3'. 4'_ 5' 2' / 3'_ 4'_ 5' 6'_ 7'_ 1'' 7' 6' 5'- / 5'. 4'_ 3' 2' 1' 2' 3' 1' / 6'_ 6'_ 6'_ 6'_ 5'. 4'_ 3' 2' 1'--" }
   ];
   /* 한 음: "5" 한 박, "5-" 두 박, "5_" 반 박, "5." 한 박 반, "1'" 높은 도 */
   function parse(s) { var out = []; s.trim().split(/\s+/).forEach(function (t) { if (t === '/') { out.push({ br: 1 }); return; } var m = /^([1-7])('*)([-_.]*)$/.exec(t); if (!m) return;
@@ -15158,8 +15188,9 @@ redraw();
     var L = songList(), skip = SONGS.filter(function (x) { return inst === 'xy' && maxN(x.s) > 7; });
     page((inst === 'kal' ? '🎶 ' : '🌈 ') + instName(inst), '<button class="mb g" id="mfree" style="width:100%">🎵 마음대로 치기</button>'
       + '<div class="mucd"><h3>📖 악보 보고 따라 치기</h3><p class="soft" style="margin-bottom:8px">반짝이는 ' + (inst === 'kal' ? '건반' : '막대') + '을 누르면 다음 음으로 넘어가요.</p><div class="songs">'
-      + L.map(function (x, i) { var c = ST.done[inst + ':' + x.id] || 0; return '<button data-si="' + i + '" class="' + (x.x ? 'xm' : '') + '"><b>' + (x.x ? '🎄 ' : x.my ? '✏️ ' : '🎵 ') + esc(x.t) + '</b><small>' + (c ? '🌟 ' + c + '번 완주' : '') + '</small></button>'; }).join('') + '</div>'
-      + (skip.length ? '<p class="soft" style="margin-top:8px">' + skip.map(function (x) { return x.t; }).join(', ') + '는 음이 높아서 칼림바에 있어요.</p>' : '') + '</div>'
+      + [['k', '🏡 우리 동요'], ['w', '🌍 세계 동요'], ['c', '🎻 클래식'], ['x', '🎄 크리스마스'], ['my', '✏️ 내 악보']].map(function (G) { var h = ''; L.forEach(function (x, i) { var gx = x.my ? 'my' : x.x ? 'x' : (x.g || 'w'); if (gx !== G[0]) return; var c = ST.done[inst + ':' + x.id] || 0;
+        h += '<button data-si="' + i + '" class="' + (x.x ? 'xm' : '') + '"><b>' + (x.x ? '🎄 ' : x.my ? '✏️ ' : '🎵 ') + esc(x.t) + '</b><small>' + (c ? '🌟 ' + c + '번 완주' : '') + '</small></button>'; }); return h ? '<p class="sgh">' + G[1] + '</p>' + h : ''; }).join('') + '</div>'
+      + (skip.length ? '<p class="soft" style="margin-top:8px">음이 높은 ' + skip.length + '곡은 칼림바에서 칠 수 있어요.</p>' : '') + '</div>'
       + (inst === 'kal' ? '<div class="mucd"><h3>✏️ 내 악보 적기</h3><p>종이 악보나 책에 있는 곡을 칼림바로 쳐서 적어 두면, 따라 치기로 연습할 수 있어요. 이 폰에만 저장돼요.</p><div class="mrow" style="margin-top:8px"><button class="mb y" id="mnew">✏️ 새 악보 적기</button></div></div>' : '')
       + '<button class="mb" id="mother" style="width:100%">' + (inst === 'kal' ? '🌈 실로폰으로 바꾸기' : '🎶 칼림바로 바꾸기') + '</button>', 'home');
     $m.querySelector('#mfree').onclick = free; $m.querySelector('#mother').onclick = function () { inst = inst === 'kal' ? 'xy' : 'kal'; menu(); };
@@ -15202,10 +15233,12 @@ redraw();
         $m.querySelector('.mwrap').insertBefore(w, $m.querySelector('.mwrap').firstChild); $m.scrollTop = 0; w.querySelector('#mag').onclick = function () { follow(S); }; w.querySelector('#mbk').onclick = menu; }, 500)); };
     bindInst(function (n, el) { if (demo || k >= idx.length) return; if (n === N[idx[k]].n) { k++; mark(); if (k >= idx.length) finish(); }
       else if (KID === 'seoi') { var w = $m.querySelector('.want'); if (w) { w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake'); } } });
-    $m.querySelector('#mre').onclick = function () { stopAll(); demo = false; k = 0; mark(); };
-    $m.querySelector('#mlis').onclick = function () { stopAll(); demo = true; k = 0; mark(); var beat = KID === 'seoi' ? 620 : 520, t = 0;
+    /* 들어 보기를 누르면 그 자리 단추가 '그만 듣기'로 바뀌어요 */
+    var lis = $m.querySelector('#mlis'), unListen = function () { stopAll(); demo = false; k = 0; lis.innerHTML = '👂 들어 보기'; lis.classList.remove('y'); mark(); };
+    $m.querySelector('#mre').onclick = unListen;
+    lis.onclick = function () { if (demo) return unListen(); stopAll(); demo = true; k = 0; lis.innerHTML = '⏹ 그만 듣기'; lis.classList.add('y'); mark(); var beat = (KID === 'seoi' ? 620 : 520) * (S.sp || 1), t = 0;
       idx.forEach(function (i, p) { timers.push(setTimeout(function () { if (!$m) return; k = p; mark(); play(N[i].n, inst); var el = $m.querySelector('[data-n="' + N[i].n + '"]'); if (el) { el.classList.add('hit'); setTimeout(function () { el.classList.remove('hit'); }, 160); } }, t)); t += N[i].d * beat; });
-      timers.push(setTimeout(function () { if (!$m) return; demo = false; k = 0; mark(); }, t + 600)); };
+      timers.push(setTimeout(function () { if (!$m) return; unListen(); }, t + 600)); };
     var del = $m.querySelector('#mdel'); if (del) { var sure = 0; del.onclick = function () { if (!sure) { sure = 1; del.textContent = '정말 지울까요? 한 번 더 눌러요'; return; } ST.my = ST.my.filter(function (x) { return x.id !== S.id; }); store(ST); menu(); }; }
     mark(); }
 
