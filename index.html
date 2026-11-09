@@ -9223,7 +9223,7 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
     const sp=t=>sents(t).map(s=>'<span class="whys" data-s="'+(k++)+'">'+E(s)+'</span>').join(' ');
     const cr=WHYCR[N.id];
     P.push('<span class="wcrib">'+K[1]+' '+K[0]+'</span>'+(WHYIMG[N.id]?'<figure class="wcphoto" style="margin:8px auto 0"><img src="'+WHYIMG[N.id]+'" alt="'+E(N.t)+'">'+(cr?'<figcaption class="wccr">사진: '+E(cr[1]||'')+' · '+E(cr[2]||'')+' · 위키미디어 공용</figcaption>':'')+'</figure>':'<div class="wil"><div class="sc">'+N.i+'</div></div>')
-      +'<h2 class="wctitle">'+E(N.t)+'</h2><p class="wcowl">🦉 부엉 박사와 함께 알아봐요</p>');
+      +'<h2 class="wctitle"><span class="whys" data-s="t">'+E(N.t)+'</span></h2><p class="wcowl">🦉 부엉 박사와 함께 알아봐요</p>');
     preload(N);
     P.push(ill(N,0,N.hi,'궁금해요!')+'<div class="wsay"><div class="whd"><span class="wav">'+(KID.photo?'<img src="'+KID.photo+'" alt="">':'👧')+'</span><b>'+E(KN)+'</b></div><div class="wbub wtx"><p>'+sp(N.hook)+'</p></div></div>');
     N.p.forEach((x,j)=>P.push(ill(N,j+1,x[1],x[2]||'')+'<div class="wsay">'+(j===0?'<div class="whd"><span class="wav">🦉</span><b>부엉 박사</b></div>':'')+'<div class="wtx"><p>'+sp(x[0])+'</p></div></div>'));
@@ -9273,11 +9273,16 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
       const go=k=>{ if(my!==RUN||n!==SAYN||!rb.isConnected) return;
         if(k>=ss.length){ ss.forEach(x=>x.classList.remove('on')); if(P[pg]!=='QUIZ'&&turn(1)) setTimeout(()=>{ if(my===RUN) readPage(my); },700); else { delete rb.dataset.on; rb.textContent='🔊 다시 읽어 주기'; } return; }
         ss.forEach((x,j)=>x.classList.toggle('on',j===k));
-        const u=new SpeechSynthesisUtterance(ss[k].textContent.replace(/[‘’“”「」]/g,'')); u.lang='ko-KR'; u.rate=BIG?.9:.95; if(v) u.voice=v;
-        let moved=false; const nx=()=>{ if(moved) return; moved=true; setTimeout(()=>go(k+1),250); }; u.onend=nx; u.onerror=nx; speechSynthesis.speak(u);
-        setTimeout(()=>{ if(!moved&&my===RUN&&!speechSynthesis.speaking) nx(); },1500+ss[k].textContent.length*230); };
-      if(ISAND) setTimeout(()=>go(0),150); else go(0); };
-    if(rb) rb.onclick=()=>{ if(rb.dataset.on) return stopRead(); try{ speechSynthesis.cancel(); }catch(e){} rb.dataset.on='1'; rb.textContent='⏹ 그만 읽기'; readPage(++RUN); };
+        const tx=ss[k].textContent.replace(/[‘’“”「」]/g,''); let moved=false, started=false; const nx=()=>{ if(moved) return; moved=true; setTimeout(()=>go(k+1),250); };
+        const mk=plain=>{ const u=new SpeechSynthesisUtterance(tx); u.lang='ko-KR'; u.rate=BIG?.9:.95; if(v&&!plain) u.voice=v; u.onstart=()=>{ started=true; }; u.onend=nx; u.onerror=e=>{ if(e&&(e.error==='interrupted'||e.error==='canceled')) return; nx(); }; try{ if(speechSynthesis.paused) speechSynthesis.resume(); }catch(_){} speechSynthesis.speak(u); };
+        mk(false);
+        /* 폰에서 소리가 시작되지 않으면 기본 목소리로 한 번 더, 그래도 안 되면 소리 안내 */
+        setTimeout(()=>{ if(moved||my!==RUN||started||speechSynthesis.speaking) return; try{ speechSynthesis.cancel(); speechSynthesis.resume(); }catch(_){} mk(true);
+          setTimeout(()=>{ if(!moved&&my===RUN&&!started&&!speechSynthesis.speaking){ try{ sayHelp(); }catch(_){} } },1800); },1400);
+        /* 끝났다는 신호가 오지 않아도(폰에서 가끔 멈춰요) 넉넉히 기다린 뒤 다음 문장으로 */
+        setTimeout(()=>{ if(!moved&&my===RUN){ try{ speechSynthesis.cancel(); }catch(_){} nx(); } },4500+tx.length*330); };
+      go(0); };
+    if(rb) rb.onclick=()=>{ if(rb.dataset.on) return stopRead(); try{ if(speechSynthesis.speaking||speechSynthesis.pending) speechSynthesis.cancel(); }catch(e){} rb.dataset.on='1'; rb.textContent='⏹ 그만 읽기'; readPage(++RUN); };
     paint();
   }
 
