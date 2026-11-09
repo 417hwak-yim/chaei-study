@@ -14788,7 +14788,79 @@ redraw();
     '바다 속': (u, v) => { if (qE(u, v, .4, .36, .17, .1)) return qC(u, v, .3, .34, .022) ? 1 : 4; if (qT(u, v, .54, .36, .68, .25, .68, .47)) return 4; if (qE(u, v, .72, .62, .1, .06)) return qC(u, v, .67, .61, .018) ? 1 : 5; if (qT(u, v, .8, .62, .9, .55, .9, .69)) return 5; if (qC(u, v, .14, .24, .03) || qC(u, v, .2, .14, .025) || qC(u, v, .84, .2, .025)) return 2; if (v > .88) return 5; if ((qR(u, v, .14, .6, .18, .9) || qR(u, v, .24, .68, .28, .9) || qR(u, v, .52, .72, .56, .9))) return 6; return 7; }
   });
   const GSET = { '🌅 풍경': ['노을 바다', '달밤', '무지개', '꽃밭', '바다 속', '집', '나무', '해바라기'], '🐾 동물': ['고양이', '강아지', '곰', '병아리', '펭귄', '고래', '나비', '무당벌레'], '🍎 먹을 것': ['사과', '딸기', '포도', '수박', '아이스크림'], '🚗 탈것': ['자동차', '로켓', '돛단배', '열기구'], '⛄ 겨울': ['눈사람', '크리스마스 트리'] };
-  const gemPat = (k, N) => { if (TPL[k]) return TPL[k].split('|').join('').split('').map(c => parseInt(c, 36) || GBG[k]); const f = SCN[k], a = []; for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) a.push(f((x + .5) / N, (y + .5) / N, x, y)); return a; };
+  /* 2026-11-09: 도안을 더 늘렸어요 (동물·먹을 것·탈것·반짝 물건·겨울·풍경) */
+  let qN = 32; const qL = (u, v, ax, ay, bx, by, w) => { w = Math.max(w, .55 / qN); const dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((u - ax) * dx + (v - ay) * dy) / (dx * dx + dy * dy))); return Math.hypot(u - ax - t * dx, v - ay - t * dy) < w; };
+  Object.assign(SCN, {
+    '판다': (u, v) => { if (qC(u, v, .24, .24, .11) || qC(u, v, .76, .24, .11)) return 1; if (qC(u, v, .5, .55, .36)) { if (qC(u, v, .38, .49, .03) || qC(u, v, .62, .49, .03)) return 2; if (qE(u, v, .37, .5, .09, .11) || qE(u, v, .63, .5, .09, .11)) return 1; if (qE(u, v, .5, .64, .06, .04)) return 1; if (qL(u, v, .5, .66, .5, .72, .015) || qL(u, v, .44, .74, .5, .72, .015) || qL(u, v, .56, .74, .5, .72, .015)) return 1; if (qC(u, v, .28, .66, .045) || qC(u, v, .72, .66, .045)) return 9; return 2; } return 6; },
+    '여우': (u, v) => { if (qT(u, v, .2, .3, .26, .14, .36, .3) || qT(u, v, .64, .3, .74, .14, .8, .3)) return 1; if (qT(u, v, .12, .36, .22, .04, .44, .32) || qT(u, v, .56, .32, .78, .04, .88, .36)) return 4; if (qT(u, v, .1, .32, .9, .32, .5, .9)) { if (qC(u, v, .5, .84, .045)) return 1; if (qE(u, v, .35, .46, .035, .055) || qE(u, v, .65, .46, .035, .055)) return 1; if (qT(u, v, .16, .5, .84, .5, .5, .9)) return 2; return 4; } return 6; },
+    '부엉이': (u, v) => { if (qC(u, v, .86, .12, .07)) return 5; if (v > .9 && v < .97) return qR(u, v, .36, .9, .46, .94) || qR(u, v, .54, .9, .64, .94) ? 4 : 1; if (qT(u, v, .18, .3, .24, .08, .4, .22) || qT(u, v, .6, .22, .76, .08, .82, .3)) return 10; if (qC(u, v, .36, .4, .05) || qC(u, v, .64, .4, .05)) return 1; if (qC(u, v, .36, .4, .12) || qC(u, v, .64, .4, .12)) return 2; if (qT(u, v, .45, .48, .55, .48, .5, .6)) return 4; if (qE(u, v, .5, .58, .33, .36)) return qE(u, v, .5, .72, .19, .18) ? 5 : 10; return 8; },
+    '개구리': (u, v) => { if (qC(u, v, .3, .34, .04) || qC(u, v, .7, .34, .04)) return 1; if (qC(u, v, .3, .34, .08) || qC(u, v, .7, .34, .08)) return 2; if (qC(u, v, .3, .36, .13) || qC(u, v, .7, .36, .13) || qE(u, v, .5, .6, .4, .26)) { if (qE(u, v, .5, .62, .24, .12) && !qE(u, v, .5, .58, .25, .12)) return 1; if (qC(u, v, .22, .64, .045) || qC(u, v, .78, .64, .045)) return 9; return 6; } return v > .88 ? 6 : 7; },
+    '돼지': (u, v) => { if (qT(u, v, .16, .4, .18, .1, .42, .26) || qT(u, v, .58, .26, .82, .1, .84, .4)) return 9; if (qC(u, v, .5, .56, .36)) { if (qE(u, v, .44, .66, .025, .04) || qE(u, v, .56, .66, .025, .04)) return 1; if (qE(u, v, .5, .66, .14, .1)) return 3; if (qC(u, v, .36, .46, .04) || qC(u, v, .64, .46, .04)) return 1; return 9; } return 6; },
+    '거북이': (u, v) => { if (qC(u, v, .87, .53, .02)) return 1; if (qE(u, v, .84, .56, .1, .08) || qE(u, v, .3, .68, .07, .07) || qE(u, v, .66, .68, .07, .07) || qT(u, v, .16, .58, .16, .64, .06, .63)) return 5; if (qR(u, v, .16, .58, .8, .64)) return 10; if (v < .6 && qE(u, v, .48, .6, .32, .34)) return qC(u, v, .48, .42, .07) || qC(u, v, .34, .5, .055) || qC(u, v, .62, .5, .055) ? 5 : 6; return v > .78 ? 4 : 7; },
+    '문어': (u, v) => { if (qC(u, v, .4, .38, .022) || qC(u, v, .6, .38, .022)) return 1; if (qC(u, v, .4, .38, .055) || qC(u, v, .6, .38, .055)) return 2; if (qE(u, v, .5, .36, .3, .27)) return 3; if (v > .5 && v < .94) for (let k = 0; k < 6; k++) { const c = .18 + k * .128 + .035 * Math.sin(v * 18 + k); if (Math.abs(u - c) < .045) return 3; } if (qC(u, v, .86, .16, .035) || qC(u, v, .8, .26, .025) || qC(u, v, .14, .2, .03)) return 2; return 7; },
+    '달팽이': (u, v) => { if (qC(u, v, .15, .36, .03) || qC(u, v, .24, .34, .03)) return 1; if (qL(u, v, .15, .36, .17, .54, .018) || qL(u, v, .24, .34, .21, .54, .018)) return 5; const r = Math.hypot(u - .56, v - .5), a = Math.atan2(v - .5, u - .56); if (r < .27) { const s = r / .27 * 3 - (a + Math.PI) / (2 * Math.PI); return s - Math.floor(s) < .28 ? 10 : 4; } if (qE(u, v, .18, .64, .08, .14) || qR(u, v, .1, .7, .9, .8)) return qC(u, v, .2, .6, .02) ? 1 : 5; return v > .8 ? 6 : 7; },
+    '케이크': (u, v) => { if (qE(u, v, .5, .11, .025, .045)) return 4; if (qR(u, v, .48, .16, .52, .3)) return 7; if (qC(u, v, .3, .36, .06) || qC(u, v, .5, .35, .06) || qC(u, v, .7, .36, .06)) return 3; if (qR(u, v, .16, .42, .84, .86)) { if (v < .5 || (v < .56 && Math.floor(u * 12) % 2 === 0)) return 2; if (v > .62 && v < .68) return 2; return 9; } if (qE(u, v, .5, .89, .42, .045)) return 11; return 5; },
+    '도넛': (u, v, x, y) => { const r = Math.hypot(u - .5, v - .5); if (r < .4 && r > .14) { if (r < .34 + .025 * Math.sin(Math.atan2(v - .5, u - .5) * 7) && r > .17) return (x * 7 + y * 3) % 9 === 0 ? [2, 5, 7][(x + y) % 3] : 9; return 4; } return 7; },
+    '체리': (u, v) => { if (qE(u, v, .64, .14, .12, .05)) return 6; if (qL(u, v, .33, .55, .55, .14, .016) || qL(u, v, .67, .5, .55, .14, .016)) return 10; if (qC(u, v, .27, .64, .04) || qC(u, v, .61, .6, .04)) return 2; if (qC(u, v, .33, .7, .17) || qC(u, v, .67, .66, .17)) return 3; return 5; },
+    '당근': (u, v) => { if (qE(u, v, .4, .17, .06, .14) || qE(u, v, .5, .13, .06, .16) || qE(u, v, .6, .17, .06, .14)) return 6; if (qT(u, v, .34, .3, .66, .3, .5, .95)) return qL(u, v, .4, .44, .48, .44, .012) || qL(u, v, .52, .6, .58, .6, .012) || qL(u, v, .44, .74, .5, .74, .012) ? 10 : 4; return 2; },
+    '바나나': (u, v) => { const r = Math.hypot(u - .5, v + .25), t = (u - .5) / .4, th = .15 * (1 - t * t); if (Math.abs(t) < 1 && Math.abs(r - .9) < th + .02) return Math.abs(t) > .86 ? 10 : 5; return 9; },
+    '비행기': (u, v) => { if (qE(u, v, .22, .2, .13, .05) || qE(u, v, .78, .84, .15, .05)) return 2; if (qT(u, v, .44, .52, .62, .52, .36, .8)) return 3; if (qT(u, v, .1, .48, .16, .24, .26, .48)) return 3; if (qE(u, v, .5, .5, .4, .085)) { for (let k = 0; k < 6; k++) if (qC(u, v, .32 + k * .07, .48, .022)) return 7; return 2; } return 7; },
+    '기차': (u, v) => { if (qC(u, v, .32, .14, .05) || qC(u, v, .42, .07, .04)) return 11; if (qC(u, v, .32, .8, .03) || qC(u, v, .52, .8, .03) || qC(u, v, .74, .8, .03)) return 11; if (qC(u, v, .32, .8, .08) || qC(u, v, .52, .8, .08) || qC(u, v, .74, .8, .08)) return 1; if (qR(u, v, .64, .3, .8, .44)) return 5; if (qR(u, v, .26, .22, .36, .42)) return 1; if (qR(u, v, .16, .42, .7, .74) || qR(u, v, .58, .24, .86, .74)) return 3; if (v > .88 && v < .91) return 11; return v > .88 ? 6 : 7; },
+    '잠수함': (u, v) => { if (qC(u, v, .2, .3, .03) || qC(u, v, .26, .2, .022) || qC(u, v, .84, .26, .03)) return 2; if (qR(u, v, .52, .16, .55, .32) || qR(u, v, .52, .16, .63, .2)) return 1; for (const c of [.3, .46, .62]) { if (qC(u, v, c, .58, .04)) return 7; if (qC(u, v, c, .58, .065)) return 1; } if (qE(u, v, .48, .58, .37, .17) || qR(u, v, .38, .32, .58, .46)) return 5; if (qR(u, v, .85, .48, .9, .68)) return 1; return v > .9 ? 4 : 7; },
+    '왕관': (u, v) => { if (qC(u, v, .35, .68, .04)) return 3; if (qC(u, v, .5, .68, .04)) return 7; if (qC(u, v, .65, .68, .04)) return 6; for (let k = 0; k < 5; k++) if (qC(u, v, .2 + k * .15, .26, .04)) return 2; if (u >= .2 && u <= .8) { const t = (u - .2) / .15, f = t - Math.floor(t), top = .28 + .28 * (1 - Math.abs(f * 2 - 1)); if (v > top && v < .82) return v > .76 ? 4 : 5; } return 8; },
+    '풍선': (u, v) => { for (const b of [[.5, .5, 9], [.32, .32, 3], [.68, .3, 5]]) { if (qC(u, v, b[0] - .06, b[1] - .07, .035)) return 2; if (qE(u, v, b[0], b[1], .15, .19)) return b[2]; if (qT(u, v, b[0] - .03, b[1] + .21, b[0] + .03, b[1] + .21, b[0], b[1] + .17)) return b[2]; } if (qL(u, v, .5, .71, .5, .96, .012) || qL(u, v, .32, .53, .5, .96, .012) || qL(u, v, .68, .51, .5, .96, .012)) return 1; return 7; },
+    '우산': (u, v, x, y) => { if (qR(u, v, .48, .46, .52, .84) || (v > .82 && Math.abs(Math.hypot(u - .43, v - .84) - .07) < .025)) return 1; const r = Math.hypot(u - .5, v - .5); if (v < .5 && r < .42 && !(v > .42 && qC(u, v, .5 + .21 * Math.round((u - .5) / .21), .5, .1) && Math.abs(u - .5) > .03)) { const a = Math.atan2(v - .5, u - .5); return Math.floor((a + Math.PI) / (Math.PI / 4)) % 2 ? 3 : 5; } return (x * 5 + y * 3) % 17 === 0 && !(v < .5 && r < .44) ? 2 : 7; },
+    '다이아몬드': (u, v, x, y) => { if (v >= .28 && v <= .42 && Math.abs(u - .5) < .2 + (v - .28) * 1.1) return u < .4 ? 2 : u < .6 ? 7 : 8; if (qT(u, v, .16, .42, .84, .42, .5, .86)) return qT(u, v, .34, .42, .66, .42, .5, .86) ? 2 : u < .5 ? 7 : 8; return (x * 7 + y * 13) % 23 === 0 ? 5 : 1; },
+    '선물 상자': (u, v) => { if (qC(u, v, .5, .28, .045)) return 4; if (qE(u, v, .37, .25, .12, .075) || qE(u, v, .63, .25, .12, .075)) return 5; if (qR(u, v, .45, .32, .55, .88)) return 5; if (qR(u, v, .14, .32, .86, .44)) return 9; if (qR(u, v, .18, .44, .82, .88)) return 3; return 6; },
+    '벙어리장갑': (u, v) => { if (qR(u, v, .3, .72, .74, .9)) return 2; if (qE(u, v, .3, .52, .085, .14) || qE(u, v, .54, .46, .22, .32)) { if (v > .58 && v < .63) return 2; return 3; } return 7; },
+    '산타 모자': (u, v) => { if (qC(u, v, .86, .42, .08)) return 2; if (qR(u, v, .12, .68, .88, .84)) return 2; if (qT(u, v, .18, .7, .82, .7, .64, .14) || qT(u, v, .6, .18, .68, .12, .86, .4)) return 3; return 6; },
+    '크리스마스 양말': (u, v) => { if (qL(u, v, .6, .12, .64, .04, .015) || qL(u, v, .64, .04, .68, .12, .015)) return 1; if (qR(u, v, .32, .12, .68, .28)) return 2; if (qC(u, v, .5, .44, .055)) return 5; if (qE(u, v, .4, .74, .27, .13)) return u < .24 ? 2 : 3; if (qR(u, v, .36, .28, .64, .72)) return 3; return 6; },
+    '눈송이': (u, v) => { if (qC(u, v, .5, .5, .06)) return 2; for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3, c = Math.cos(a), s = Math.sin(a), ex = .5 + c * .4, ey = .5 + s * .4, mx = .5 + c * .24, my = .5 + s * .24; if (qL(u, v, .5, .5, ex, ey, .028)) return 2; for (const d of [-.7, .7]) if (qL(u, v, mx, my, mx + Math.cos(a + d) * .12, my + Math.sin(a + d) * .12, .024)) return 2; } return 7; },
+    '눈 덮인 산': (u, v) => { if (qC(u, v, .84, .16, .07)) return 5; if (v > .86) return 6; if (qT(u, v, .38, .86, 1.1, .86, .74, .34)) return v < .48 ? 2 : 10; if (qT(u, v, -.1, .86, .7, .86, .3, .2)) return v < .4 ? 2 : 11; return 7; },
+    '등대': (u, v) => { if (v > .86) return qE(u, v, .5, .9, .24, .07) ? 10 : 7; if (qT(u, v, .38, .2, .62, .2, .5, .1)) return 3; if (qR(u, v, .4, .2, .6, .3)) return 5; if (v > .3 && Math.abs(u - .5) < .08 + (v - .3) * .12) return Math.floor((v - .3) / .11) % 2 ? 2 : 3; if (qT(u, v, .4, .25, 0, .12, 0, .38) || qT(u, v, .6, .25, 1, .12, 1, .38)) return 5; return 1; }
+  });
+  GSET['🐾 동물'].push('판다', '여우', '부엉이', '개구리', '돼지', '거북이', '문어', '달팽이');
+  GSET['🍎 먹을 것'].push('케이크', '도넛', '체리', '당근', '바나나');
+  GSET['🚗 탈것'].push('비행기', '기차', '잠수함');
+  GSET['🌅 풍경'].push('눈 덮인 산', '등대');
+  GSET['⛄ 겨울'].push('눈송이', '벙어리장갑', '산타 모자', '크리스마스 양말');
+  GSET['✨ 반짝 물건'] = ['왕관', '다이아몬드', '풍선', '우산', '선물 상자'];
+  /* 2026-11-09: 물건에도 무늬·그림을 넣어 여러 색을 쓰게 했어요 (모자의 별·호랑가시, 양말 줄무늬·하트, 장갑 무늬 등) */
+  const qH = (u, v, a, b, s) => qC(u, v, a - s * .5, b - s * .2, s * .55) || qC(u, v, a + s * .5, b - s * .2, s * .55) || qT(u, v, a - s * 1.02, b - s * .05, a + s * 1.02, b - s * .05, a, b + s * 1.1);
+  const qZ = (u, v, n, b, h, w) => { const f = u * n - Math.floor(u * n); return Math.abs(v - (b + h * (Math.abs(f * 2 - 1) * 2 - 1))) < w; };
+  const deco = (k, fn) => { const f = SCN[k]; SCN[k] = (u, v, x, y) => { const c = f(u, v, x, y); const d = fn(c, u, v, x, y); return d == null ? c : d; }; };
+  deco('산타 모자', (c, u, v) => { if (c === 3) { for (const s of [[.42, .52], [.6, .42], [.3, .62]]) if (qC(u, v, s[0], s[1], .035) || (qL(u, v, s[0] - .055, s[1], s[0] + .055, s[1], .012) || qL(u, v, s[0], s[1] - .055, s[0], s[1] + .055, .012))) return 5; } if (c === 2 && v > .66) { if (qC(u, v, .26, .73, .025) || qC(u, v, .31, .75, .025)) return 3; if (qE(u, v, .2, .76, .06, .03) || qE(u, v, .37, .77, .06, .03)) return 6; if (qZ(u, v, 10, .8, .015, .01)) return 11; } });
+  deco('크리스마스 양말', (c, u, v) => { if (c === 2 && v < .3 && qZ(u, v, 8, .2, .03, .018)) return 6; if (c === 3) { if (qC(u, v, .62, .78, .085)) return 2; if (v > .34 && v < .38) return 2; if (v > .62 && v < .66) return 5; if (qH(u, v, .5, .5, .07)) return 9; if (qC(u, v, .38, .78, .02) || qC(u, v, .48, .82, .02) || qC(u, v, .44, .72, .02)) return 5; } if (c === 5) return 3; });
+  deco('벙어리장갑', (c, u, v) => { if (c === 3) { if (qH(u, v, .55, .38, .07)) return 9; if (qC(u, v, .4, .3, .02) || qC(u, v, .68, .3, .02) || qC(u, v, .66, .48, .02) || qC(u, v, .42, .48, .02)) return 2; if (v > .64 && v < .7 && qZ(u, v, 9, .67, .02, .014)) return 5; } if (c === 2 && v > .7) { if (v > .78 && v < .83) return 6; if (Math.floor(u * 14) % 2) return 11; } });
+  deco('선물 상자', (c, u, v) => { if (c === 3) { const a = u * 6 - Math.round(u * 6), b = v * 6 - Math.round(v * 6); if (Math.hypot(a, b) < .22) return 2; if (Math.hypot(a - .5, b - .5) < .14) return 5; } if (c === 9 && Math.floor((u + v) * 12) % 2) return 2; });
+  deco('왕관', (c, u, v) => { if (c === 5) { if (qC(u, v, .35, .47, .03) || qC(u, v, .65, .47, .03)) return 9; if (qC(u, v, .5, .45, .035)) return 3; if (v > .6 && v < .76 && Math.abs(v - .68) > .045 && Math.floor(u * 20) % 3 === 0) return 4; } if (c === 4 && v > .76 && Math.floor(u * 16) % 2) return 2; });
+  deco('풍선', (c, u, v) => { if (c === 3 && qE(u, v, .32, .32, .15, .19)) { const a = u * 9 - Math.round(u * 9), b = v * 9 - Math.round(v * 9); if (Math.hypot(a, b) < .22) return 2; } if (c === 9 && qE(u, v, .5, .5, .15, .19) && Math.floor(v * 16) % 3 === 0) return 2; if (c === 5 && qE(u, v, .68, .3, .15, .19)) { if (qH(u, v, .7, .32, .05)) return 3; if (Math.floor(u * 18) % 3 === 0) return 4; } });
+  deco('케이크', (c, u, v, x, y) => { if (c === 9 && (x * 7 + y * 11) % 9 === 0) return [5, 7, 6][(x + y) % 3]; if (c === 2 && v > .6 && v < .7) return 8; });
+  deco('눈사람', (c, u, v) => { if (c === 3 && Math.floor(u * 16) % 2) return 6; if (c === 1 && v > .6) return v < .7 ? 3 : 7; if (c === 1 && v > .2 && v < .25 && u > .38 && u < .62) return 3; if (c === 7 && qR(u, v, .56, .55, .62, .68)) return 3; });
+  deco('자동차', (c, u, v) => { if (c === 3) { if (v > .58 && v < .62) return 5; if (qC(u, v, .5, .4, .03)) return 5; } });
+  deco('기차', (c, u, v) => { if (c === 3) { if (v > .6 && v < .64) return 5; if (qC(u, v, .72, .6, .045)) return 5; if (qC(u, v, .3, .54, .025) || qC(u, v, .44, .54, .025)) return 2; } });
+  deco('아이스크림', (c, u, v, x, y) => { if ((c === 2 || c === 9) && v < .62 && (x * 5 + y * 9) % 7 === 0) return [3, 7, 5, 6][(x + 2 * y) % 4]; });
+  /* 2026-11-09: 바탕에도 무늬 (땡땡이·사선·체크·십자). 바깥에서 이어진 바탕 칸에만, 그림 둘레 한 칸은 비워 둬요. 풍경은 그대로 */
+  const GPC = { 1: 8, 2: 11, 3: 9, 4: 5, 5: 2, 6: 5, 7: 2, 8: 9, 9: 2, 10: 4, 11: 2 }, GNOP = ['로켓', '크리스마스 트리', '우산', '다이아몬드', '눈송이'];
+  const gemBg = (k, a, N) => { if (GSET['🌅 풍경'].indexOf(k) >= 0 || GNOP.indexOf(k) >= 0) return a; const cnt = {}; for (let i = 0; i < N; i++) for (const j of [i, N * (N - 1) + i, i * N, i * N + N - 1]) cnt[a[j]] = (cnt[a[j]] || 0) + 1; const bg = +Object.keys(cnt).sort((p, q) => cnt[q] - cnt[p])[0], pc = GPC[bg]; if (!pc) return a;
+    const m = new Uint8Array(N * N), st = []; for (let i = 0; i < N * N; i++) { const x = i % N, y = (i / N) | 0; if ((x === 0 || y === 0 || x === N - 1 || y === N - 1) && a[i] === bg) { m[i] = 1; st.push(i); } }
+    while (st.length) { const i = st.pop(), x = i % N; for (const j of [x > 0 ? i - 1 : -1, x < N - 1 ? i + 1 : -1, i - N, i + N]) if (j >= 0 && j < N * N && !m[j] && a[j] === bg) { m[j] = 1; st.push(j); } }
+    /* 무늬가 되풀이되지 않게: 7가지 무늬를 도안 차례대로 돌려 쓰고(이웃 도안은 서로 달라요), 모양은 도안마다 다른 자리에 드문드문 흩어 놓아요 */
+    const ALL = Object.values(GSET).flat().concat(Object.keys(GBG)), t = Math.max(0, ALL.indexOf(k)) % 7, o = a.slice();
+    let h = 7; for (const ch of k) h = (h * 31 + ch.charCodeAt(0)) % 2147483647; const rnd = () => (h = h * 16807 % 2147483647) / 2147483647;
+    const ok = (x, y) => { if (x < 0 || y < 0 || x >= N || y >= N || !m[y * N + x]) return false; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < N && Y < N && !m[Y * N + X]) return false; } return true; };
+    const CF = [2, 5, 9, 4, 7, 6, 8, 3].filter(c => c !== bg), stamp = (pts, c) => { if (pts.every(p => ok(p[0], p[1]))) pts.forEach(p => { o[p[1] * N + p[0]] = typeof c === 'function' ? c(p) : c; }); };
+    if (t === 4) { for (let y0 = 2 + Math.floor(rnd() * 3); y0 < N; y0 += 6 + Math.floor(rnd() * 3)) { const ph = rnd() * 6; for (let x = 0; x < N; x++) { const y = y0 + Math.round(Math.sin(x * .7 + ph)); if (ok(x, y)) o[y * N + x] = pc; } } return o; }
+    const B = N <= 16 ? 4 : 5;
+    for (let by = 0; by < N; by += B) for (let bx = 0; bx < N; bx += B) { if (rnd() < .3) continue; const x = bx + 1 + Math.floor(rnd() * (B - 2)), y = by + 1 + Math.floor(rnd() * (B - 2));
+      if (t === 0) stamp([[x, y]], pc);
+      else if (t === 1) stamp(rnd() < .5 ? [[x, y]] : [[x, y], [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]], pc);
+      else if (t === 2) stamp([[x - 1, y - 1], [x + 1, y - 1], [x - 1, y], [x, y], [x + 1, y], [x, y + 1]], pc);
+      else if (t === 3) { const c = CF[Math.floor(rnd() * CF.length)]; stamp([[x, y], [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]], p => p[0] === x && p[1] === y ? (c === 5 ? 4 : 5) : c); }
+      else if (t === 5) stamp([[x, y]], CF[Math.floor(rnd() * CF.length)]);
+      else stamp([[x, y - 1], [x - 1, y], [x + 1, y], [x, y + 1]], pc); }
+    return o; };
+  const gemPat = (k, N) => { if (TPL[k]) return gemBg(k, TPL[k].split('|').join('').split('').map(c => parseInt(c, 36) || GBG[k]), 16); const f = SCN[k], a = []; qN = N; for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) a.push(f((x + .5) / N, (y + .5) / N, x, y)); return gemBg(k, a, N); };
   const gemImg = (P, N, S) => { const o = document.createElement('canvas'); o.width = o.height = N * S; const x = o.getContext('2d'); P.forEach((v, i) => { x.fillStyle = PX[v]; x.fillRect((i % N) * S, Math.floor(i / N) * S, S, S); }); return o; };
   const gemCss = () => { if (document.getElementById('gemcss')) return; const s = document.createElement('style'); s.id = 'gemcss'; s.textContent = PX.map((c, i) => i ? '#drw .gem .g' + i + '{background:radial-gradient(circle,' + c + ' 0 24%,#F7F8FC 30%)}#drw .gem.c' + i + ' .g' + i + '{background:radial-gradient(circle,' + c + ' 0 46%,#DDE3F2 52%)}#drw .gem .f' + i + '{background:' + c + ';box-shadow:inset 1px 1px 0 rgba(255,255,255,.55),inset -1px -1px 0 rgba(0,0,0,.2)}' : '').join('') + '#drw .gem i{border:0}#drw .gmenu{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}#drw .gmenu button{padding:6px 2px;font-size:.82rem}#drw .gmenu img{display:block;margin:0 auto 4px;width:100%;max-width:72px;height:auto;aspect-ratio:1/1;image-rendering:pixelated;border-radius:6px}#drw .gcol{position:relative}#drw .gcol b{position:absolute;right:-5px;top:-6px;min-width:18px;padding:0 3px;border-radius:9px;background:#1B2750;color:#fff;font-size:.62rem;line-height:16px;text-align:center}#drw .gbar{height:12px;border-radius:6px;background:#E6E9F2;overflow:hidden;margin:6px 0}#drw .gbar i{display:block;height:100%;background:#2FB36B}'; document.head.appendChild(s); };
   async function gemMenu(want) { gemCss(); const made = (await allPics()).filter(x => x.t === 'gem' || /^💎/.test(x.title || '')).reverse(); if (!$w) return; const done = pxDone(), open = PXLV.filter(l => done >= l[1]).map(l => l[0]), N = open.indexOf(want) >= 0 ? want : open[open.length - 1], S = DS().gem, card = (k, n) => '<button class="db tb" data-gk="' + k + '" data-gn="' + n + '"><img src="' + gemImg(gemPat(k, n), n, 3).toDataURL() + '" alt="">' + k + '<br><small>' + n + '칸</small></button>';
@@ -15106,6 +15178,18 @@ redraw();
 #mus .mbig{font-family:Jua,sans-serif;font-size:1.25rem;text-align:center;margin:0}
 #mus .shake{animation:mushk .3s}
 @keyframes mushk{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* 리코더 (2026-11-09) */
+#mus .rc{display:flex;gap:6px;align-items:center;justify-content:center;padding:6px 8px;border-radius:18px;background:#EAF3FB}
+#mus .rc svg{height:clamp(150px,calc(100vh - 590px),240px);height:clamp(150px,calc(100dvh - 590px),240px);width:auto;flex:0 0 auto}
+#mus .rcx{min-width:0;flex:1;text-align:center}
+#mus .rcx b{display:block;font-family:Jua,sans-serif;font-weight:400;font-size:2.1rem;line-height:1.2}
+#mus .rcx small{display:block;font-size:.82rem;color:#3D4A6E;line-height:1.5;word-break:keep-all}
+#mus .rkeys{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;touch-action:none}
+#mus .rk{padding:9px 0;border-radius:12px;font-family:Jua,sans-serif;font-size:.95rem;line-height:1.15;color:#fff;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.4);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18),0 2px 0 rgba(0,0,0,.25);transition:transform .05s;white-space:nowrap}
+#mus .rk.hit{transform:scale(.94);filter:brightness(1.12)}
+#mus .rk.want{outline:4px solid #FFB020;outline-offset:2px}
+#mus .rq{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#mus .rq button{font:inherit;font-family:Jua,sans-serif;font-size:1.2rem;padding:12px 0;border-radius:14px;border:2px solid #1B2750;background:#fff;color:#1B2750;box-shadow:0 2px 0 #1B2750}
 #mus input[type=text]{font:inherit;width:100%;box-sizing:border-box;padding:9px 10px;border-radius:10px;border:2px solid #D8DCC3}
 </style>
 <script>
@@ -15115,7 +15199,10 @@ redraw();
   var KID = 'chaei';
   var NAME = KID === 'seoi' ? '서이' : '채이';
   var NM = ['도', '레', '미', '파', '솔', '라', '시'];
-  var XC = ['#E5484D', '#F28C28', '#E8B400', '#3BA55C', '#2BA3D9', '#3B5BDB', '#8A4FD8', '#E0457B'];
+  var XC = ['#E5484D', '#F28C28', '#E8B400', '#3BA55C', '#2BA3D9', '#3B5BDB', '#8A4FD8', '#E0457B', '#C2410C', '#0F8A6B'];
+  /* 🎼 리코더 (소프라노) 운지: [엄지(뒤), 1, 2, 3, 4, 5, 6, 7] — 1 막기, 0 열기, .5 엄지 반만. 저먼식(G)과 바로크식(B)은 '파'만 달라요 */
+  var RF = [[1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1, 0, 0], null, [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 0, 0, 0, 0, 0, 0], [1, 0, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [.5, 1, 1, 1, 1, 1, 0, 0]];
+  var RNAME = function (n) { return n < 7 ? NM[n] : ['높은 도', '높은 레', '높은 미'][n - 7]; };
   var KORD = [15, 13, 11, 9, 7, 5, 3, 1, 0, 2, 4, 6, 8, 10, 12, 14, 16];   /* 칼림바 왼→오: 가운데가 가장 낮은 도 */
   var SONGS = [
     { id: 'star', v: 2, t: '반짝반짝 작은 별', x: 0, s: '1 1 5 5 6 6 5- / 4 4 3 3 2 2 1- / 5 5 4 4 3 3 2- / 5 5 4 4 3 3 2- / 1 1 5 5 6 6 5- / 4 4 3 3 2 2 1-' },
@@ -15160,7 +15247,8 @@ redraw();
   var AC = null, OUT = null;
   function ac() { try { if (!AC) { AC = new (window.AudioContext || window.webkitAudioContext)(); var c = AC.createDynamicsCompressor(); OUT = AC.createGain(); OUT.gain.value = .8; OUT.connect(c); c.connect(AC.destination); } if (AC.state === 'suspended') AC.resume(); } catch (e) {} return AC; }
   function part(a, t, f, v, dec, type) { var o = a.createOscillator(), g = a.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .004); g.gain.exponentialRampToValueAtTime(0.0001, t + dec); o.connect(g); g.connect(OUT); o.start(t); o.stop(t + dec + .05); }
-  function play(n, inst) { var a = ac(); if (!a) return; var t = a.currentTime + .005, f = freq(n);
+  function play(n, inst, dur) { var a = ac(); if (!a) return; var t = a.currentTime + .005, f = freq(n);
+    if (inst === 'rec') { /* 리코더는 한 옥타브 위에서 '후우' 하고 이어지는 소리 */ var d = Math.max(.18, (dur || .5) - .04); [[f * 2, .3, 'triangle'], [f * 2, .16, 'sine'], [f * 4, .025, 'sine']].forEach(function (p) { var o = a.createOscillator(), g = a.createGain(), lf = a.createOscillator(), lg = a.createGain(); o.type = p[2]; o.frequency.value = p[0]; lf.frequency.value = 5; lg.gain.value = p[0] * .004; lf.connect(lg); lg.connect(o.frequency); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(p[1], t + .035); g.gain.setValueAtTime(p[1], t + d); g.gain.exponentialRampToValueAtTime(0.0001, t + d + .07); o.connect(g); g.connect(OUT); o.start(t); lf.start(t); o.stop(t + d + .1); lf.stop(t + d + .1); }); return; }
     if (inst === 'kal') { part(a, t, f, .45, 2.4); part(a, t, f * 2, .05, .5); part(a, t, f * 5.93, .05, .08); }
     else { part(a, t, f * 2, .42, 1.0); part(a, t, f * 2 * 3.93, .1, .12); part(a, t, f * 4, .04, .3); } }
 
@@ -15171,6 +15259,15 @@ redraw();
   function load() { try { return JSON.parse(localStorage.getItem(SK)) || {}; } catch (e) { return {}; } }
   function store(o) { try { localStorage.setItem(SK, JSON.stringify(o)); } catch (e) {} }
   var ST = load(); ST.done = ST.done || {}; ST.my = ST.my || [];
+  var fing = function (n) { return n === 3 ? (ST.rf === 'B' ? [1, 1, 1, 1, 1, 0, 1, 1] : [1, 1, 1, 1, 1, 0, 0, 0]) : RF[n]; };
+  /* 리코더 그림: 위가 부는 곳, 왼쪽 작은 구멍이 뒤쪽 엄지 구멍 */
+  function rsvg(n) { var F = fing(n), Y = [62, 92, 116, 140, 178, 202, 226, 252], h = '<svg viewBox="0 0 120 300" aria-hidden="true"><path d="M48 8 h24 q4 0 4 6 v18 q0 4 -4 6 h-24 q-4 -2 -4 -6 v-18 q0 -6 4 -6z" fill="#F4EBDD" stroke="#1B2750" stroke-width="2.5"/><rect x="52" y="22" width="16" height="6" rx="2" fill="#1B2750"/><path d="M47 38 h26 v240 q0 12 -13 14 q-13 -2 -13 -14z" fill="#F4EBDD" stroke="#1B2750" stroke-width="2.5"/><line x1="44" y1="162" x2="76" y2="162" stroke="#C9A27A" stroke-width="2"/>';
+    F.forEach(function (v, i) { var x = i ? 60 : 24, y = Y[i], r = i ? 8.5 : 8; if (!i) h += '<line x1="33" y1="' + y + '" x2="47" y2="' + y + '" stroke="#9AA3BD" stroke-width="1.5" stroke-dasharray="2 2"/>';
+      h += '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="#fff" stroke="#1B2750" stroke-width="2.2"/>'; if (v === 1) h += '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="#1B2750"/>'; else if (v) h += '<path d="M' + x + ' ' + (y - r) + ' A' + r + ' ' + r + ' 0 0 0 ' + x + ' ' + (y + r) + ' Z" fill="#1B2750"/>';
+      h += '<text x="' + (i ? 86 : 24) + '" y="' + (i ? y + 4 : y + 20) + '" font-size="' + (i ? 12 : 10) + '" font-weight="700" fill="#5A668C" text-anchor="middle">' + (i ? i : '뒤') + '</text>'; });
+    return h + '<text x="106" y="116" font-size="11" fill="#2E9E7A" font-weight="700" text-anchor="middle" transform="rotate(90 106 116)">왼손</text><text x="106" y="215" font-size="11" fill="#C2410C" font-weight="700" text-anchor="middle" transform="rotate(90 106 215)">오른손</text></svg>'; }
+  function rdesc(n) { var F = fing(n), c = []; for (var i = 1; i < 8; i++) if (F[i]) c.push(i); return (F[0] === 1 ? '엄지' + (c.length ? ' + ' : '') : F[0] ? '엄지 반만' + (c.length ? ' + ' : '') : '엄지는 떼고 ') + c.join('·') + ' 막아요'; }
+  function showF(n) { var b = $m && $m.querySelector('.rc'); if (!b) return; b.innerHTML = rsvg(n) + '<div class="rcx"><b style="color:' + XC[n] + '">' + RNAME(n) + '</b><small>' + rdesc(n) + '</small></div>'; }
 
   /* ---------- 화면 ---------- */
   var $m = null, pushed = false, timers = [], inst = KID === 'seoi' ? 'xy' : 'kal';
@@ -15182,56 +15279,59 @@ redraw();
     ac(); home(); }
   function close() { stopAll(); if ($m) { $m.remove(); $m = null; } document.body.style.overflow = ''; window.removeEventListener('popstate', onPop); if (pushed) { pushed = false; try { history.back(); } catch (e) {} } }
   function page(title, html, back) { stopAll(); $m.innerHTML = '<div class="mtop"><b>' + title + '</b><button class="mb" data-mx="' + (back || 'close') + '">' + (back ? '← 뒤로' : '닫기') + '</button></div><div class="mwrap">' + html + '</div>'; $m.scrollTop = 0; }
-  function instName(i) { return i === 'kal' ? '칼림바' : '실로폰'; }
+  function instName(i) { return i === 'kal' ? '칼림바' : i === 'rec' ? '리코더' : '실로폰'; }
+  var LIM = function () { return inst === 'kal' ? 99 : inst === 'rec' ? 9 : 7; };
 
   function home() {
-    page('🎵 ' + NAME + '의 악기 방', '<div class="pick"><button data-in="kal"><i>🎶</i><b>칼림바</b><small>엄지로 튕기는 17음 악기</small></button><button data-in="xy"><i>🌈</i><b>실로폰</b><small>무지개 색 8음 악기</small></button></div>'
+    page('🎵 ' + NAME + '의 악기 방', '<div class="pick"><button data-in="kal"><i>🎶</i><b>칼림바</b><small>엄지로 튕기는 17음 악기</small></button><button data-in="rec"><i>🎼</i><b>리코더</b><small>학교에서 배우는 운지 연습</small></button></div>'
       + '<div class="mucd"><p>악기를 고르면 <b>마음대로 치기</b>도 하고, <b>악보 보고 따라 치기</b>도 할 수 있어요. 소리가 작거나 안 나면 폰 옆 소리 단추로 <b>미디어 소리</b>를 키워 봐요.</p></div>');
     $m.querySelectorAll('[data-in]').forEach(function (b) { b.onclick = function () { inst = b.dataset.in; menu(); }; }); }
 
-  function songList() { var s = SONGS.map(function (x) { return inst === 'xy' && x.xs ? Object.assign({}, x, { s: x.xs }) : x; }).filter(function (x) { return inst === 'kal' || maxN(x.s) <= 7; }); return s.concat(ST.my.filter(function (x) { return inst === 'kal' || maxN(x.s) <= 7; }).map(function (x) { return Object.assign({ my: 1 }, x); })); }
+  function songList() { var s = SONGS.map(function (x) { return inst !== 'kal' && x.xs && maxN(x.s) > LIM() ? Object.assign({}, x, { s: x.xs }) : x; }).filter(function (x) { return maxN(x.s) <= LIM(); }); return s.concat(ST.my.filter(function (x) { return maxN(x.s) <= LIM(); }).map(function (x) { return Object.assign({ my: 1 }, x); })); }
   function menu() {
-    var L = songList(), skip = SONGS.filter(function (x) { return inst === 'xy' && maxN(x.xs || x.s) > 7; });
-    page((inst === 'kal' ? '🎶 ' : '🌈 ') + instName(inst), '<button class="mb g" id="mfree" style="width:100%">🎵 마음대로 치기</button>'
-      + '<div class="mucd"><h3>📖 악보 보고 따라 치기</h3><p class="soft" style="margin-bottom:8px">반짝이는 ' + (inst === 'kal' ? '건반' : '막대') + '을 누르면 다음 음으로 넘어가요.</p><div class="songs">'
+    var L = songList(), skip = SONGS.filter(function (x) { return inst !== 'kal' && maxN(x.xs || x.s) > LIM(); });
+    page((inst === 'kal' ? '🎶 ' : inst === 'rec' ? '🎼 ' : '🌈 ') + instName(inst), (inst === 'rec' ? '<div class="mucd"><h3>🔤 ' + NAME + '의 리코더는?</h3><p class="soft">리코더 몸통에 <b>G</b>(저먼식)나 <b>B</b>(바로크식) 글자가 있어요. 학교 리코더와 같게 골라요. <b>파</b> 운지만 달라요.</p><div class="mrow" style="margin-top:8px"><button class="mb' + (ST.rf !== 'B' ? ' g' : '') + '" data-rf="G">저먼식 G</button><button class="mb' + (ST.rf === 'B' ? ' g' : '') + '" data-rf="B">바로크식 B</button></div></div><button class="mb y" id="mquiz" style="width:100%">🧩 운지 보고 음 맞히기</button>' : '') + '<button class="mb g" id="mfree" style="width:100%">' + (inst === 'rec' ? '🎼 음 눌러 운지 보기' : '🎵 마음대로 치기') + '</button>'
+      + '<div class="mucd"><h3>📖 악보 보고 따라 ' + (inst === 'rec' ? '불기' : '치기') + '</h3><p class="soft" style="margin-bottom:8px">' + (inst === 'rec' ? '그림처럼 구멍을 막고 진짜 리코더로 불어 본 다음, 반짝이는 음 단추를 누르면 다음 음으로 넘어가요.' : '반짝이는 ' + (inst === 'kal' ? '건반' : '막대') + '을 누르면 다음 음으로 넘어가요.') + '</p><div class="songs">'
       + [['k', '🏡 우리 동요'], ['w', '🌍 세계 동요'], ['c', '🎻 클래식'], ['x', '🎄 크리스마스'], ['my', '✏️ 내 악보']].map(function (G) { var h = ''; L.forEach(function (x, i) { var gx = x.my ? 'my' : x.x ? 'x' : (x.g || 'w'); if (gx !== G[0]) return; var c = ST.done[inst + ':' + x.id] || 0;
         h += '<button data-si="' + i + '" class="' + (x.x ? 'xm' : '') + '"><b>' + (x.x ? '🎄 ' : x.my ? '✏️ ' : '🎵 ') + esc(x.t) + '</b><small>' + (c ? '🌟 ' + c + '번 완주' : '') + '</small></button>'; }); return h ? '<p class="sgh">' + G[1] + '</p>' + h : ''; }).join('') + '</div>'
-      + (skip.length ? '<p class="soft" style="margin-top:8px">음이 높은 ' + skip.length + '곡은 칼림바에서 칠 수 있어요.</p>' : '') + '</div>'
+      + (skip.length ? '<p class="soft" style="margin-top:8px">음이 높은 ' + skip.length + '곡은 칼림바에서 칠 수 있어요.' + (inst === 'rec' ? ' (리코더는 낮은 도부터 높은 미까지 넣었어요)' : '') + '</p>' : '') + '</div>'
       + (inst === 'kal' ? '<div class="mucd"><h3>✏️ 내 악보 적기</h3><p>종이 악보나 책에 있는 곡을 칼림바로 쳐서 적어 두면, 따라 치기로 연습할 수 있어요. 이 폰에만 저장돼요.</p><div class="mrow" style="margin-top:8px"><button class="mb y" id="mnew">✏️ 새 악보 적기</button></div></div>' : '')
-      + '<button class="mb" id="mother" style="width:100%">' + (inst === 'kal' ? '🌈 실로폰으로 바꾸기' : '🎶 칼림바로 바꾸기') + '</button>', 'home');
-    $m.querySelector('#mfree').onclick = free; $m.querySelector('#mother').onclick = function () { inst = inst === 'kal' ? 'xy' : 'kal'; menu(); };
+      + '<button class="mb" id="mother" style="width:100%">' + (inst === 'kal' ? '🎼 리코더로 바꾸기' : '🎶 칼림바로 바꾸기') + '</button>', 'home');
+    $m.querySelector('#mfree').onclick = free; $m.querySelector('#mother').onclick = function () { inst = inst === 'kal' ? 'rec' : 'kal'; menu(); };
+    $m.querySelectorAll('[data-rf]').forEach(function (b) { b.onclick = function () { ST.rf = b.dataset.rf; store(ST); menu(); }; }); var qz = $m.querySelector('#mquiz'); if (qz) qz.onclick = quiz;
     var nb = $m.querySelector('#mnew'); if (nb) nb.onclick = function () { writer(); };
     $m.querySelectorAll('[data-si]').forEach(function (b) { b.onclick = function () { follow(L[+b.dataset.si]); }; }); }
 
   /* 악기 그리기: 누르면 바로 소리 (여러 손가락 OK) */
   function instHTML() {
     if (inst === 'kal') return '<div class="kal"><div class="brg"></div><div class="tines">' + KORD.map(function (n) { var dist = Math.abs(KORD.indexOf(n) - 8); return '<div class="tn' + (n % 7 === 0 ? ' c' : '') + '" data-n="' + n + '" style="height:' + (100 - dist * 5.5) + '%">' + (n % 7 + 1) + '<em>' + '•'.repeat(Math.floor(n / 7)) + '</em></div>'; }).join('') + '</div></div>';
+    if (inst === 'rec') return '<div class="rc"></div><div class="rkeys">' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return '<div class="rk" data-n="' + n + '" style="background:' + XC[n] + '">' + (n < 7 ? NM[n] : '높은<br>' + NM[n - 7]) + '</div>'; }).join('') + '</div>';
     return '<div class="xy">' + [0, 1, 2, 3, 4, 5, 6, 7].map(function (n) { return '<div class="mubar" data-n="' + n + '" style="background:' + XC[n] + ';width:' + (100 - n * 5) + '%">' + (n === 7 ? '높은 도' : NM[n]) + '</div>'; }).join('') + '</div>'; }
-  function bindInst(on) { var box = $m.querySelector(inst === 'kal' ? '.tines' : '.xy'); var last = {};
+  function bindInst(on) { var box = $m.querySelector(inst === 'kal' ? '.tines' : inst === 'rec' ? '.rkeys' : '.xy'); if (inst === 'rec') showF(4); var last = {};
     var keys = [].slice.call(box.querySelectorAll('[data-n]'));
     /* 칼림바는 건반이 좁아서, 틈을 눌러도 가장 가까운 건반이 울려요 */
     var pick = function (x, y) { if (inst !== 'kal') { var e = document.elementFromPoint(x, y); e = e && e.closest && e.closest('[data-n]'); return e && box.contains(e) ? e : null; }
       var b = box.getBoundingClientRect(); if (y < b.top || y > b.bottom + 20 || x < b.left - 6 || x > b.right + 6) return null; var best = null, bd = 1e9;
       keys.forEach(function (k) { var q = k.getBoundingClientRect(), d = Math.abs(q.left + q.width / 2 - x); if (d < bd) { bd = d; best = k; } }); return best; };
-    var hitAt = function (x, y, id) { var el = pick(x, y); if (!el) { last[id] = null; return; } if (last[id] === el) return; last[id] = el; var n = +el.dataset.n; play(n, inst); el.classList.add('hit'); setTimeout(function () { el.classList.remove('hit'); }, 140); if (on) on(n, el); };
+    var hitAt = function (x, y, id) { var el = pick(x, y); if (!el) { last[id] = null; return; } if (last[id] === el) return; last[id] = el; var n = +el.dataset.n; play(n, inst); if (inst === 'rec') showF(n); el.classList.add('hit'); setTimeout(function () { el.classList.remove('hit'); }, 140); if (on) on(n, el); };
     box.addEventListener('pointerdown', function (e) { e.preventDefault(); try { if (e.target.releasePointerCapture) e.target.releasePointerCapture(e.pointerId); } catch (x) {} hitAt(e.clientX, e.clientY, e.pointerId); });
     box.addEventListener('pointermove', function (e) { if (e.buttons || e.pointerType === 'touch') { if (last[e.pointerId] !== undefined) hitAt(e.clientX, e.clientY, e.pointerId); } });
     var up = function (e) { delete last[e.pointerId]; }; box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up); box.addEventListener('pointerleave', up); }
 
-  function free() { page('🎵 마음대로 치기 · ' + instName(inst), instHTML() + '<p class="soft" style="text-align:center">' + (inst === 'kal' ? '가운데가 가장 낮은 도(1)예요. 바깥으로 갈수록 왼쪽·오른쪽 번갈아 높아져요. 점이 있으면 높은 음이에요.' : '긴 막대일수록 낮은 소리예요. 손가락으로 쓸어도 돼요.') + '</p>', 'menu'); bindInst(); }
+  function free() { page((inst === 'rec' ? '🎼 운지 보기' : '🎵 마음대로 치기') + ' · ' + instName(inst), instHTML() + '<p class="soft" style="text-align:center">' + (inst === 'rec' ? '음 단추를 누르면 그 음의 운지가 나와요. <b>검은 구멍</b>은 막고, 흰 구멍은 열어요. 왼쪽 작은 구멍은 뒤쪽 엄지 구멍이에요.' : inst === 'kal' ? '가운데가 가장 낮은 도(1)예요. 바깥으로 갈수록 왼쪽·오른쪽 번갈아 높아져요. 점이 있으면 높은 음이에요.' : '긴 막대일수록 낮은 소리예요. 손가락으로 쓸어도 돼요.') + '</p>', 'menu'); bindInst(); }
 
   function noteHTML(x, i) { if (x.br) return '<span class="br"></span>' + (x.lb ? '<span class="mlb">' + esc(x.lb) + '</span>' : ''); var oct = Math.floor(x.n / 7);
-    if (inst === 'xy') return '<span class="nt" data-i="' + i + '"><span class="cdot" style="background:' + XC[x.n] + '">' + (x.n === 7 ? '높은도' : NM[x.n]) + '</span></span>';
+    if (inst !== 'kal') return '<span class="nt" data-i="' + i + '"><span class="cdot" style="background:' + XC[x.n] + '">' + NM[x.n % 7] + '</span>' + (x.n > 6 ? '<u style="top:-2px;color:#1B2750;font-size:.8rem">•</u>' : '') + '</span>';
     return '<span class="nt" data-i="' + i + '"><u>' + '•'.repeat(oct) + '</u>' + (x.n % 7 + 1) + '<s>' + (x.d >= 2 ? '−'.repeat(Math.min(3, Math.round(x.d) - 1)) : x.d < 1 ? '·' : '&nbsp;') + '</s></span>'; }
 
   function follow(S) {
     var N = parse(S.s), idx = N.map(function (x, i) { return x.br ? -1 : i; }).filter(function (i) { return i >= 0; }), k = 0, demo = false, V = S.v || 1, vi = 1;
-    page((S.x ? '🎄 ' : '🎵 ') + esc(S.t), (V > 1 ? '<p class="vtag" id="mvt"></p>' : '') + '<div class="score" id="msc"' + (inst === 'xy' ? ' style="max-height:108px"' : '') + '>' + N.map(noteHTML).join('') + '</div>'
+    page((S.x ? '🎄 ' : '🎵 ') + esc(S.t), (V > 1 ? '<p class="vtag" id="mvt"></p>' : '') + '<div class="score" id="msc"' + (inst !== 'kal' ? ' style="max-height:' + (inst === 'rec' ? 96 : 108) + 'px"' : '') + '>' + N.map(noteHTML).join('') + '</div>'
       + '<div class="mrow" style="justify-content:center"><button class="mb" id="mlis">👂 들어 보기</button><button class="mb" id="mre">↺ 처음부터</button>' + (S.my ? '<button class="mb" id="mdel">🗑️ 지우기</button>' : '') + '</div>'
-      + instHTML() + '<p class="soft" style="text-align:center">' + (inst === 'kal' ? '숫자 아래 줄(−)은 길게, 점(·)은 짧게 쳐요. 숫자 위 점은 높은 음이에요.' : '반짝이는 막대를 눌러요. 틀려도 괜찮아요, 반짝이는 막대를 다시 찾아봐요.') + '</p>', 'menu');
+      + instHTML() + '<p class="soft" style="text-align:center">' + (inst === 'rec' ? '그림대로 막고 불어 본 뒤 반짝이는 단추를 눌러요. 혀로 "투" 하고 살살 불어요.' : inst === 'kal' ? '숫자 아래 줄(−)은 길게, 점(·)은 짧게 쳐요. 숫자 위 점은 높은 음이에요.' : '반짝이는 막대를 눌러요. 틀려도 괜찮아요, 반짝이는 막대를 다시 찾아봐요.') + '</p>', 'menu');
     var sc = $m.querySelector('#msc');
     var mark = function () { sc.querySelectorAll('.nt').forEach(function (e) { var i = +e.dataset.i, p = idx.indexOf(i); e.classList.toggle('done', p < k); e.classList.toggle('now', p === k); });
-      $m.querySelectorAll('[data-n]').forEach(function (e) { e.classList.toggle('want', !demo && k < idx.length && +e.dataset.n === N[idx[k]].n); });
+      $m.querySelectorAll('[data-n]').forEach(function (e) { e.classList.toggle('want', !demo && k < idx.length && +e.dataset.n === N[idx[k]].n); }); if (inst === 'rec' && !demo && k < idx.length) showF(N[idx[k]].n);
       var cur = sc.querySelector('.now'); if (cur) { var r = cur.offsetTop - sc.offsetTop; if (r < sc.scrollTop || r > sc.scrollTop + sc.clientHeight - 30) sc.scrollTop = r - 30; } };
     var finish = function () { var key = inst + ':' + S.id; ST.done[key] = (ST.done[key] || 0) + 1; store(ST);
       timers.push(setTimeout(function () { if (!$m) return; var c = ST.done[key]; var w = document.createElement('div'); w.className = 'mucd'; w.style.textAlign = 'center';
@@ -15244,7 +15344,7 @@ redraw();
     var lis = $m.querySelector('#mlis'), unListen = function () { stopAll(); demo = false; k = 0; vi = 1; vshow(); lis.innerHTML = '👂 들어 보기'; lis.classList.remove('y'); mark(); };
     $m.querySelector('#mre').onclick = unListen;
     lis.onclick = function () { if (demo) return unListen(); stopAll(); demo = true; k = 0; lis.innerHTML = '⏹ 그만 듣기'; lis.classList.add('y'); mark(); var beat = (KID === 'seoi' ? 620 : 520) * (S.sp || 1), t = 0;
-      idx.forEach(function (i, p) { timers.push(setTimeout(function () { if (!$m) return; k = p; mark(); play(N[i].n, inst); var el = $m.querySelector('[data-n="' + N[i].n + '"]'); if (el) { el.classList.add('hit'); setTimeout(function () { el.classList.remove('hit'); }, 160); } }, t)); t += N[i].d * beat; });
+      idx.forEach(function (i, p) { timers.push(setTimeout(function () { if (!$m) return; k = p; mark(); play(N[i].n, inst, N[i].d * beat / 1000); if (inst === 'rec') showF(N[i].n); var el = $m.querySelector('[data-n="' + N[i].n + '"]'); if (el) { el.classList.add('hit'); setTimeout(function () { el.classList.remove('hit'); }, 160); } }, t)); t += N[i].d * beat; });
       timers.push(setTimeout(function () { if (!$m) return; unListen(); }, t + 600)); };
     var del = $m.querySelector('#mdel'); if (del) { var sure = 0; del.onclick = function () { if (!sure) { sure = 1; del.textContent = '정말 지울까요? 한 번 더 눌러요'; return; } ST.my = ST.my.filter(function (x) { return x.id !== S.id; }); store(ST); menu(); }; }
     mark(); }
@@ -15263,17 +15363,25 @@ redraw();
     $m.querySelector('#msv').onclick = function () { var t = $m.querySelector('#mtt').value.trim(); if (notes.filter(function (x) { return x !== '/'; }).length < 4) return tip('음을 4개 넘게 적어 봐요'); if (!t) return tip('곡 이름을 적어 줘요');
       ST.my.push({ id: 'my' + Date.now(), t: t, s: notes.join(' ') }); store(ST); menu(); };
     draw(); }
+  /* 🧩 운지 보고 음 맞히기: 10문제. 틀린 문제는 끝에 다시 나와서, 다 맞혀야 끝나요 */
+  function quiz() { var pool = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], Q = [], ok = 0, last = -1; for (var j = 0; j < 10; j++) { var n; do { n = pool[Math.floor(Math.random() * pool.length)]; } while (n === last); Q.push(n); last = n; }
+    var ask = function () { if (!$m) return; if (!Q.length) { page('🧩 운지 맞히기', '<div class="mucd" style="text-align:center"><p class="mbig">🌟 다 맞혔어요!</p><p>' + ok + '문제를 모두 맞혔어요. 이제 진짜 리코더로 불어 봐요.</p><div class="mrow" style="justify-content:center;margin-top:8px"><button class="mb g" id="qag">한 번 더</button><button class="mb" id="qbk">악보 고르기</button></div></div>', 'menu'); $m.querySelector('#qag').onclick = quiz; $m.querySelector('#qbk').onclick = menu; return; }
+      var n = Q[0], ch = [n]; while (ch.length < 4) { var c = pool[Math.floor(Math.random() * pool.length)]; if (ch.indexOf(c) < 0 && (Math.abs(c - n) <= 3 || ch.length > 2)) ch.push(c); } ch.sort(function () { return Math.random() - .5; });
+      page('🧩 운지 맞히기 (' + (ok + 1) + '번째)', '<div class="rc"></div><p class="mbig">이 운지는 무슨 음일까요?</p><div class="rq">' + ch.map(function (c) { return '<button data-q="' + c + '">' + RNAME(c) + '</button>'; }).join('') + '</div>', 'menu');
+      showF(n); var b = $m.querySelector('.rcx'); if (b) b.innerHTML = '<b>?</b><small>검은 구멍은 막고, 흰 구멍은 열어요</small>';
+      var miss = false; $m.querySelectorAll('[data-q]').forEach(function (x) { x.onclick = function () { if (+x.dataset.q === n) { play(n, 'rec', .6); Q.shift(); ok++; x.style.background = '#BFEAD5'; $m.querySelectorAll('[data-q]').forEach(function (y) { y.disabled = true; }); timers.push(setTimeout(ask, 700)); } else { x.disabled = true; x.style.opacity = '.4'; tip('다시 골라 봐요. 이 문제는 끝에 한 번 더 나와요'); if (!miss) { miss = true; if (Q.indexOf(n, 1) < 0 && ok + Q.length < 20) Q.push(n); } } }; }); };
+    ask(); }
   function tip(s) { var p = document.createElement('div'); p.textContent = s; p.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9002;background:#1B2750;color:#fff;padding:9px 14px;border-radius:12px;font-weight:700;max-width:85vw;text-align:center'; document.body.appendChild(p); setTimeout(function () { p.remove(); }, 1800); }
 
   if (!window.__musClick) { window.__musClick = 1;
     document.addEventListener('click', function (e) { if (!$m || !$m.contains(e.target)) return; var b = e.target.closest('[data-mx]'); if (!b) return; var g = b.dataset.mx; if (g === 'close') close(); else if (g === 'home') home(); else if (g === 'menu') menu(); }); }
 
   /* ---------- 첫 화면 카드: 그림 공방 바로 아래 (없을 때만 넣어서 끝없이 다시 그리지 않아요) ---------- */
-  var CARD = '<button type="button" class="mucard" data-mus="1"><span><b>🎵 ' + NAME + '의 악기 방</b><small>칼림바 · 실로폰으로 동요와 캐럴을 쳐 봐요</small></span><span class="go">🎶</span></button>';
+  var CARD = '<button type="button" class="mucard" data-mus="1"><span><b>🎵 ' + NAME + '의 악기 방</b><small>칼림바 · 리코더로 동요와 캐럴을 연습해요</small></span><span class="go">🎶</span></button>';
   function place() { try { if (typeof CURSUBJ !== 'undefined' && CURSUBJ) return; var app = document.getElementById('app'); if (!app || app.querySelector('.mucard')) return; var d = app.querySelector('.drcard'); if (d) d.insertAdjacentHTML('afterend', CARD); } catch (e) {} }
   (function go() { var a = document.getElementById('app'); if (!a) return setTimeout(go, 300); var q = 0; new MutationObserver(function () { if (!q) { q = 1; setTimeout(function () { q = 0; place(); }, 120); } }).observe(a, { childList: true, subtree: true }); place(); })();
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-mus]'); if (!b) return; e.preventDefault(); e.stopImmediatePropagation(); open(); }, true);
-  window.__mus = { open: open, close: close, SONGS: SONGS, parse: parse, freq: freq, follow: function (i) { follow(SONGS[i]); }, set: function (i) { inst = i; }, menu: function () { menu(); }, free: function () { free(); }, writer: function () { writer(); } };
+  window.__mus = { open: open, close: close, SONGS: SONGS, parse: parse, freq: freq, follow: function (i) { follow(SONGS[i]); }, set: function (i) { inst = i; }, quiz: function () { quiz(); }, fing: fing, menu: function () { menu(); }, free: function () { free(); }, writer: function () { writer(); } };
 })();
 </script>
 <!-- ===== 악기 방 끝 ===== -->
