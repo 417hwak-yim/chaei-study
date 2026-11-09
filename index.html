@@ -6790,7 +6790,7 @@ function restoreView(){
   try{
     setGrade(o.g); const u=UNITS[+o.a], rs=resumeInfo();
     if(o.v==='grade'||o.v==='home') return route('home');
-    if(!u) return route('home');
+    if(!u) return start('');
     if(o.v==='quiz'||o.v==='resume'){
       if(rs&&rs.r.i<rs.r.qs.length&&(o.v==='resume'||(rs.u===u&&rs.r.l===+o.b))) return route('resume');
       return o.v==='quiz'?route('unit',o.a):route('home');
@@ -9274,7 +9274,7 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
         if(k>=ss.length){ ss.forEach(x=>x.classList.remove('on')); if(P[pg]!=='QUIZ'&&turn(1)) setTimeout(()=>{ if(my===RUN) readPage(my); },700); else { delete rb.dataset.on; rb.textContent='🔊 다시 읽어 주기'; } return; }
         ss.forEach((x,j)=>x.classList.toggle('on',j===k));
         const tx=ss[k].textContent.replace(/[‘’“”「」]/g,''); let moved=false, started=false; const nx=()=>{ if(moved) return; moved=true; setTimeout(()=>go(k+1),250); };
-        const mk=plain=>{ const u=new SpeechSynthesisUtterance(tx); u.lang='ko-KR'; u.rate=BIG?.9:.95; if(v&&!plain) u.voice=v; u.onstart=()=>{ started=true; }; u.onend=nx; u.onerror=e=>{ if(e&&(e.error==='interrupted'||e.error==='canceled')) return; nx(); }; try{ if(speechSynthesis.paused) speechSynthesis.resume(); }catch(_){} speechSynthesis.speak(u); };
+        const mk=plain=>{ const u=new SpeechSynthesisUtterance(tx); u.lang='ko-KR'; u.rate=BIG?.9:.95; if(v&&!plain&&!window.__noVoice) u.voice=v; if(plain) u._plain=1; u.onstart=()=>{ started=true; }; u.onend=nx; u.onerror=e=>{ if(e&&(e.error==='interrupted'||e.error==='canceled')) return; try{ window.__ttsErr=e&&e.error; }catch(_){} if(!plain&&!started){ started=true; window.__noVoice=1; setTimeout(()=>{ if(!moved&&my===RUN) mk(true); },200); return; } moved=true; RUN++; delete rb.dataset.on; rb.textContent='🔊 다시 읽어 주기'; ss.forEach(x=>x.classList.remove('on')); try{ sayHelp(); }catch(_){} }; try{ if(speechSynthesis.paused) speechSynthesis.resume(); }catch(_){} speechSynthesis.speak(u); };
         mk(false);
         /* 폰에서 소리가 시작되지 않으면 기본 목소리로 한 번 더, 그래도 안 되면 소리 안내 */
         setTimeout(()=>{ if(moved||my!==RUN||started||speechSynthesis.speaking) return; try{ speechSynthesis.cancel(); speechSynthesis.resume(); }catch(_){} mk(true);
@@ -11693,7 +11693,7 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
   /* 영어로 말하는 모든 소리에 고른 목소리·빠르기를 써요 */
   const _speak = speechSynthesis.speak.bind(speechSynthesis);
   speechSynthesis.speak = function (u) {
-    try { if (u && /^en/i.test(String(u.lang || (u.voice && u.voice.lang) || ''))) { const v = chosen(); if (v) { u.voice = v; u.lang = v.lang; } if (!u._tv) u.rate = Math.max(.4, Math.min(1.6, (u.rate || 1) * mult())); } } catch (e) {}
+    try { if (u && /^en/i.test(String(u.lang || (u.voice && u.voice.lang) || ''))) { const v = chosen(); if (v && !u._plain && !window.__noVoice) { u.voice = v; u.lang = v.lang; } if (!u._tv) u.rate = Math.max(.4, Math.min(1.6, (u.rate || 1) * mult())); } } catch (e) {}
     return _speak(u);
   };
   const SAMPLE = 'Hello! I have a red ball. Cat, dog, apple.';
@@ -15563,5 +15563,16 @@ redraw();
   window.__rr={ today, build, run, place, canQ };
 })();
 </script>
+<!-- ===== 새로고침 화면 되찾기 시작 ===== -->
+<script>
+/* 새로고침해도 보던 화면으로: 단원 밖 화면(오늘의 왜?·책장·받침 놀이)은 모든 기능이 준비된 맨 마지막에 다시 열어요.
+   예전에는 이런 화면에서 새로고침하면 한자 첫 화면이 나왔어요 (2026-11-09) */
+(function () {
+  let o = null; try { o = JSON.parse(sessionStorage.getItem('e3-view') || 'null'); } catch (e) {}
+  if (!o || ['why', 'read', 'battoday', 'bat'].indexOf(o.v) < 0) return;
+  setTimeout(function () { try { if (typeof VIEW === 'undefined' || VIEW === 'start' || VIEW === 'home') route(o.v, o.a, o.b); } catch (e) {} }, 0);
+})();
+</script>
+<!-- ===== 새로고침 화면 되찾기 끝 ===== -->
 </body>
 </html>
