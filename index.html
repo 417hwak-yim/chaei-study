@@ -6654,8 +6654,12 @@ function calHTML(){
     +(marks.length?'<p class="calmarks">'+marks.join('')+'</p>':'')
     +'<p class="lead" style="margin:8px 0 0">이번 달에 '+cnt+'일 공부했어요.'+(fcnt?' 그중 '+fcnt+'일은 오늘의 학습을 모두 끝냈어요 <b class="crn"></b>':'')+'</p>'+calDayHTML()+calBookHTML();
 }
+/* 2026-11-12: 오늘의 학습은 '오늘 지정된 차시'를 끝내야 완료예요. 처음 화면이 과목마다 그날 지정한 차시를 STATE.tda에 적어 두고,
+   다른 차시를 끝내면 별·도장만 받고 오늘의 학습·게임으로는 치지 않아요. 지정 차시는 끝낼 때까지 다음 날에도 다시 나와요 (차례대로 첫 번째 안 한 차시) */
+function TDASET(k,g,id,l){ try{ const tk=dkey(new Date()); if(!STATE.tda||STATE.tda.d!==tk) STATE.tda={d:tk,a:{}}; if(!STATE.tda.a[k]){ STATE.tda.a[k]={g:+g,id,l:String(l)}; persist(); } }catch(e){} }
+function TDAOK(u,l){ try{ const tk=dkey(new Date()), T=STATE.tda; if(!T||T.d!==tk) return true; const sj=GS(u.g!=null?u.g:GRADE), a=T.a&&T.a[sj]; if(!a) return true; return a.id===u.id&&a.l===String(l); }catch(e){ return true; } }
 function saveStamp(u,l,stars){
-  const k=u.id+'-'+l, was=!!prog[k]; if((prog[k]||0)<stars) prog[k]=stars; if(was){ persist(); return; } markToday();   /* 2026-11-11: already-finished lesson redo -> stars only, no today/calendar/game credit */
+  const k=u.id+'-'+l, was=!!prog[k]; if((prog[k]||0)<stars) prog[k]=stars; if(was||!TDAOK(u,l)){ persist(); return; } markToday();   /* 2026-11-11: already-finished lesson redo -> stars only, no today/calendar/game credit */
   /* 오늘 끝낸 차시를 과목마다 적어 둬요: 오늘의 학습 칸은 자정까지 이 차시를 '완료'로 보여 주고, 날이 바뀌면 다음 차시가 나와요 */
   try{ const sj=GS(u.g!=null?u.g:GRADE), D=STATE.td.done=STATE.td.done||{}; if(!D[sj]) D[sj]={g:+(u.g!=null?u.g:GRADE),id:u.id,l};
     const tk=dkey(new Date()), L=(STATE.log=STATE.log||{})[tk]=STATE.log[tk]||[], key=(u.g!=null?u.g:GRADE)+'|'+u.id+'|'+l; if(L.indexOf(key)<0) L.push(key); }catch(e){}
@@ -6912,6 +6916,7 @@ function start(subj){
       const dn=didToday&&STATE.td.done&&STATE.td.done[k], du=dn&&GRADES[dn.g]?GRADES[dn.g].units.findIndex(u=>u.id===dn.id):-1;
       if(du>=0){ const U=GRADES[dn.g].units[du], dl=dn.l==='s'?(U.cq?'마무리 도전':'말하기 도전'):(+dn.l+1)+'차시 '+LN(U,dn.l)[0];
         todayBox+='<button class="todaycard did" style="--u:'+S.color+'" data-go="today:'+dn.g+':'+du+'_'+dn.l+'">'+num+'<span class="tmark">'+S.mark+'</span><span class="tt"><b>'+S.name+'</b><span class="tw">'+GL(dn.g)+' '+(U.sem&&!U.ul&&GL(dn.g)?U.sem+'학기 ':'')+UL(U)+'</span><span class="tl">'+dl+'</span></span><span class="tdone" role="img" aria-label="오늘 완료">완료</span></button>'; return; }
+      if(!didToday) TDASET(k,g,nx.u.id,nx.l);
       const ln=(nx.rev?'3학년 복습 · ':'')+(nx.l==='s'?(nx.u.cq?'마무리 도전':'말하기 도전'):(nx.l+1)+'차시 '+LN(nx.u,nx.l)[0]);
       todayBox+='<button class="todaycard'+(didToday?' did':'')+(!subj&&k===NOW?' now':'')+'" style="--u:'+S.color+'" data-go="today:'+g+':'+nx.ui+'_'+nx.l+'">'+num+'<span class="tmark">'+S.mark+'</span><span class="tt"><b>'+S.name+'</b><span class="tw">'+GL(g)+' '+(nx.u.sem&&!nx.u.ul&&GL(g)?nx.u.sem+'학기 ':'')+UL(nx.u)+'</span><span class="tl">'+(didToday?'<span class="tnext">다음: </span>':'')+ln+'</span></span>'+(didToday?'<span class="tdone" role="img" aria-label="오늘 완료">완료</span>':(!subj&&k===NOW?'<span class="tnow">지금 할 차례</span>':'')+'<span class="tgo" aria-hidden="true">▶</span>')+'</button>'; });
     if(!subj&&waiting.length) todayBox+='<p class="twait">'+waiting.map(k=>SUBJ[k].name).join(', ')+'은 준비 중이에요.</p>';
@@ -7769,7 +7774,7 @@ function gramIntro(u){
 }
 function gramEnd(){
   const {u,qs,right}=Q, ui=UNITS.indexOf(u), r=right/qs.length, stars=r>=.9?3:r>=.6?2:1, k=u.id+'-g';
-  const was=!!prog[k]; if((prog[k]||0)<stars) prog[k]=stars; if(!was) markToday(); persist();   /* 2026-11-11: already-finished lesson redo -> stars only, no today/calendar/game credit */
+  const was=!!prog[k]; if((prog[k]||0)<stars) prog[k]=stars; if(!was&&TDAOK(u,'g')) markToday(); persist();   /* 2026-11-11: already-finished lesson redo -> stars only, no today/calendar/game credit */
   show('<section class="panel result"><div class="big" style="font-size:5.5rem">📘</div><h2>'+KID.ya+', 규칙을 잘 알고 있구나!</h2><p>'+right+' / '+qs.length+' 문제를 맞혔어요.<br><b>'+UL(u)+' 규칙 배지</b>를 받았어요. '+'⭐'.repeat(stars)+'</p><div class="row center"><button class="btn" data-go="gram:'+ui+'">다시 하기</button><button class="btn main" data-go="say:'+ui+'">말하기 도전 하기</button><button class="btn" data-go="unit:'+ui+'">차시 목록</button></div><div class="row center" style="margin-top:14px">'+gameBtn()+'</div></section>',u.color);
 }
 
@@ -10087,6 +10092,45 @@ const BDSIB={call:'서이',m:2,d:26};
 
 </script>
 <!-- ===== 게임 뽑기 끝 ===== -->
+<!-- ===== 학습량 보강 시작 ===== -->
+<script>
+/* ===== 학습량 보강 (2026-11-12) =====
+   1) 수학 1~3차시: 8문제 → 12문제, 그중 절반(6문제)은 답을 직접 써요 (보기 고르기로 찍지 않게)
+   2) 국어·과학·사회 1~3차시: 8문제 → 10문제 (모자라면 '뜻 보고 낱말 직접 쓰기'로 채워요)
+   3) 국어·과학·사회 1차시 설명 아래에 '꼭 알아 둘 낱말과 뜻'을 함께 보여 줘요 */
+(function(){
+  const strip=h=>String(h||'').replace(/<[^>]+>/g,'').trim();
+  const keyOf=q=>(q.inst||'')+'|'+(q.stim||'')+'|'+(q.w?(q.w.ko||'')+(q.w.en||''):'')+'|'+(q.s||'');
+  const topUp=(qs,n,more)=>{ const seen=new Set(qs.map(keyOf)); for(let g=0;g<8&&qs.length<n;g++){ let m=[]; try{ m=more()||[]; }catch(e){ m=[]; } for(const q of m){ const k=keyOf(q); if(qs.length<n&&!seen.has(k)){ seen.add(k); qs.push(q); } } } return qs; };
+  /* 1) 수학 */
+  if(typeof mathQuiz==='function'){ const _mq=mathQuiz;
+    const toTyped=q=>{ if(q.t!=='c'||!q.ch||/zoom:.76|<svg/.test(q.stim||'')||/어림|약 얼마/.test((q.inst||'')+strip(q.stim))) return null;   /* 어림셈은 정확한 값을 써도 틀리게 되니 보기 고르기로 둬요 */ const okc=q.ch.find(c=>c.ok); if(!okc||/class="fr"/.test(okc.h)) return null;
+      const ok=strip(okc.h), m=/^(\d+)\s*([^\d\s]{0,4})$/.exec(ok); if(!m) return null; if(q.ch.some(c=>!/^\d+\s*[^\d\s]{0,4}$/.test(strip(c.h)))) return null;
+      const unit=m[2].trim(), inst=String(q.inst||'').replace(/고르세요/g,'구하세요');
+      return {t:'w',exact:1,loose:1,nosay:1,inst:'답을 직접 써 보세요.'+(unit?' 수만 쓰면 돼요. (단위: '+unit+')':''),w:{en:m[1],ko:(inst==='계산해 보세요.'?'':'<div class="mtxt">'+inst+'</div>')+(q.stim||''),nopic:1,say:m[1]},ex:q.ex}; };
+    const isEstW=q=>q.t==='w'&&q.w&&/어림|약 얼마/.test(strip(q.w.ko));
+    const fixW=qs=>{ qs.forEach(q=>{ if(q&&q.t==='w'&&q.w&&q.w.ko) q.w.ko=String(q.w.ko).replace(/고르세요/g,'구하세요'); }); return qs; };   /* 직접 쓰는 문제에 '고르세요'가 남지 않게 */
+    mathQuiz=function(u,l){ let qs=_mq(u,l); if(!(l===0||l===1||l===2)) return fixW(qs);
+      qs=qs.filter(q=>!isEstW(q)); topUp(qs,12,()=>_mq(u,l).filter(q=>!isEstW(q)));
+      let typed=qs.filter(q=>q.t==='w').length;
+      for(let i=0;i<qs.length&&typed<6;i++){ const t=toTyped(qs[i]); if(t){ qs[i]=t; typed++; } }
+      return fixW(shuffle(qs)); }; }
+  /* 2) 국어·과학·사회 */
+  if(typeof korQuiz==='function'){ const _kq=korQuiz;
+    const TERM=w=>({t:'w',exact:1,loose:1,nosay:1,inst:'뜻에 알맞은 낱말을 직접 써 보세요.',w:{en:w.en,ko:'<div class="mtxt">'+w.ko+'</div>'+(typeof CHO==='function'?'<div class="meter">초성: '+CHO(w.en)+'</div>':''),nopic:1,say:w.en},ex:w.en+' : '+w.ko});
+    korQuiz=function(u,l){ const qs=_kq(u,l); if(!u||!u.kq||u.rd||u.hist||!(l===0||l===1||l===2)||(l===2&&u.dic)) return qs;
+      const asked=new Set(qs.filter(q=>q.w).map(q=>q.w.en)), ws=shuffle((u.words||[]).filter(w=>w&&w.en&&w.ko&&!asked.has(w.en)&&w.en.length<=12));
+      while(qs.length<10&&ws.length) qs.push(TERM(ws.pop()));
+      topUp(qs,10,()=>_kq(u,l));
+      return qs; }; }
+  /* 3) 1차시 설명에 핵심 낱말 */
+  if(typeof korIntro==='function'){ const _ki=korIntro;
+    korIntro=function(u,l){ let h=_ki(u,l); try{ if(l===0&&u&&u.kq&&!u.rd&&!u.hist&&u.words&&u.words.length>=3)
+      h+='<div class="tip" style="margin-top:12px"><b>🔑 꼭 알아 둘 낱말</b><div style="margin-top:6px;line-height:1.8">'+u.words.map(w=>'<div>· <b>'+w.en+'</b> : '+w.ko+'</div>').join('')+'</div><div style="margin-top:6px;font-size:.9em">문제에서 뜻을 보고 낱말을 직접 써 볼 거예요. 소리 내어 한 번씩 읽어 봐요.</div></div>'; }catch(e){} return h; }; }
+})();
+</script>
+<!-- ===== 학습량 보강 끝 ===== -->
+
 <!-- ===== 아빠와 복습 시작 ===== -->
 <script>
 /* ===== 아빠와 복습 문제 =====
@@ -11126,9 +11170,9 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
    3) 과목마다 걸리는 시간(약 몇 분)과 남은 시간을 보여 줘요. */
 (function () {
   const SEOI = (typeof KID !== 'undefined') && /서이/.test(KID.name || '');
-  const MIN = SEOI ? { '영어 파닉스': 5, '한자': 5, '수학': 6, '어휘': 5, '영어 동화': 6, '낱말 탐험': 5, '국어독해': 6, '음악': 5, '미술': 5 }
-    : { '국어': 7, '국어독해': 8, '수학': 7, '과학': 6, '사회': 6, '한국사': 7, '영어': 6, '영어독해': 8, '영어듣기': 6, '영어 문법': 5, '한자': 5, '도덕': 7, '영어 단어': 6, '생각 교실': 6, '최상위 수학': 8, '아빠와 복습': 8 };
-  const DEF = SEOI ? 5 : 6;
+  const MIN = SEOI ? { '영어 파닉스': 5, '한자': 5, '수학': 7, '어휘': 5, '영어 동화': 5, '낱말 탐험': 4, '국어독해': 7, '슬기로운 생활': 4, '음악': 4, '미술': 4 }
+    : { '국어': 6, '국어독해': 7, '수학': 8, '과학': 6, '사회': 6, '한국사': 6, '영어': 5, '영어독해': 6, '영어듣기': 5, '영어 문법': 4, '한자': 6, '도덕': 5, '영어 단어': 5, '생각 교실': 5, '최상위 수학': 8, '아빠와 복습': 10, '일본어': 5 };   /* 2026-11-12: 실제 문제 수에 맞춘 어림 시간 */
+  const DEF = SEOI ? 4 : 5;
   const nameOf = c => { const b = c.querySelector('.tt b'); return b ? b.textContent.trim() : ''; };
   const minOf = n => MIN[n] || DEF;
   const fmtMin = m => m >= 60 ? Math.floor(m / 60) + '시간' + (m % 60 ? ' ' + (m % 60) + '분' : '') : m + '분';
