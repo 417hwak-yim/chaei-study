@@ -10131,7 +10131,7 @@ function hub(){ const W=REC();
   show('<button class="back" data-go="start">←</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🎲 보드게임 방</h2><p style="text-align:center;margin:0;opacity:.75;font-weight:800">오늘의 학습 끝! 부엉이와 한 판 겨뤄요</p>'
     +'<button type="button" class="bgcard" data-go="bg:mosaic"><h3>🪟 모자이크 공방</h3><p>접시에서 같은 색 유리 조각을 가져와 내 창문을 꾸며요. 이웃한 조각이 많을수록 점수가 커지고, 넘친 조각은 깨져서 감점!</p><small>약 12분 · 부엉이와 '+W.mz[0]+'승 '+W.mz[1]+'패</small></button>'
     +'<button type="button" class="bgcard" data-go="bg:castle"><h3>🏰 비밀 숫자 성</h3><p>작은 수부터 차례로 세운 부엉이의 숫자 타일을 추리해서 맞혀요. 내 성이 먼저 다 열리면 져요!</p><small>약 6분 · 부엉이와 '+W.cs[0]+'승 '+W.cs[1]+'패</small></button><button type="button" class="bgcard" data-go="bg:word"><h3>🔤 낱말 보드게임</h3><p>초성 땅따먹기와 초성 글자판 모으기! 서이도 하는 낱말 게임이에요.</p><small>약 10분 · 서이도 하는 게임</small></button></section>','#7B4FBF'); }
-{ const _ri=routeInner; routeInner=function(v,a,b){ TOK++; closeSheet(); if(v==='bg'){ VIEW='bg'; if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} if(!isOpen()||!a) return hub(); return a==='mosaic'?mzStart():a==='word'?(window.__wordBG&&window.__wordBG()):csStart(); } return _ri.apply(this,arguments); }; }
+{ const _ri=routeInner; routeInner=function(v,a,b){ TOK++; closeSheet(); if(v==='bg'){ VIEW='bg'; if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} if(!isOpen()||!a) return hub(); return a==='mosaic'?mzStart():a==='word'?(window.__wordBG&&window.__wordBG()):a==='wordagain'?(window.__wordAgain&&window.__wordAgain()):csStart(); } return _ri.apply(this,arguments); }; }
 window.addEventListener('popstate',()=>{ TOK++; closeSheet(); });
 const scoreBar=(a,b,turn,label)=>'<div class="bgsc"><div class="bgpl me'+(turn===0?' on':'')+'">🐰<span><small>'+NM()+'</small><br><b>'+a+'</b>점</span></div><span style="font-weight:900;color:#999;font-size:.8rem;text-align:center">'+(label||'VS')+'</span><div class="bgpl ow'+(turn===1?' on':'')+'"><span style="text-align:right"><small>부엉이</small><br><b>'+b+'</b>점</span>🦉</div></div>';
 function endSheet(key,a,b,detail,again){ const W=REC()[key]; W[a>b?0:a<b?1:2]++; SAVE(); SFX(a>b?'done':'no');
@@ -10381,7 +10381,7 @@ window.__bg={get M(){return M;},get C(){return C;},mzMoves,mzApply,mzOwlPick,can
    낱말은 사전으로 막지 않아요: 초성이 맞고 글자가 완성되면 받아 줘요. */
 (function(){
 const GRADES={}, SUBJ={}, ALLG=[], REVGROUP={}, RP=a=>a[Math.floor(Math.random()*a.length)];
-let UNITS=[];
+let UNITS=[], WI=0;
 function lessonIntro(){} function startFinal(){} function unitView(){}
 function resultScreen(u,l,st,msg){ show('<button class="back" data-go="bg:word">←</button><section class="panel" style="text-align:center"><div style="font-size:3rem">'+'⭐'.repeat(st)+'</div><h2>'+KID.ya+', 잘했어!</h2><p>'+msg+'</p><div class="row center"><button class="btn main" data-go="bg:word">🔤 낱말 보드게임</button><button class="btn" data-go="bg">🎲 보드게임 방</button></div></section>','#D9480F'); }
 /* ===== 한글 놀이: 초성 땅따먹기 (2026-11-13) =====
@@ -10676,7 +10676,7 @@ function ttIntro(u,l){ U=u; closeSheet(); const ui=UNITS.indexOf(u), k=keyOf(u,l
   const s3=(C.seq||[]).slice(-3), rec=open&&s3.length===3&&s3.every(x=>x===s3[0])?(s3[0]==='land'?'tile':'land'):'';
   const card=(id,ic,nm,desc,lock,res)=>'<div class="ttgm '+id+(lock?' lock':'')+'">'+(rec===id?'<span class="ttrec">오늘 이거 어때?</span>':'')+'<h3>'+ic+' '+nm+'</h3><p>'+desc+'</p>'
     +(lock?'<p class="ttlk">🔒 땅따먹기 '+(C.land||0)+' / '+UNLOCK+'판 하면 열려요</p>':'<div class="ttm">'+(res?'<button type="button" data-tt="'+id+':resume" class="res">▶ 하던 판 이어서</button>':'')+'<button type="button" data-tt="'+id+':owl">🦉 부엉이랑</button><button type="button" data-tt="'+id+':solo">'+FACE(22)+' 혼자</button></div>')+'</div>';
-  show('<button class="back" data-go="bg:word">← '+ES(u.title)+'</button><section class="panel ttw"><h2 style="text-align:center;margin-bottom:2px">🎲 한글 보드게임</h2><p style="text-align:center;margin:0 0 10px;opacity:.7;font-weight:800">한 판 골라서 놀아요 · 약 10분</p>'
+  show('<button class="back" data-go="bg">← '+ES(u.title)+'</button><section class="panel ttw"><h2 style="text-align:center;margin-bottom:2px">🎲 한글 보드게임</h2><p style="text-align:center;margin:0 0 10px;opacity:.7;font-weight:800">한 판 골라서 놀아요 · 약 10분</p>'
     +card('land','🗺️','초성 땅따먹기','땅에 적힌 초성으로 낱말을 만들면 내 땅! ⭐ 땅은 2점, 세 글자 +1점, 네 글자 +2점.',false,sl)
     +card('tile','🔤','초성 글자판 모으기','자음 글자판을 골라 낱말을 만들면 글자판을 가져가요. 1장에 1점!',!open,st)+'</section>',u.color);
   $app.querySelectorAll('[data-tt]').forEach(b=>b.onclick=()=>{ const [g,m]=b.dataset.tt.split(':');
@@ -10684,7 +10684,7 @@ function ttIntro(u,l){ U=u; closeSheet(); const ui=UNITS.indexOf(u), k=keyOf(u,l
     else{ if(m==='resume') TG=JSON.parse(JSON.stringify(st)); else gpNew(u,l,m); TG.lv=l; G=null; play(u,l,true); } });
   if(false){ C.shown=1; STATE.ttCnt=C; SAVE(); const w=sheet('<div class="ttbig"><div class="e">🔓</div><b style="font-size:1.6rem">새 보드게임이 열렸어요!</b><p style="margin:8px 0 0;font-weight:800">🔤 초성 글자판 모으기</p><p style="margin:4px 0 0">이제 '+ES(NM())+'가 자음을 직접 골라서 낱말을 만들 수 있어요. 길게 만들수록 점수가 커요!</p></div><div class="ttrow"><button type="button" class="ttok" data-a="x">해 볼래요!</button></div>'); w.querySelector('[data-a="x"]').onclick=closeSheet; } }
 function play(u,l,tile){ U=u; const ui=UNITS.indexOf(u);
-  show('<button class="back" data-go="bg:word">← 그만하기</button><section class="panel ttw" id="ttg"></section>',u.color);
+  show('<button class="back" data-go="bg:wordagain">← 그만하기</button><section class="panel ttw" id="ttg"></section>',u.color);
   
   if(tile){ gpDraw(); gpBegin(); } else { draw(); begin(); } }
 document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-ttc]'); if(!b||!G||TG||G.fin||SHEET||G.turn!==ME) return; const x=G.cells[+b.dataset.ttc]; if(!x||!claimable(ME).includes(x)) return; draw(x); ask(x); });
@@ -10704,7 +10704,9 @@ const isTT=u=>u&&!u.rev&&u.rel==='cho'&&CHORDER.includes(u.g);
   const _uv=unitView; unitView=function(u){ closeSheet(); const r=_uv.apply(this,arguments); if(isTT(u)){ const b=$app.querySelector('[data-go^="final:"]'); if(b){ const s=b.querySelector('span>b'); if(s) s.textContent='보드게임 마지막 판'; const t=b.querySelector('span>span'); if(t) t.textContent='이 주제 마지막 한 판!'; } } return r; }; }
 window.__ttDebug=()=>G; window.__tgDebug=()=>TG;
 })();
-window.__wordBG=function(){ show('<button class="back" data-go="bg">←</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🔤 낱말 보드게임</h2><p style="text-align:center;margin:0 0 6px;opacity:.75;font-weight:800">주제를 고르면 🗺️ 초성 땅따먹기나 🔤 글자판 모으기를 해요</p>'+UNITS.map((u,i)=>'<button type="button" class="bgcard" data-wbg="'+i+'" style="padding:10px 14px;margin:8px 0"><h3 style="font-size:1.05rem">'+u.items[0].e+' '+u.title+'</h3><p style="font-size:.85rem;opacity:.75">'+u.items.slice(0,4).map(x=>x.w).join(' · ')+' …</p></button>').join('')+'</section>','#D9480F');
+window.__wordAgain=function(){ const u=UNITS[WI]||UNITS[0]; if(u) lessonIntro(u,0); };
+window.__wordBG=function(){ WI=Math.floor(Math.random()*UNITS.length); return window.__wordAgain(); };
+window.__wordMenu=function(){ show('<button class="back" data-go="bg">←</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🔤 낱말 보드게임</h2><p style="text-align:center;margin:0 0 6px;opacity:.75;font-weight:800">주제를 고르면 🗺️ 초성 땅따먹기나 🔤 글자판 모으기를 해요</p>'+UNITS.map((u,i)=>'<button type="button" class="bgcard" data-wbg="'+i+'" style="padding:10px 14px;margin:8px 0"><h3 style="font-size:1.05rem">'+u.items[0].e+' '+u.title+'</h3><p style="font-size:.85rem;opacity:.75">'+u.items.slice(0,4).map(x=>x.w).join(' · ')+' …</p></button>').join('')+'</section>','#D9480F');
   $app.querySelectorAll('[data-wbg]').forEach(b=>b.onclick=()=>lessonIntro(UNITS[+b.dataset.wbg],0)); };
 })();
 </script>
