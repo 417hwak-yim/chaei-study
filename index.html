@@ -10127,8 +10127,8 @@ function hook(){ const pr=document.querySelector('#app .tdprog'); if(!pr||pr.dat
 try{ new MutationObserver(hook).observe(document.getElementById('app'),{childList:true,subtree:true}); }catch(e){} hook();
 
 function hub(){ const W=REC();
-  if(!isOpen()) return show('<button class="back" data-go="start">←</button><section class="panel bgw" style="text-align:center"><div style="font-size:3rem">🔒</div><h2>보드게임 방</h2><p>오늘의 학습을 모두 끝내면 열려요. 조금만 더 힘내요!</p></section>','#7B4FBF');
-  show('<button class="back" data-go="start">←</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🎲 보드게임 방</h2><p style="text-align:center;margin:0;opacity:.75;font-weight:800">오늘의 학습 끝! 부엉이와 한 판 겨뤄요</p>'
+  if(!isOpen()) return show('<button class="back" data-go="start">🏠 메인 화면으로 나가기</button><section class="panel bgw" style="text-align:center"><div style="font-size:3rem">🔒</div><h2>보드게임 방</h2><p>오늘의 학습을 모두 끝내면 열려요. 조금만 더 힘내요!</p></section>','#7B4FBF');
+  show('<button class="back" data-go="start">🏠 메인 화면으로 나가기</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🎲 보드게임 방</h2><p style="text-align:center;margin:0;opacity:.75;font-weight:800">오늘의 학습 끝! 부엉이와 한 판 겨뤄요</p>'
     +'<button type="button" class="bgcard" data-go="bg:mosaic"><h3>🪟 모자이크 공방</h3><p>접시에서 같은 색 유리 조각을 가져와 내 창문을 꾸며요. 이웃한 조각이 많을수록 점수가 커지고, 넘친 조각은 깨져서 감점!</p><small>약 12분 · 부엉이와 '+W.mz[0]+'승 '+W.mz[1]+'패</small></button>'
     +'<button type="button" class="bgcard" data-go="bg:castle"><h3>🏰 비밀 숫자 성</h3><p>작은 수부터 차례로 세운 부엉이의 숫자 타일을 추리해서 맞혀요. 내 성이 먼저 다 열리면 져요!</p><small>약 6분 · 부엉이와 '+W.cs[0]+'승 '+W.cs[1]+'패</small></button><button type="button" class="bgcard" data-go="bg:word"><h3>🔤 낱말 보드게임</h3><p>초성 땅따먹기와 초성 글자판 모으기! 서이도 하는 낱말 게임이에요.</p><small>약 10분 · 서이도 하는 게임</small></button></section>','#7B4FBF'); }
 { const _ri=routeInner; routeInner=function(v,a,b){ TOK++; closeSheet(); if(v==='bg'){ VIEW='bg'; if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} if(!isOpen()||!a) return hub(); return a==='mosaic'?mzStart():a==='word'?(window.__wordBG&&window.__wordBG()):a==='wordagain'?(window.__wordAgain&&window.__wordAgain()):csStart(); } return _ri.apply(this,arguments); }; }
@@ -10202,7 +10202,7 @@ const CSTUT=[
  {t:'② 양옆을 보고 추리해요',h:ct(2,0,1)+ct(5,1,0,'hl')+ct(9,0,1)+'<span class="cap">가운데 🌙는 2보다 크고 9보다 작아요 → 3, 4, 5, 6, 7, 8 중 하나!</span>',p:'열린 타일, 내 타일(부엉이 성에는 없는 수), 틀린 답을 모두 힌트로 써요. 💡 범위 힌트를 켜면 가능한 범위를 보여 줘요.'},
  {t:'③ 타일을 눌러 숫자를 맞혀요',h:ct(5,1,0,'hl')+'<span class="ar">→</span><span style="font-weight:900;font-size:1.2rem">5?</span><span class="ar">→</span>'+ct(5,1,1)+'<span class="cap">맞으면 열리고, 한 번 더 맞히거나 ✋ 멈출 수 있어요.</span>',p:'틀리면 <b>이번에 뽑은 내 타일</b>이 부엉이에게 공개돼요. 자신 없으면 멈추는 것도 작전!'},
  {t:'④ 먼저 다 열면 승리!',h:'<span style="font-size:1.6rem">🔍</span><span style="font-weight:800">"짝수야?" "6 이상이야?"</span><span class="cap">탐정 질문은 한 판에 한 번!</span>',p:'부엉이 성을 <b>먼저 다 열면</b> 이겨요. 내 성이 먼저 다 열리면 져요.'}];
-function mzStart(){ mzNew(); show('<button class="back" data-go="bg">←</button><section class="panel bgw" id="bgg"></section>','#2D7DD2'); mzRender();
+function mzStart(){ mzNew(); show('<button class="back" data-go="bg">← 보드게임 방</button><section class="panel bgw" id="bgg"></section>','#2D7DD2'); mzRender();
   tut('🪟 모자이크 공방',MZTUT,()=>mzTurn()); }
 function mzTurn(){ if(!M||M.fin) return; mzRender();
   if(roundOver()) return mzEndRound();
@@ -10246,7 +10246,7 @@ function csRender(){ const box=document.getElementById('bgg'); if(!box||!C) retu
     +(my&&C.phase==='more'?'<button type="button" data-csa="stop">✋ 여기서 멈추기</button>':'')
     +(my&&C.ask?'<button type="button" data-csa="ask">🔍 탐정 질문 (1번)</button>':'')
     +'<button type="button" data-csa="hint">'+(C.hint?'🙈 범위 힌트 끄기':'💡 범위 힌트')+'</button></div>'; }
-function csStart(){ csNew(); show('<button class="back" data-go="bg">←</button><section class="panel bgw" id="bgg"></section>','#1E2A4A'); csRender();
+function csStart(){ csNew(); show('<button class="back" data-go="bg">← 보드게임 방</button><section class="panel bgw" id="bgg"></section>','#1E2A4A'); csRender();
   tut('🏰 비밀 숫자 성',CSTUT,()=>csTurn()); }
 function csDraw(pi){ C.drawn=null; if(!C.pool.length) return null; const t=C.pool.pop(); csInsert(pi,t); C.drawn=t; return t; }
 function csWin(){ const a=C.hand[1].every(t=>t.o), b=C.hand[0].every(t=>t.o); if(!a&&!b) return false; C.fin=true; csRender();
@@ -10383,7 +10383,7 @@ window.__bg={get M(){return M;},get C(){return C;},mzMoves,mzApply,mzOwlPick,can
 const GRADES={}, SUBJ={}, ALLG=[], REVGROUP={}, RP=a=>a[Math.floor(Math.random()*a.length)];
 let UNITS=[], WI=0;
 function lessonIntro(){} function startFinal(){} function unitView(){}
-function resultScreen(u,l,st,msg){ show('<button class="back" data-go="bg:word">←</button><section class="panel" style="text-align:center"><div style="font-size:3rem">'+'⭐'.repeat(st)+'</div><h2>'+KID.ya+', 잘했어!</h2><p>'+msg+'</p><div class="row center"><button class="btn main" data-go="bg:word">🔤 낱말 보드게임</button><button class="btn" data-go="bg">🎲 보드게임 방</button></div></section>','#D9480F'); }
+function resultScreen(u,l,st,msg){ show('<button class="back" data-go="bg">← 보드게임 방</button><section class="panel" style="text-align:center"><div style="font-size:3rem">'+'⭐'.repeat(st)+'</div><h2>'+KID.ya+', 잘했어!</h2><p>'+msg+'</p><div class="row center"><button class="btn main" data-go="bg:word">🔤 낱말 보드게임</button><button class="btn" data-go="bg">🎲 보드게임 방</button></div></section>','#D9480F'); }
 /* ===== 한글 놀이: 초성 땅따먹기 (2026-11-13) =====
    보드게임 한 판 = 오늘의 한글 놀이 한 번. 땅에 적힌 초성 두 개로 시작하는 낱말을 만들면 그 땅을 차지해요(부엉이랑 대결 / 혼자).
    맞는 낱말인지는 낱말 사전(CHG 낱말 + CHBANK)으로 확인해요. 사전에 없는 낱말은 STATE.ttUnk에 모아 둬요(아빠가 보고 CHBANK에 더하기).
@@ -10706,7 +10706,7 @@ window.__ttDebug=()=>G; window.__tgDebug=()=>TG;
 })();
 window.__wordAgain=function(){ const u=UNITS[WI]||UNITS[0]; if(u) lessonIntro(u,0); };
 window.__wordBG=function(){ WI=Math.floor(Math.random()*UNITS.length); return window.__wordAgain(); };
-window.__wordMenu=function(){ show('<button class="back" data-go="bg">←</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🔤 낱말 보드게임</h2><p style="text-align:center;margin:0 0 6px;opacity:.75;font-weight:800">주제를 고르면 🗺️ 초성 땅따먹기나 🔤 글자판 모으기를 해요</p>'+UNITS.map((u,i)=>'<button type="button" class="bgcard" data-wbg="'+i+'" style="padding:10px 14px;margin:8px 0"><h3 style="font-size:1.05rem">'+u.items[0].e+' '+u.title+'</h3><p style="font-size:.85rem;opacity:.75">'+u.items.slice(0,4).map(x=>x.w).join(' · ')+' …</p></button>').join('')+'</section>','#D9480F');
+window.__wordMenu=function(){ show('<button class="back" data-go="bg">← 보드게임 방</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🔤 낱말 보드게임</h2><p style="text-align:center;margin:0 0 6px;opacity:.75;font-weight:800">주제를 고르면 🗺️ 초성 땅따먹기나 🔤 글자판 모으기를 해요</p>'+UNITS.map((u,i)=>'<button type="button" class="bgcard" data-wbg="'+i+'" style="padding:10px 14px;margin:8px 0"><h3 style="font-size:1.05rem">'+u.items[0].e+' '+u.title+'</h3><p style="font-size:.85rem;opacity:.75">'+u.items.slice(0,4).map(x=>x.w).join(' · ')+' …</p></button>').join('')+'</section>','#D9480F');
   $app.querySelectorAll('[data-wbg]').forEach(b=>b.onclick=()=>lessonIntro(UNITS[+b.dataset.wbg],0)); };
 })();
 </script>
@@ -10808,7 +10808,7 @@ window.__wordMenu=function(){ show('<button class="back" data-go="bg">←</butto
       +'<button type="button" class="scok" style="background:#B7791F;box-shadow:0 3px 0 #7a4f12;margin-top:10px" data-go="school:menu">🍽️ 이번 달 식단 보기</button></div>'; }
   let MTAB=null;
   function menuView(){ const ks=Object.keys(MENU); if(!MTAB||!MENU[MTAB]) MTAB=mkinds()[0]||ks[0]; const M=MENU[MTAB], t=today(), keys=Object.keys(M.d).sort();
-    let h='<button class="back" data-go="school">←</button><section class="panel scpage"><h2>🍽️ '+NM()+'의 '+MPLACE+' 식단</h2>';
+    let h='<button class="back" data-go="school">← 일정 보기</button><section class="panel scpage"><h2>🍽️ '+NM()+'의 '+MPLACE+' 식단</h2>';
     if(ks.length>1) h+='<div style="display:grid;grid-template-columns:repeat('+ks.length+',1fr);gap:8px;margin:6px 0 12px">'+ks.map(k=>'<button type="button" class="scok'+(k===MTAB?'':' undo')+'" style="margin:0" data-mtab="'+k+'">'+MKIND[k][0]+' '+MKIND[k][1]+'</button>').join('')+'</div>';
     if(!keys.length) h+='<div class="scbox" style="text-align:center"><div style="font-size:2.4rem">'+MKIND[MTAB][0]+'</div><b>'+MKIND[MTAB][1]+' 식단이 곧 올라와요!</b><p style="margin:4px 0 0;opacity:.75">식단표가 오면 여기에 날마다 보여요.</p></div>';
     else { h+='<p class="sclead">'+E(M.title)+' · '+(+keys[0].slice(5,7))+'월</p>';
@@ -10905,7 +10905,7 @@ window.__wordMenu=function(){ show('<button class="back" data-go="bg">←</butto
 
   /* 학교 일정 페이지 */
   function listView(){ const U=upcoming(), P=past();
-    show('<button class="back" data-go="start">←</button><section class="panel scpage"><h2>🏫 '+NM()+'의 학교 일정</h2><p class="sclead">학교 행사와 학사일정을 미리 보고 준비해요. 일정을 누르면 자세히 볼 수 있어요.</p>'
+    show('<button class="back" data-go="start">🏠 메인 화면으로 나가기</button><section class="panel scpage"><h2>🏫 '+NM()+'의 학교 일정</h2><p class="sclead">학교 행사와 학사일정을 미리 보고 준비해요. 일정을 누르면 자세히 볼 수 있어요.</p>'
       +'<h3 class="sch3">📌 다가오는 일정</h3>'+(U.length?U.map(item).join(''):'<p class="sclead">지금은 다가오는 일정이 없어요.</p>')
       +'<h3 class="sch3">🗓️ 학교 달력</h3><div class="sccalwrap">'+cal()+'</div>'
       +(P.length?'<details style="margin-top:14px"><summary>📁 지난 일정 '+P.length+'개</summary>'+P.map(item).join('')+'</details>':'')+'</section>',COL);
@@ -10913,7 +10913,7 @@ window.__wordMenu=function(){ show('<button class="back" data-go="bg">←</butto
 
   /* 일정 페이지 */
   function eventView(id){ const N=SCHOOL.find(x=>x.id===id); if(!N) return listView(); const st=SN(N.id), s=stat(N), v=k=>E(st[k]||'');
-    let h='<button class="back" data-go="school">←</button><section class="panel scpage"><h2>'+N.icon+' '+E(N.title)+'</h2><p class="sclead">'+tag(N)+' '+E(N.cat)+(N.range?' · '+md(N.range[0])+' ~ '+md(N.range[1]):'')+'</p>'
+    let h='<button class="back" data-go="school">← 일정 보기</button><section class="panel scpage"><h2>'+N.icon+' '+E(N.title)+'</h2><p class="sclead">'+tag(N)+' '+E(N.cat)+(N.range?' · '+md(N.range[0])+' ~ '+md(N.range[1]):'')+'</p>'
      +'<div class="scmine">📌 '+md(N.date)+(N.end?' ~ '+md(N.end):'')+' <span class="scbdg '+s.k+'" style="margin-left:4px">'+s.badge+'</span>'+(N.note?'<br><span style="font-weight:700;font-size:.92rem">'+E(N.note)+'</span>':'')+'</div>';
     if(N.place||N.time||N.who) h+='<div class="scbox">'+(N.sub?'<div class="scbig">'+E(N.sub)+'</div>':'')+'<div class="scinfo">'+(N.time?'<div>언제?<b>'+E(N.time)+'</b></div>':'')+(N.place?'<div>어디서?<b>'+E(N.place)+'</b></div>':'')+(N.who?'<div>누가?<b>'+E(N.who)+'</b></div>':'')+'</div></div>';
     if(N.prep) h+='<div class="scbox"><h3>🎒 준비물</h3><p style="margin:0">'+E(N.prep)+'</p></div>';
