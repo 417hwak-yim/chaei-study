@@ -8872,7 +8872,7 @@ const WHY=[
   fun:'빨기 반사는 태어나서 4개월쯤 지나면 차츰 사라져요. 그때부터는 아기가 스스로 먹고 싶을 때 빨아요.',
   w:[['반사','배우지 않아도 몸이 저절로 하는 행동'],['입천장','입안의 위쪽 벽'],['젖꼭지','젖이 나오는 가슴의 볼록한 끝']],
   q:['아기가 배우지 않아도 젖을 빨 수 있는 까닭은 무엇일까요?','태어날 때부터 빨기 반사를 가지고 있어서','엄마가 날마다 빠는 법을 가르쳐 주어서','다른 아기가 하는 것을 보고 따라 해서','아기는 태어날 때부터 이가 있어서','아기는 볼이 닿으면 젖을 찾고, 입천장에 닿으면 빠는 반사를 타고나요.']},
- {id:'body7',k:'body',i:'💅',pin:'2026-11-12',t:'손톱과 지문은 왜 있을까?',
+ {id:'body7',k:'body',i:'💅',pin:'2026-11-13',t:'손톱과 지문은 왜 있을까?',
   hook:'손톱을 깎다가 궁금해졌어요. 손톱은 왜 자꾸 자랄까요? 그리고 손가락 끝에 있는 꼬불꼬불한 줄무늬는 무슨 쓸모가 있을까요?',hi:'💅 👆 ❓',
   p:[['손톱은 머리카락과 같은 ‘케라틴’이라는 단단한 재료로 되어 있어요. 손톱 끝은 살아 있는 부분이 아니라서 깎아도 아프지 않아요. 손톱은 손가락 끝을 덮어서, 어딘가에 부딪혀도 손끝이 다치지 않게 지켜 주는 방패예요.','💅 🛡️ 👆','손끝을 지키는 방패예요'],
      ['손톱은 손끝 살을 뒤에서 단단하게 받쳐 줘요. 그래서 바늘처럼 작은 물건을 집거나, 스티커를 떼거나, 가려운 곳을 긁을 때 손끝에 힘을 줄 수 있어요. 손톱이 없으면 손끝이 물렁해서 작은 물건을 집기 어려워요.','🪡 ✊ 👆','손끝을 받쳐 힘을 줘요'],
@@ -10056,9 +10056,15 @@ const BDSIB={call:'서이',m:2,d:26};
      note:'한 해 동안 연습한 곡을 처음으로 무대에서 들려주는 날이에요! 날마다 조금씩 연습하면 그날 더 자신 있게 연주할 수 있어요. 떨려도 괜찮아요, 연습한 만큼 멋지게 해낼 거예요 🎶 (가족은 미리 예매해야 들어올 수 있어요.)'},
     {id:'kkumkki-2026', date:'2026-12-03', cat:'공연', icon:'🎶', remind:1, btn:{t:'🎹 악기 방에서 칼림바 연습하기', act:'mus'}, act:'칼림바 연습하기',
      title:'꿈끼발표회 · 칼림바 연주', sub:'꿈끼발표회에서 칼림바를 연주해요', place:'학교', who:'채이가 칼림바를 연주해요',
-     note:'친구들 앞에서 칼림바를 들려주는 날이에요! 공부방 악기 방의 칼림바로 날마다 한 번씩 연습해 봐요. 틀려도 멈추지 말고 끝까지 연주하면 돼요. 채이의 칼림바 소리를 모두가 기다리고 있어요 🎶'}
+     note:'친구들 앞에서 칼림바를 들려주는 날이에요! 공부방 악기 방의 칼림바로 날마다 한 번씩 연습해 봐요. 틀려도 멈추지 말고 끝까지 연주하면 돼요. 채이의 칼림바 소리를 모두가 기다리고 있어요 🎶'},
+    {id:'dentist-2026-11-13', date:'2026-11-13', cat:'병원', icon:'🦷', remind:1,
+     title:'치과 정기검진', time:'오후', place:'치과',
+     note:'오늘 오후에 치과 정기검진을 받아요. 아픈 데가 없어도 이가 튼튼한지 살펴보는 날이에요. 가기 전에 이를 깨끗이 닦고 가요. 입을 크게 “아~” 벌리고 있으면 금방 끝나요 😁'},
+    {id:'shot-4-2026', date:'2026-11-25', cat:'병원', icon:'💉', remind:1,
+     title:'(R)주사 4차', sub:'R = 오른쪽',
+     note:'한 달에 한 번 맞는 주사, 이번이 4번째예요. 이번에는 오른쪽(R)에 맞아요. 따끔해도 금방 지나가요. 지금까지 세 번 잘 해낸 채이, 이번에도 씩씩하게! 💪'}
   ];
-  const CATC={'행사':'#C2410C','학사':'#2C6E8C','방학':'#2E8B57','체험':'#7A3E6A','시험':'#B7791F','준비':'#5B5BD6','공연':'#8E44AD'};
+  const CATC={'행사':'#C2410C','학사':'#2C6E8C','방학':'#2E8B57','체험':'#7A3E6A','시험':'#B7791F','준비':'#5B5BD6','공연':'#8E44AD','병원':'#0F8B8D'};
   const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   const today=()=>dk(new Date());
   const pd=s=>new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10));
@@ -10151,6 +10157,7 @@ const BDSIB={call:'서이',m:2,d:26};
   const css=document.createElement('style');
   css.textContent=
    '.scban{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:12px 0;padding:10px 14px;text-align:left;font:inherit;color:#3b2a1a;background:#FFF6E3;border:2.5px solid #E2B86B;border-radius:16px;box-shadow:0 3px 0 #E2B86B;touch-action:manipulation}'
+  +'.scban.sm{padding:7px 12px;gap:8px;margin:8px 0;border-width:2px;box-shadow:0 2px 0 #E2B86B}.scban.sm .sci{font-size:1.35rem}#app .scban .scone .sclb{display:inline!important;white-space:nowrap!important;text-wrap:nowrap!important}#app .scban .scone{display:block!important;min-width:0;white-space:nowrap!important;text-wrap:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:.95rem!important;font-weight:800!important;line-height:1.3!important}#app .scban .scone small{display:inline!important;font-size:.74rem;color:#B4462E;font-weight:800;margin-right:6px}'
   +'.scban:active{transform:translateY(2px);box-shadow:0 1px 0 #E2B86B}.scban .sci{font-size:1.9rem;line-height:1}.scban .sck{display:block;font-size:.78rem;font-weight:800;color:#B4462E}.scban b{display:block;font-size:1rem;line-height:1.35;word-break:keep-all}.scban .scl{font-size:.85rem}'
   +'.scbdg{font-size:.8rem;font-weight:800;color:#fff;background:#D9534F;border-radius:999px;padding:3px 10px;white-space:nowrap}.scbdg.done{background:#2E8B57}.scbdg.today{background:#E8590C;animation:scpul 1.2s infinite}.scbdg.past{background:#9a8f80}.scbdg.extra{background:#B7791F}.scbdg.far{background:#8a7a66}@keyframes scpul{50%{transform:scale(1.08)}}'
   +'.scpage{color:#3b2a1a}.scpage h2{margin:0 0 4px}.sclead{margin:0 0 12px;opacity:.8;word-break:keep-all}.sch3{font-size:1.02rem;margin:18px 0 8px}'
@@ -10190,10 +10197,10 @@ const BDSIB={call:'서이',m:2,d:26};
     return '<button class="scitem'+(hasAct(N)?' hasact':'')+'" data-go="school:'+N.id+'"><span class="scdate" style="--c:'+c+'">'+(d.getMonth()+1)+'/'+d.getDate()+'<small>'+WD[d.getDay()]+'요일</small></span><span>'+tag(N)+'<b>'+N.icon+' '+E(N.title)+'</b><small>'+E(N.cat)+(N.place?' · '+E(N.place):'')+(N.also?' · 못 가면 '+mdS(N.also):'')+'</small></span><span class="scbdg '+s.k+'">'+s.badge+'</span></button>'; };
 
   /* 처음 화면 줄: 가장 가까운 일정 (없으면 학교 일정 보기) */
-  function banner(){ const U=upcoming(), N=U[0];
-    if(!N) return '<button class="scban" data-go="school"><span class="sci">🏫</span><span><span class="sck">학교 일정</span><b>학교 일정 보기</b><span class="scl">지금은 다가오는 일정이 없어요</span></span><span class="scbdg far">›</span></button>';
-    const s=stat(N), far=days(today(),N.date)>14&&s.k==='soon', more=U.length>1?' · 다가오는 일정 '+U.length+'개':'';
-    return '<button class="scban" data-go="school"><span class="sci">🏫</span><span><span class="sck">학교 일정'+more+'</span><b>'+N.icon+' '+E(N.title)+'</b><span class="scl">'+md(N.date)+(N.place?' · '+E(N.place):'')+(hasAct(N)?' · ✏️ 활동 있어요':'')+'</span>'+todayLine()+'</span><span class="scbdg '+(far?'far':s.k)+'">'+s.badge+'</span></button>'; }
+  function banner(){ const U=upcoming(), N=U[0], LB='학교 일정';
+    if(!N) return '<button class="scban sm" data-go="school"><span class="sci">🏫</span><span class="scone"><b class="sclb" style="display:inline;color:#B4462E;font-size:.82rem;margin-right:5px;white-space:nowrap">'+LB+':</b>보기</span><span class="scbdg far">›</span></button>';
+    const s=stat(N), far=days(today(),N.date)>14&&s.k==='soon';
+    return '<button class="scban sm" data-go="school" aria-label="'+LB+' 보기"><span class="sci">🏫</span><span class="scone"><b class="sclb" style="display:inline;color:#B4462E;font-size:.82rem;margin-right:5px;white-space:nowrap">'+LB+':</b>'+mdS(N.date)+' '+N.icon+' '+E(N.title)+'</span><span class="scbdg '+(far?'far':s.k)+'">'+s.badge+'</span></button>'; }
 
   /* 학교 달력 */
   let CM=null, CSEL=null;
