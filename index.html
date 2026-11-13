@@ -10073,6 +10073,69 @@ const BDSIB={call:'서이',m:2,d:26};
   const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
   const NM=()=>(typeof KID!=='undefined'&&KID.name)||'나';
   const save=()=>{ try{ persist(); }catch(e){} };
+  /* ===== 식단 (간식·급식) — 두 공부방 같은 코드 =====
+     MENU.<종류>.d['YYYY-MM-DD']=[아이가 보는 이름, 원래 식단표 글(알레르기 번호)]. 새 달 식단은 날짜 줄만 더하면 돼요.
+     종류: snack(간식), lunch(급식). 있는 종류만 보여요. */
+  const MENU={
+    lunch:{ title:'다율초 급식', month:'2026-11', d:{
+      '2026-11-02':['🍕 피자 스테이크 · 🥚 달걀찜 · 유부찌개','찰옥수수쌀밥 / 유부찌개(5,6) / 몽글달걀찜(1,9,13) / 슈비피자스테이크(2,5,6,9,10,12,13,15,16,18) / 배추김치(9) / 블루베리샌드웨이퍼(1,2,5,6)'],
+      '2026-11-03':['제육볶음 · 두부 탕수 · 🍦 아이스크림','잡곡밥(5) / 낙지수제비(5,6,18) / 제육볶음(5,6,10,13) / 두부탕수(1,5,6,11,12,13) / 총각김치(9) / 아이스크림(1,2,5)'],
+      '2026-11-04':['🇬🇧 세계의 음식(영국) · 🐟 생선 커틀릿 · 🌽 옥수수 수프','찹쌀밥 / 옥수수스프(2,5,6,13,16) / 베이컨감자조림(5,6,10,13) / 생선커틀렛&요거트타르타르소스(1,2,5,6,13) / 배추김치(9) / 카사바칩(5,6) — 수다날 · 세계의 음식: 영국'],
+      '2026-11-05':['🍗 치킨너겟 · 육개장 · 🥝 골드키위','현미밥 / 육개장(5,6,16) / 미역줄기볶음(5) / 치킨너겟&허니소스(1,2,5,6,13,15) / 배추김치(9) / 조각골드키위'],
+      '2026-11-06':['스팸 김치볶음 · 쇠고기무국 · 김자반','귀리밥 / 쇠고기무국(5,6,16) / 아귀순살엿장조림(5,6,13) / 김자반(5) / 스팸김치볶음(5,6,9,10,13)'],
+      '2026-11-09':['🌽 옥수수 치즈구이 · 오리 주물럭 · 북어찌개','차조밥 / 북어고추장찌개(5,6) / 흑초오리주물럭(5,13) / 옥수수치즈구이(1,2,5,6,8,10,13,16) / 깍두기(9)'],
+      '2026-11-10':['🥟 만두 떡국 · 🍗 콘크림 치킨 · 🍊 귤','서리태조각콩밥(5) / 옹심이만두떡국(1,5,6,10,16,18) / 청경채된장무침(5,6,13) / 콘크림치킨구이(1,2,5,6,13,15) / 배추김치(9) / 귤'],
+      '2026-11-11':['날치알 김치볶음밥 · 🧀 치즈링 · 🥭 열대과일','날치알김치볶음밥(5,6,9,10,13,16) / 마른새우계란국(1,5,6,9) / 스위트치즈링(1,2,5,6) / 백김치(9,19) / 삼색열대과일&망고소스(13) — 수다날'],
+      '2026-11-12':['🦑 오징어 꿔바로우 · 두부 카레구이 · 🥛 요구르트','보리밥 / 감자고사리된장국(5,6) / 두부카레구이(2,5,6,12,13,16,18) / 오징어꿔바로우(1,5,6,13,17) / 총각김치(9) / 요구르트65ml(2)'],
+      '2026-11-13':['🎂 생일 축하 날 · 돼지갈비찜 · 🍰 조리퐁 케이크','찹쌀밥 / 전복미역국(5,6,18) / 돼지갈비찜(5,6,10,13) / 숙주색채(5,6) / 배추김치(9) / 럭키조리퐁케익(1,2,5,6) — 생일축하날'],
+      '2026-11-16':['떡볶이 · 🧀 치즈 치킨카츠 · 우렁 된장국','흑미밥 / 우렁된장국(5,6) / 구슬떡볶이(5,6,12,13,19) / 치킨치즈볼카츠(1,2,5,6,15) / 석박지(9)'],
+      '2026-11-17':['돼지고기 강정 · 모둠찌개 · 짜요짜요','녹두밥 / 모듬찌개(1,2,5,6,9,10,13,16) / 취나물두부된장무침(5,6,13) / 연근부각(5,6) / 돼지고기강정(5,6,10,12,13) / 짜요짜요(2)'],
+      '2026-11-18':['🍕 통콘 피자 · 콩나물비빔밥 · 🍎 사과','콩나물비빔밥(5,6,13,16) / 무다시마국(5,6) / 깍두기(9) / 양념간장(5,6,13) / 사과 / 통콘수제피자(1,2,5,6,9,10,12,13,15,16,18) — 수다날'],
+      '2026-11-19':['치즈떡 비엔나 볶음 · 닭곰탕 · 🍪 쿠키','팥밥 / 닭곰탕(5,6,13,15) / 치즈떡비엔나볶음(2,5,6,10,12,13,16) / 삼치살엿장조림(5,6,13) / 배추김치(9) / 쿠키(1,2,5,6)'],
+      '2026-11-20':['편육 · 메추리알 감자조림 · 과일젤리','기장밥 / 쇠고기배추국(5,6,16) / 메추리알감자조림(1,5,6,13) / 편육(5,6,10,13) / 보쌈김치(9,19) / 쌈장(1,5,6,13) / 과일젤리'],
+      '2026-11-23':['훈제 오리구이 · 영양갈비탕 · 무쌈','찰옥수수알쌀밥 / 영양갈비탕(5,6,16) / 무쌈(레몬) / 콩나물부추무침(5) / 훈제오리구이 / 배추김치(9)'],
+      '2026-11-24':['🍗 뿌링클 치킨 · 된장국 · 🥛 요구르트','차수수밥 / 얼갈이배추된장국(5,6) / 올방개묵무침 / 뿌링클치킨(1,2,5,6,12,13,15) / 총각김치(9) / 요구르트80ml(2)'],
+      '2026-11-25':['자장밥 · 🌯 또띠아 · 🥭 망고 요거트','자장밥(5,6,10,13,18) / 갈릭크림소스또띠아(1,2,5,6) / 배추김치(9) / 과일쥬스(11,13) / 망고요거트샐러드(2,13) — 수다날'],
+      '2026-11-26':['생크림 오믈렛 · 스위스 스테이크 · 어묵 매운탕','발아현미밥 / 어묵매운탕(5,6,9,13) / 오이생채(13) / 돈육스위스스테이크(2,5,6,10,12,13,16,18) / 배추김치(9) / 우리밀생크림오믈렛(1,2,5,6)'],
+      '2026-11-27':['🍲 돼지국밥 · 🐟 가자미구이 · 🍍 파인애플','할맥밥 / 돼지국밥(5,6,10) / 닭다리살고구마찜(5,6,13,15) / 가자미구이(5,6) / 배추김치(9) / 파인애플'],
+      '2026-11-30':['탕수육 · 차돌 된장찌개 · 🍡 바람떡','현미찹쌀밥 / 차돌된장찌개(5,6,16) / 참나물고추장무침(5,6,13) / 사천식탕수육(1,5,6,10,12,18) / 배추김치(9) / 바람떡']
+    }}
+  };
+
+  const MPLACE='학교';
+  const MKIND={snack:['🍪','간식'],lunch:['🍚','급식']};
+  const ALG='1 난류(가금류) · 2 우유 · 3 메밀 · 4 땅콩 · 5 대두 · 6 밀 · 7 고등어 · 8 게 · 9 새우 · 10 돼지고기 · 11 복숭아 · 12 토마토 · 13 아황산염 · 14 호두 · 15 닭고기 · 16 쇠고기 · 17 오징어 · 18 조개류 · 19 잣';
+  const mkinds=()=>Object.keys(MENU).filter(k=>MENU[k]&&MENU[k].d&&Object.keys(MENU[k].d).length);
+  const nextSchoolDay=t=>{ const d=pd(t); for(let k=1;k<=7;k++){ const x=new Date(d); x.setDate(d.getDate()+k); if(x.getDay()>0&&x.getDay()<6) return dk(x); } return t; };
+  /* 처음 화면 줄: 오늘 식단 한 줄 (간식이 있으면 간식, 없으면 급식) */
+  function todayLine(){ const t=today(); for(const k of mkinds()){ const it=MENU[k].d[t]; if(it) return '<span class="scl" style="display:block;margin-top:2px">'+MKIND[k][0]+' 오늘 '+MKIND[k][1]+': '+it[0]+'</span>'; } return ''; }
+  /* 일정 페이지 위: 오늘과 다음 등교(원)일 식단 */
+  function menuCard(){ const ks=mkinds(); if(!ks.length) return ''; const t=today(), n=nextSchoolDay(t), wd=pd(t).getDay(), isDay=wd>0&&wd<6;
+    const day=(lab,k)=>'<p style="margin:8px 0 2px"><b>'+lab+'</b></p>'+ks.map(kk=>{ const it=MENU[kk].d[k]; return '<p style="margin:1px 0 1px 6px;font-size:.95rem">'+MKIND[kk][0]+' '+(it?it[0]:'<span style="opacity:.55">식단표에 없어요</span>')+'</p>'; }).join('');
+    return '<div class="scbox"><h3>🍽️ '+ks.map(k=>MKIND[k][1]).join('·')+'</h3>'+(isDay?day('오늘',t):'<p style="margin:2px 0;opacity:.7">오늘은 '+MPLACE+'에 안 가는 날이에요.</p>')
+      +day(days(t,n)===1?'내일':pd(n).getDate()+'일('+WD[pd(n).getDay()]+')',n)
+      +'<button type="button" class="scok" style="background:#B7791F;box-shadow:0 3px 0 #7a4f12;margin-top:10px" data-go="school:menu">🍽️ 이번 달 식단 보기</button></div>'; }
+  let MTAB=null;
+  function menuView(){ const ks=Object.keys(MENU); if(!MTAB||!MENU[MTAB]) MTAB=mkinds()[0]||ks[0]; const M=MENU[MTAB], t=today(), keys=Object.keys(M.d).sort();
+    let h='<button class="back" data-go="school">←</button><section class="panel scpage"><h2>🍽️ '+NM()+'의 '+MPLACE+' 식단</h2>';
+    if(ks.length>1) h+='<div style="display:grid;grid-template-columns:repeat('+ks.length+',1fr);gap:8px;margin:6px 0 12px">'+ks.map(k=>'<button type="button" class="scok'+(k===MTAB?'':' undo')+'" style="margin:0" data-mtab="'+k+'">'+MKIND[k][0]+' '+MKIND[k][1]+'</button>').join('')+'</div>';
+    if(!keys.length) h+='<div class="scbox" style="text-align:center"><div style="font-size:2.4rem">'+MKIND[MTAB][0]+'</div><b>'+MKIND[MTAB][1]+' 식단이 곧 올라와요!</b><p style="margin:4px 0 0;opacity:.75">식단표가 오면 여기에 날마다 보여요.</p></div>';
+    else { h+='<p class="sclead">'+E(M.title)+' · '+(+keys[0].slice(5,7))+'월</p>';
+      keys.forEach(k=>{ const d=pd(k), it=M.d[k], past=k<t;
+        h+='<div class="scitem" style="cursor:default'+(k===t?';border-color:#E8590C;box-shadow:0 0 0 2px #E8590C':'')+(past?';opacity:.55':'')+'"><span class="scdate" style="--c:'+(k===t?'#E8590C':'#B7791F')+'">'+(d.getMonth()+1)+'/'+d.getDate()+'<small>'+WD[d.getDay()]+'요일</small></span><span><b style="font-size:.98rem">'+it[0]+'</b>'+(k===t?'<small style="color:#E8590C;font-weight:800">오늘</small>':'')+'</span><span></span></div>'; });
+      h+='<details style="margin-top:10px"><summary>👨‍👩‍👧 원래 식단표 (알레르기 번호)</summary><div class="scbox" style="font-size:.88rem">'+keys.map(k=>'<p style="margin:3px 0"><b>'+mdS(k)+'</b> '+E(M.d[k][1])+'</p>').join('')+'<p style="margin:8px 0 0;opacity:.8">'+ALG+'</p><p style="margin:4px 0 0;opacity:.8">식단은 '+MPLACE+' 사정에 따라 바뀔 수 있어요.</p></div></details>'; }
+    show(h+'</section>','#B7791F');
+    $app.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>{ MTAB=b.dataset.mtab; menuView(); }); }
+  /* 처음 화면 ‘오늘 급식’ 타일을 누르면 뜨는 창: 오늘 식단 전체 (알레르기 번호는 빼고 보여 줘요) */
+  function todayPopup(){ const t=today(), wd=pd(t).getDay(), isDay=wd>0&&wd<6, ks=mkinds(); document.querySelectorAll('.screm').forEach(x=>x.remove());
+    const clean=s=>String(s).split(' — ')[0].split(' / ').map(x=>x.replace(/\([\d,.\s]+\)/g,'').replace(/\d+(ml|g)\b.*$/,'').trim()).filter(Boolean);
+    const block=(k,d)=>{ const it=MENU[k].d[d]; return '<div style="text-align:left;background:#fff;border:1.5px solid #EBD3A6;border-radius:12px;padding:8px 12px;margin:8px 0"><b>'+MKIND[k][0]+' '+MKIND[k][1]+'</b>'+(it?'<ul style="margin:4px 0 0;padding-left:1.2em;line-height:1.6">'+(k==='snack'?it[0].split(' · '):clean(it[1])).map(x=>'<li>'+E(x)+'</li>').join('')+'</ul>'+(/골고루 다 먹는 날/.test(it[0])?'<p style="margin:4px 0 0;color:#2E8B57;font-weight:800">💪 골고루 다 먹는 날!</p>':'')+(/ — (.+)$/.test(it[1])?'<p style="margin:4px 0 0;color:#B4462E;font-weight:800">✨ '+E(it[1].split(' — ')[1])+'</p>':''):'<p style="margin:4px 0 0;opacity:.6">식단표에 없어요</p>')+'</div>'; };
+    let body;
+    if(isDay&&ks.some(k=>MENU[k].d[t])) body='<h3>오늘의 '+(ks.includes('lunch')?'급식':'간식')+' · '+md(t)+'</h3>'+ks.map(k=>block(k,t)).join('');
+    else { const n=nextSchoolDay(t); body='<h3>오늘은 급식이 없어요</h3><p>다음 '+MPLACE+' 가는 날 ('+md(n)+')</p>'+ks.map(k=>block(k,n)).join(''); }
+    const w=document.createElement('div'); w.className='screm'; w.innerHTML='<div class="scremc" style="max-height:86vh;overflow:auto"><div class="big">🍚</div>'+body+'<button type="button" style="background:#B7791F;color:#fff" data-r="go">🍽️ 이번 달 식단 보기</button><button type="button" style="background:#eee;color:#444" data-r="x">닫기</button></div>';
+    w.onclick=e=>{ if(e.target===w){ w.remove(); return; } const b=e.target.closest('[data-r]'); if(!b) return; w.remove(); if(b.dataset.r==='go') route('school','menu'); };
+    document.body.appendChild(w); }
   /* 일정 상태 */
   function stat(N){ const t=today(), st=SN(N.id), d=days(t,N.date);
     if(st.done) return {k:'done',badge:'✅ 다녀왔어요'};
@@ -10130,7 +10193,7 @@ const BDSIB={call:'서이',m:2,d:26};
   function banner(){ const U=upcoming(), N=U[0];
     if(!N) return '<button class="scban" data-go="school"><span class="sci">🏫</span><span><span class="sck">학교 일정</span><b>학교 일정 보기</b><span class="scl">지금은 다가오는 일정이 없어요</span></span><span class="scbdg far">›</span></button>';
     const s=stat(N), far=days(today(),N.date)>14&&s.k==='soon', more=U.length>1?' · 다가오는 일정 '+U.length+'개':'';
-    return '<button class="scban" data-go="school"><span class="sci">🏫</span><span><span class="sck">학교 일정'+more+'</span><b>'+N.icon+' '+E(N.title)+'</b><span class="scl">'+md(N.date)+(N.place?' · '+E(N.place):'')+(hasAct(N)?' · ✏️ 활동 있어요':'')+'</span></span><span class="scbdg '+(far?'far':s.k)+'">'+s.badge+'</span></button>'; }
+    return '<button class="scban" data-go="school"><span class="sci">🏫</span><span><span class="sck">학교 일정'+more+'</span><b>'+N.icon+' '+E(N.title)+'</b><span class="scl">'+md(N.date)+(N.place?' · '+E(N.place):'')+(hasAct(N)?' · ✏️ 활동 있어요':'')+'</span>'+todayLine()+'</span><span class="scbdg '+(far?'far':s.k)+'">'+s.badge+'</span></button>'; }
 
   /* 학교 달력 */
   let CM=null, CSEL=null;
@@ -10151,7 +10214,7 @@ const BDSIB={call:'서이',m:2,d:26};
   /* 학교 일정 페이지 */
   function listView(){ const U=upcoming(), P=past();
     show('<button class="back" data-go="start">←</button><section class="panel scpage"><h2>🏫 '+NM()+'의 학교 일정</h2><p class="sclead">학교 행사와 학사일정을 미리 보고 준비해요. 일정을 누르면 자세히 볼 수 있어요.</p>'
-      +'<h3 class="sch3">📌 다가오는 일정</h3>'+(U.length?U.map(item).join(''):'<p class="sclead">지금은 다가오는 일정이 없어요.</p>')
+      +''+menuCard()+'<h3 class="sch3">📌 다가오는 일정</h3>'+(U.length?U.map(item).join(''):'<p class="sclead">지금은 다가오는 일정이 없어요.</p>')
       +'<h3 class="sch3">🗓️ 학교 달력</h3><div class="sccalwrap">'+cal()+'</div>'
       +(P.length?'<details style="margin-top:14px"><summary>📁 지난 일정 '+P.length+'개</summary>'+P.map(item).join('')+'</details>':'')+'</section>',COL);
     bindCal(); }
@@ -10205,12 +10268,12 @@ const BDSIB={call:'서이',m:2,d:26};
     document.body.appendChild(w); }
 
   /* 페이지 길: 'school' = 목록, 'school:id' = 일정 */
-  { const _ri=routeInner; routeInner=function(v,a,b){ if(v==='school'){ if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} VIEW='school'; return a?eventView(a):listView(); } return _ri.apply(this,arguments); }; }
+  { const _ri=routeInner; routeInner=function(v,a,b){ if(v==='school'){ if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} VIEW='school'; return a==='menu'?menuView():a?eventView(a):listView(); } return _ri.apply(this,arguments); }; }
   /* 처음 화면: 인사말 바로 아래 */
   { const _st=start; start=function(subj){ const r=_st.apply(this,arguments);
     try{ if(!SUBJ[subj]&&!$app.querySelector('.scban')){ const h=banner(); const hero=$app.querySelector('.starttop .hero')||$app.querySelector('.hero'); if(hero) hero.insertAdjacentHTML('afterend',h); else $app.insertAdjacentHTML('afterbegin',h); setTimeout(remind,900); } }catch(e){}
     return r; }; }
-  window.__school={SCHOOL,stat,banner,remind};
+  window.__school={SCHOOL,stat,banner,remind,todayPopup,hasMenu:()=>mkinds().length>0};
 })();
 </script>
 <!-- ===== 학교 일정 끝 ===== -->
@@ -16103,5 +16166,47 @@ PX.push('#9ED8F5', '#5DB4E8', '#2E7D4F', '#A8DC7A', '#F6C9A0', '#6B3E26', '#F2D4
 })();
 </script>
 <!-- ===== 새로고침 화면 되찾기 끝 ===== -->
+<!-- ===== 처음 화면 작은 단추 줄 정리 시작 ===== -->
+<style id="qtile-css">
+/* 2026-11-13: 처음 화면의 복습·분수 식당·카페(빵집·가게)·기분 단추를 같은 크기 타일로 맞춰요 (그림 + 이름, 배지는 오른쪽 위) */
+.moodrow{display:grid!important;grid-template-columns:repeat(var(--qn,4),minmax(0,1fr));gap:8px!important;align-items:stretch;justify-content:stretch!important;width:100%}
+.moodrow>.trrv,.moodrow>.moodtgl{position:relative!important;height:64px!important;min-width:0!important;width:auto!important;margin:0!important;padding:4px 2px!important;border-radius:16px!important;border:2px solid #1b2750!important;background:#fff!important;color:#1b2750!important;box-shadow:0 3px 0 #1b2750!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;font-size:12px!important;font-weight:800!important;line-height:1.1!important;transform:none!important;opacity:1!important;filter:none!important}
+.moodrow>.trrv:active,.moodrow>.moodtgl:active{transform:translateY(2px)!important;box-shadow:0 1px 0 #1b2750!important}
+.moodrow>.trrv .ic{font-size:25px!important;line-height:1!important;height:26px;display:flex!important;align-items:center;justify-content:center;color:inherit!important}
+.moodrow>.trrv .ic svg{width:26px!important;height:26px!important}
+.moodrow>.trrv small{display:none!important}
+.moodrow.q5>.trrv::after,.moodrow.q5>.moodtgl{font-size:11px!important;letter-spacing:-.04em}
+.moodrow>#lnmini{background:#FFF8E6!important;border-color:#B7791F!important;box-shadow:0 3px 0 #B7791F!important}
+.moodrow>.trrv::after{content:attr(data-lab);font-size:12px;font-weight:800;white-space:normal;word-break:keep-all;text-align:center;line-height:1.05;letter-spacing:-.02em;max-width:100%}
+.moodrow>.trrv.qrv .ic{font-size:0!important}
+.moodrow>.trrv.qrv .ic::before{content:'📦';font-size:25px}
+.moodrow>.trrv.qrv.done .ic::before{content:'✅'}
+.moodrow>.trrv.rvlock{background:#f4f5f7!important;border-color:#9aa1ad!important;box-shadow:0 3px 0 #9aa1ad!important;color:#6b7280!important}
+.moodrow>.trrv.rvlock .ic::before{filter:grayscale(1);opacity:.6}
+.moodrow>.moodtgl .fx{font-size:25px!important;line-height:1!important;margin:0!important}
+.moodrow>.moodbar{grid-column:1/-1}
+.moodrow i.n{position:absolute!important;top:-8px!important;right:-7px!important;left:auto!important;bottom:auto!important;min-width:22px!important;height:22px!important;padding:0 5px!important;border-radius:11px!important;background:#e8467c!important;color:#fff!important;border:2px solid #fff!important;font-size:11px!important;font-style:normal!important;font-weight:900!important;line-height:18px!important;text-align:center!important;box-shadow:0 1px 3px rgba(0,0,0,.25)!important;transform:none!important}
+.moodrow>.trrv.qrv i.n{background:#f08c00!important}
+.moodrow>.trrv.rvlock i.n{background:#8a93a3!important}
+</style>
+<script>
+/* 이름표 붙이기: 단추마다 아래에 보일 이름(data-lab)을 달아요. 단추가 새로 그려질 때마다 다시 붙여요 */
+(function(){
+  const LAB=[['[data-ln]','오늘 급식'],['[data-fd]','분수 식당'],['[data-ec]','영어 카페'],['[data-bk]','서이 빵집'],['[data-ts]','토토네 가게']];
+  function tag(){
+    document.querySelectorAll('.moodrow').forEach(row=>{
+      if(!row.querySelector('#lnmini')&&window.__school&&window.__school.hasMenu&&window.__school.hasMenu()){ const mt=row.querySelector('.moodtgl'); const b='<button type="button" class="trrv" id="lnmini" data-ln="1" aria-label="오늘의 급식 보기"><span class="ic">🍚</span></button>'; if(mt) mt.insertAdjacentHTML('afterend',b); else row.insertAdjacentHTML('beforeend',b); }
+      const n=[...row.children].filter(e=>(e.classList.contains('trrv')||e.classList.contains('moodtgl'))&&getComputedStyle(e).display!=='none').length; row.style.setProperty('--qn',Math.max(4,n)); row.classList.toggle('q5',n>=5); });
+    document.querySelectorAll('.moodrow>.trrv').forEach(b=>{
+    let lab=''; for(const [q,n] of LAB) if(b.matches(q)){ lab=n; break; }
+    if(!lab){ b.classList.add('qrv'); lab=b.classList.contains('done')?'복습 완료':'복습'; }
+    if(b.dataset.lab!==lab) b.dataset.lab=lab; }); }
+  let tm=0; const kick=()=>{ clearTimeout(tm); tm=setTimeout(tag,30); };
+  try{ new MutationObserver(kick).observe(document.getElementById('app')||document.body,{childList:true,subtree:true}); }catch(e){}
+  document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('#lnmini'); if(!b) return; e.preventDefault(); e.stopPropagation(); try{ window.__school.todayPopup(); }catch(_){} },true);
+  kick(); window.__qtile=tag;
+})();
+</script>
+<!-- ===== 처음 화면 작은 단추 줄 정리 끝 ===== -->
 </body>
 </html>
