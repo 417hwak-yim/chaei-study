@@ -10028,6 +10028,172 @@ const BDSIB={call:'서이',m:2,d:26};
 }
 </script>
 <!-- ===== 생일 이벤트 끝 ===== -->
+<!-- ===== 학교 일정 시작 ===== -->
+<script>
+/* ===== 학교 일정 (2026-11-13) =====
+   학사일정·학교 행사를 모아 보는 곳이에요.
+   - 처음 화면 인사말 아래에 ‘학교 일정’ 줄이 늘 있어요. 가장 가까운 일정과 D-day를 보여 주고, 누르면 학교 일정 페이지가 열려요.
+   - 학교 일정 페이지(route 'school'): 다가오는 일정 → 학교 달력(달마다 넘겨 보기, 날짜를 누르면 그날 일정) → 지난 일정
+   - 일정 페이지(route 'school', id): 날짜·장소·안내·준비물. detail이 있는 행사는 활동(쓰기 칸 등)까지 나와요.
+   - remind:1인 일정은 그날 공부방을 처음 열 때 한 번 알려 줘요.
+   일정 더하기: SCHOOL 배열에 한 줄
+     {id, date:'YYYY-MM-DD'(채이가 할 날), end:'여러 날이면 끝날', also:'못 가면 다른 날', cat:'행사|학사|방학|체험|시험|준비', icon, title, sub, place, time, note, prep, detail, remind}
+   쓴 글과 ‘다녀왔어요’ 표시는 STATE.snews에 저장돼요. */
+(function(){
+  const COL='#C2410C';
+  const SCHOOL=[
+    {id:'wee-happy-2026', date:'2026-11-18', also:'2026-11-20', range:['2026-11-16','2026-11-20'], cat:'행사', icon:'🍬', remind:1, detail:'happy',
+     title:'Wee클래스 행복 주간', sub:'행복 계산 완료! 달콤함은 덤!!', place:'Wee클래스', time:'점심시간 · 하교 시간', who:'학년별 선착순 100명',
+     note:'3학년은 11월 18일(수)에 가요. 그날 못 가면 11월 20일(금) ‘미참여자’ 날에 갈 수 있어요.'}
+  ];
+  const CATC={'행사':'#C2410C','학사':'#2C6E8C','방학':'#2E8B57','체험':'#7A3E6A','시험':'#B7791F','준비':'#5B5BD6'};
+  const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const today=()=>dk(new Date());
+  const pd=s=>new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10));
+  const days=(a,b)=>Math.round((Date.UTC(+b.slice(0,4),+b.slice(5,7)-1,+b.slice(8,10))-Date.UTC(+a.slice(0,4),+a.slice(5,7)-1,+a.slice(8,10)))/864e5);
+  const WD=['일','월','화','수','목','금','토'];
+  const md=s=>{ const d=pd(s); return (d.getMonth()+1)+'월 '+d.getDate()+'일('+WD[d.getDay()]+')'; };
+  const mdS=s=>{ const d=pd(s); return (d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')'; };
+  const lastDay=N=>N.end||N.also||N.date;
+  const onDay=(N,t)=>t===N.date||t===N.also||(N.end&&t>=N.date&&t<=N.end);
+  const SNA=()=>{ STATE.snews=STATE.snews||{}; return STATE.snews; };
+  const SN=id=>{ const A=SNA(); return A[id]=A[id]||{}; };
+  const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+  const NM=()=>(typeof KID!=='undefined'&&KID.name)||'나';
+  const save=()=>{ try{ persist(); }catch(e){} };
+  /* 일정 상태 */
+  function stat(N){ const t=today(), st=SN(N.id), d=days(t,N.date);
+    if(st.done) return {k:'done',badge:'✅ 다녀왔어요'};
+    if(N.end&&t>=N.date&&t<=N.end) return {k:'today',badge:'지금 하고 있어요'};
+    if(d>0) return {k:'soon',badge:'D-'+d};
+    if(d===0) return {k:'today',badge:'오늘이에요!'};
+    if(N.also&&t<N.also) return {k:'extra',badge:mdS(N.also)+'에도 돼요'};
+    if(N.also&&t===N.also) return {k:'today',badge:'오늘 갈 수 있어요'};
+    return {k:'past',badge:'지난 일정'}; }
+  const upcoming=()=>{ const t=today(); return SCHOOL.filter(N=>lastDay(N)>=t).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0); };
+  const past=()=>{ const t=today(); return SCHOOL.filter(N=>lastDay(N)<t).sort((a,b)=>a.date<b.date?1:-1); };
+
+  const css=document.createElement('style');
+  css.textContent=
+   '.scban{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:12px 0;padding:10px 14px;text-align:left;font:inherit;color:#3b2a1a;background:#FFF6E3;border:2.5px solid #E2B86B;border-radius:16px;box-shadow:0 3px 0 #E2B86B;touch-action:manipulation}'
+  +'.scban:active{transform:translateY(2px);box-shadow:0 1px 0 #E2B86B}.scban .sci{font-size:1.9rem;line-height:1}.scban .sck{display:block;font-size:.78rem;font-weight:800;color:#B4462E}.scban b{display:block;font-size:1rem;line-height:1.35;word-break:keep-all}.scban .scl{font-size:.85rem}'
+  +'.scbdg{font-size:.8rem;font-weight:800;color:#fff;background:#D9534F;border-radius:999px;padding:3px 10px;white-space:nowrap}.scbdg.done{background:#2E8B57}.scbdg.today{background:#E8590C;animation:scpul 1.2s infinite}.scbdg.past{background:#9a8f80}.scbdg.extra{background:#B7791F}.scbdg.far{background:#8a7a66}@keyframes scpul{50%{transform:scale(1.08)}}'
+  +'.scpage{color:#3b2a1a}.scpage h2{margin:0 0 4px}.sclead{margin:0 0 12px;opacity:.8;word-break:keep-all}.sch3{font-size:1.02rem;margin:18px 0 8px}'
+  +'.scitem{width:100%;display:grid;grid-template-columns:3.6em 1fr auto;gap:10px;align-items:center;text-align:left;font:inherit;color:inherit;background:#fff;border:2px solid #EBD3A6;border-radius:14px;padding:10px 12px;margin-bottom:8px;touch-action:manipulation}'
+  +'.scdate{display:grid;place-items:center;border-radius:10px;background:var(--c,#C2410C);color:#fff;font-weight:900;line-height:1.15;padding:5px 0;font-size:.95rem}.scdate small{font-size:.72rem;font-weight:700;opacity:.9}'
+  +'.scitem b{display:block;word-break:keep-all}.scitem small{opacity:.75;word-break:keep-all}'
+  +'.sccal{background:#fff;border:2px solid #EBD3A6;border-radius:14px;padding:10px}.sccalh{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;text-align:center;font-weight:900;margin-bottom:6px}'
+  +'.sccalh button{font:inherit;font-size:1.1rem;height:40px;border-radius:10px;border:1.5px solid #EBD3A6;background:#FFFBF0;touch-action:manipulation}'
+  +'.scgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.scgrid .wd{font-size:.75rem;text-align:center;font-weight:800;opacity:.7}.scgrid .wd:first-child{color:#D9534F}.scgrid .wd:last-child{color:#3D7BF2}'
+  +'.scd{position:relative;min-height:44px;border-radius:8px;background:#FBF6EC;border:1.5px solid transparent;font:inherit;font-size:.85rem;padding:2px 0 0;display:flex;flex-direction:column;align-items:center;gap:1px;color:inherit;touch-action:manipulation}'
+  +'.scd.e{visibility:hidden}.scd.td{border-color:#E8590C;font-weight:900}.scd.has{background:#FFE9D6}.scd.sel{outline:3px solid #2E7D5B}.scd .ic{font-size:1rem;line-height:1}'
+  +'.scday{margin-top:8px}.scday p{margin:4px 0}'
+  +'.scbox{background:#fff;border-radius:14px;padding:12px 14px;border:1.5px solid #EBD3A6;line-height:1.65;word-break:keep-all;margin:10px 0}'
+  +'.scbox h3{margin:0 0 6px;font-size:1.05rem}.scbox ol{margin:4px 0 0;padding-left:1.3em}.scbox li{margin:2px 0}'
+  +'.scbig{font-size:1.2rem;font-weight:900;color:#B4462E;text-align:center;line-height:1.5}'
+  +'.scinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-top:8px}.scinfo div{background:#4A3426;color:#fff;border-radius:10px;padding:6px 4px;font-size:.78rem;line-height:1.35}.scinfo b{display:block;font-size:.9rem}'
+  +'.scmine{background:#FFF0E0;border:2.5px solid '+COL+';border-radius:14px;padding:10px 12px;font-weight:800;text-align:center;line-height:1.6}'
+  +'.sccheer{background:#E7F5EC;border-color:#9FD3B3;color:#1f5135;font-weight:700}'
+  +'.scrow{display:grid;grid-template-columns:2.2em 1fr;gap:6px;align-items:center;margin:6px 0}.scrow b{display:grid;place-items:center;height:2.2em;border-radius:10px;background:#2E7D5B;color:#fff;font-size:1.15rem}'
+  +'.scpage input.scinp{width:100%;min-width:0;box-sizing:border-box;font:inherit;font-size:1rem;padding:9px 10px;border-radius:10px;border:2px solid #CFE3D6;background:#FBFFFC}'
+  +'.scchips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}.scchip{font:inherit;font-size:.88rem;padding:5px 10px;border-radius:999px;border:1.5px solid #E2B86B;background:#FFFBF0;color:#5a3d1d;touch-action:manipulation}'
+  +'.scsample{display:grid;gap:8px;margin-top:6px}.scsample p{margin:0;padding:8px 10px;border-radius:10px;background:#FFF9EA;border-left:4px solid #E2B86B;line-height:1.6}'
+  +'.scpage details>summary{cursor:pointer;font-weight:800;color:#B4462E;padding:6px 0}'
+  +'.scok{font:inherit;font-weight:900;font-size:1rem;width:100%;padding:12px;border-radius:14px;border:0;background:#2E8B57;color:#fff;box-shadow:0 3px 0 #1f6a40;margin-top:6px}.scok.undo{background:#eee;color:#555;box-shadow:none;font-weight:700;font-size:.9rem;padding:8px}'
+  +'.scmsg{min-height:1.3em;font-weight:800;color:#2E7D5B;text-align:center;margin-top:4px}'
+  +'.screm{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(40,25,10,.55)}.scremc{width:min(330px,100%);background:#FFF6E3;border:3px solid #E2B86B;border-radius:20px;padding:20px 16px;text-align:center;color:#3b2a1a;box-shadow:0 10px 30px rgba(0,0,0,.3)}'
+  +'.scremc .big{font-size:46px;line-height:1.1}.scremc h3{margin:6px 0;font-size:1.25rem}.scremc p{margin:0 0 12px;line-height:1.55;word-break:keep-all}.scremc button{font:inherit;font-weight:900;width:100%;padding:12px;border-radius:14px;border:0;margin-top:6px}';
+  document.head.appendChild(css);
+
+  const item=N=>{ const s=stat(N), d=pd(N.date), c=CATC[N.cat]||COL;
+    return '<button class="scitem" data-go="school:'+N.id+'"><span class="scdate" style="--c:'+c+'">'+(d.getMonth()+1)+'/'+d.getDate()+'<small>'+WD[d.getDay()]+'요일</small></span><span><b>'+N.icon+' '+E(N.title)+'</b><small>'+E(N.cat)+(N.place?' · '+E(N.place):'')+(N.also?' · 못 가면 '+mdS(N.also):'')+'</small></span><span class="scbdg '+s.k+'">'+s.badge+'</span></button>'; };
+
+  /* 처음 화면 줄: 가장 가까운 일정 (없으면 학교 일정 보기) */
+  function banner(){ const U=upcoming(), N=U[0];
+    if(!N) return '<button class="scban" data-go="school"><span class="sci">🏫</span><span><span class="sck">학교 일정</span><b>학교 일정 보기</b><span class="scl">지금은 다가오는 일정이 없어요</span></span><span class="scbdg far">›</span></button>';
+    const s=stat(N), far=days(today(),N.date)>14&&s.k==='soon', more=U.length>1?' · 다가오는 일정 '+U.length+'개':'';
+    return '<button class="scban" data-go="school"><span class="sci">🏫</span><span><span class="sck">학교 일정'+more+'</span><b>'+N.icon+' '+E(N.title)+'</b><span class="scl">'+md(N.date)+(N.place?' · '+E(N.place):'')+'</span></span><span class="scbdg '+(far?'far':s.k)+'">'+s.badge+'</span></button>'; }
+
+  /* 학교 달력 */
+  let CM=null, CSEL=null;
+  function cal(){ const t=today(); if(!CM) CM=t.slice(0,7); const y=+CM.slice(0,4), m=+CM.slice(5,7)-1, first=new Date(y,m,1), n=new Date(y,m+1,0).getDate();
+    let g=WD.map(w=>'<span class="wd">'+w+'</span>').join('');
+    for(let i=0;i<first.getDay();i++) g+='<span class="scd e"></span>';
+    for(let d=1;d<=n;d++){ const k=CM+'-'+String(d).padStart(2,'0'), L=SCHOOL.filter(N=>onDay(N,k));
+      g+='<button type="button" class="scd'+(k===t?' td':'')+(L.length?' has':'')+(k===CSEL?' sel':'')+'" data-day="'+k+'">'+d+(L.length?'<span class="ic">'+L.map(N=>N.icon).slice(0,2).join('')+'</span>':'')+'</button>'; }
+    let dayList='';
+    if(CSEL&&CSEL.slice(0,7)===CM){ const L=SCHOOL.filter(N=>onDay(N,CSEL)); dayList='<div class="scday"><p><b>'+md(CSEL)+'</b></p>'+(L.length?L.map(item).join(''):'<p style="opacity:.7">이날은 학교 일정이 없어요.</p>')+'</div>'; }
+    return '<div class="sccal"><div class="sccalh"><button type="button" data-cm="-1" aria-label="지난달">◀</button><span>'+y+'년 '+(m+1)+'월</span><button type="button" data-cm="1" aria-label="다음 달">▶</button></div><div class="scgrid">'+g+'</div>'+dayList+'</div>'; }
+  function bindCal(){ const box=$app.querySelector('.sccalwrap'); if(!box) return;
+    box.onclick=e=>{ const b=e.target.closest('[data-cm],[data-day]'); if(!b) return;
+      if(b.dataset.cm){ const y=+CM.slice(0,4), m=+CM.slice(5,7)-1+(+b.dataset.cm), d=new Date(y,m,1); CM=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+      else CSEL=b.dataset.day===CSEL?null:b.dataset.day;
+      box.innerHTML=cal(); }; }
+
+  /* 학교 일정 페이지 */
+  function listView(){ const U=upcoming(), P=past();
+    show('<button class="back" data-go="start">←</button><section class="panel scpage"><h2>🏫 '+NM()+'의 학교 일정</h2><p class="sclead">학교 행사와 학사일정을 미리 보고 준비해요. 일정을 누르면 자세히 볼 수 있어요.</p>'
+      +'<h3 class="sch3">📌 다가오는 일정</h3>'+(U.length?U.map(item).join(''):'<p class="sclead">지금은 다가오는 일정이 없어요.</p>')
+      +'<h3 class="sch3">🗓️ 학교 달력</h3><div class="sccalwrap">'+cal()+'</div>'
+      +(P.length?'<details style="margin-top:14px"><summary>📁 지난 일정 '+P.length+'개</summary>'+P.map(item).join('')+'</details>':'')+'</section>',COL);
+    bindCal(); }
+
+  /* 일정 페이지 */
+  function eventView(id){ const N=SCHOOL.find(x=>x.id===id); if(!N) return listView(); const st=SN(N.id), s=stat(N), v=k=>E(st[k]||'');
+    let h='<button class="back" data-go="school">←</button><section class="panel scpage"><h2>'+N.icon+' '+E(N.title)+'</h2><p class="sclead">'+E(N.cat)+(N.range?' · '+md(N.range[0])+' ~ '+md(N.range[1]):'')+'</p>'
+     +'<div class="scmine">📌 '+md(N.date)+(N.end?' ~ '+md(N.end):'')+' <span class="scbdg '+s.k+'" style="margin-left:4px">'+s.badge+'</span>'+(N.note?'<br><span style="font-weight:700;font-size:.92rem">'+E(N.note)+'</span>':'')+'</div>';
+    if(N.place||N.time||N.who) h+='<div class="scbox">'+(N.sub?'<div class="scbig">'+E(N.sub)+'</div>':'')+'<div class="scinfo">'+(N.time?'<div>언제?<b>'+E(N.time)+'</b></div>':'')+(N.place?'<div>어디서?<b>'+E(N.place)+'</b></div>':'')+(N.who?'<div>누가?<b>'+E(N.who)+'</b></div>':'')+'</div></div>';
+    if(N.prep) h+='<div class="scbox"><h3>🎒 준비물</h3><p style="margin:0">'+E(N.prep)+'</p></div>';
+    if(N.detail==='happy'){
+     h+='<div class="scbox"><p style="margin:0;text-align:center">돈으로 살 수 없는 우리들의 행복 💗 학년별 선착순이니까 그날 일찍 가면 좋아요!</p></div>'
+      +'<div class="scbox"><h3>① 나의 행복 영수증 쓰기 🧾</h3><ol><li>Wee클래스에서 <b>행복 영수증</b>을 받아 요즘 행복했던 순간을 적어요.</li><li>그 순간을 돈으로 사려면 <b>얼마</b>일지 생각해 봐요.</li><li>확인받고 내면 <b>달콤 간식 선물!</b></li></ol>'
+      +'<p style="margin:10px 0 4px">✏️ 미리 생각해 보기</p><input class="scinp" data-k="moment" maxlength="60" placeholder="요즘 행복했던 순간은?" value="'+v('moment')+'"><input class="scinp" data-k="price" maxlength="30" style="margin-top:6px" placeholder="얼마일까? (값을 매길 수 없어도 돼요)" value="'+v('price')+'">'
+      +'<p style="margin:6px 0 0;font-size:.88rem;opacity:.8">💡 ‘값을 매길 수 없음’, ‘마음 백만 개’처럼 나만의 값으로 적어도 좋아요.</p></div>'
+      +'<div class="scbox"><h3>② 도전! ‘행복’ 2행시 ✍️</h3><p style="margin:0 0 6px">‘<b>행</b>’으로 시작하는 한 줄, ‘<b>복</b>’으로 시작하는 한 줄을 써요. 두 줄이 이어지면 멋진 2행시가 돼요! Wee클래스에서 <b>2행시 응모지</b>를 받아 써서 내면 달콤 간식 선물, 우수작 10명에게는 추가 상품도 있어요.</p>'
+      +'<p style="margin:8px 0 2px;font-weight:800">이렇게 써 봐요</p><ol><li>‘행’으로 시작하는 말을 떠올려요.</li><li>‘복’으로 시작하는 말을 떠올려요.</li><li>내가 정말 행복했던 순간을 넣어 두 줄을 이어요.</li><li>소리 내어 읽어 보고, 더 마음에 들게 고쳐요.</li></ol>'
+      +'<p style="margin:10px 0 2px;font-size:.9rem">‘행’ 낱말 힌트 (누르면 들어가요)</p><div class="scchips" data-to="l1">'+['행복','행운','행진','행동','행주','행복한'].map(w=>'<button type="button" class="scchip">'+w+'</button>').join('')+'</div>'
+      +'<div class="scrow"><b>행</b><input class="scinp" data-k="l1" maxlength="40" placeholder="‘행’으로 시작해요" value="'+v('l1')+'"></div>'
+      +'<p style="margin:8px 0 2px;font-size:.9rem">‘복’ 낱말 힌트 (누르면 들어가요)</p><div class="scchips" data-to="l2">'+['복숭아','복도','복슬복슬','복작복작','복을','복주머니'].map(w=>'<button type="button" class="scchip">'+w+'</button>').join('')+'</div>'
+      +'<div class="scrow"><b>복</b><input class="scinp" data-k="l2" maxlength="40" placeholder="‘복’으로 시작해요" value="'+v('l2')+'"></div>'
+      +'<div class="scmsg" id="scmsg"></div>'
+      +'<details><summary>👀 예시 2행시 보기</summary><div class="scsample">'
+      +'<p><b>행</b>복은 어디에 있을까?<br><b>복</b>도에서 친구가 웃어 줄 때 내 마음속에 있지!</p>'
+      +'<p><b>행</b>운의 네잎클로버를 못 찾아도<br><b>복</b>슬복슬 강아지랑 놀면 그게 바로 행복이야.</p>'
+      +'<p><b>행</b>주로 식탁을 닦아 엄마를 도와드렸더니<br><b>복</b>숭아처럼 달콤한 칭찬이 돌아왔어요.</p>'
+      +'<p><b>행</b>진하듯 씩씩하게 학교 가는 아침,<br><b>복</b>작복작 친구들 얼굴을 보면 웃음이 나요.</p>'
+      +'<p style="background:#E7F5EC;border-left-color:#2E8B57">예시는 생각을 여는 열쇠예요. 따라 쓰지 말고 <b>'+NM()+'만의 행복</b>을 넣어 봐요!</p></div></details></div>'
+      +'<div class="scbox sccheer">💪 '+NM()+'만 쓸 수 있는 2행시가 세상에서 제일 멋진 2행시예요! 잘 쓰려고 애쓰지 않아도 괜찮아요. 정말 행복했던 순간을 솔직하게 쓰면 돼요. 집에서 미리 써 보고, '+md(N.date).replace(/\(.\)/,'')+'에 응모지에 또박또박 옮겨 적어 봐요. 한번 도전! 🍀</div>';
+    }
+    if(N.detail) h+=(st.done?'<button type="button" class="scok undo" data-act="undo">다녀온 표시 지우기</button>':'<button type="button" class="scok" data-act="done">'+E(N.place||'행사')+'에 다녀왔어요 ✅</button>');
+    show(h+'</section>',CATC[N.cat]||COL); bind(N); }
+  function cheer(st){ const m=document.getElementById('scmsg'); if(!m) return; const a=(st.l1||'').trim(), b=(st.l2||'').trim();
+    m.textContent= a&&b ? (a[0]==='행'&&b[0]==='복' ? '와, 멋진 2행시 완성! 응모지에 또박또박 옮겨 적어요 ✍️' : a[0]!=='행' ? '첫 줄은 ‘행’으로 시작해 볼까요?' : '둘째 줄은 ‘복’으로 시작해 볼까요?') : (a||b) ? '좋아요! 나머지 한 줄도 써 봐요 😊' : ''; }
+  function bind(N){ const st=SN(N.id), root=$app.querySelector('.scpage'); if(!root) return; let tm=0;
+    root.querySelectorAll('.scinp').forEach(inp=>inp.addEventListener('input',()=>{ st[inp.dataset.k]=inp.value; cheer(st); clearTimeout(tm); tm=setTimeout(save,400); }));
+    root.querySelectorAll('.scchips').forEach(box=>box.addEventListener('click',e=>{ const b=e.target.closest('.scchip'); if(!b) return; const inp=root.querySelector('.scinp[data-k="'+box.dataset.to+'"]'); if(!inp) return;
+      const cur=inp.value.trim(); inp.value=cur?(b.textContent+' '+cur.replace(/^[행복]\S*\s*/,'')):b.textContent+' '; st[inp.dataset.k]=inp.value; cheer(st); save(); inp.focus(); }));
+    root.addEventListener('click',e=>{ const b=e.target.closest('[data-act]'); if(!b) return; st.done=b.dataset.act==='done'?1:0; save(); try{ if(st.done&&typeof sfx==='function') sfx('done'); }catch(_){} eventView(N.id); });
+    cheer(st); }
+
+  /* 그날 처음 열 때 한 번 알려 줘요 */
+  function remind(){ const t=today(), A=SNA(); A.rem=A.rem||{}; if(document.querySelector('.screm,.modal,#gacha')) return;
+    const N=SCHOOL.find(x=>x.remind&&onDay(x,t)&&!SN(x.id).done&&!A.rem[t+x.id]); if(!N) return;
+    A.rem[t+N.id]=1; save();
+    const w=document.createElement('div'); w.className='screm'; w.innerHTML='<div class="scremc"><div class="big">'+N.icon+'</div><h3>오늘은 '+E(N.title)+' 날!</h3><p>'+(N.time?E(N.time)+'에 ':'')+(N.place?E(N.place)+'로 가요. ':'')+(N.who?'('+E(N.who)+')':'')+'</p><button type="button" style="background:#C2410C;color:#fff" data-r="go">자세히 보기</button><button type="button" style="background:#eee;color:#444" data-r="x">알겠어요</button></div>';
+    w.onclick=e=>{ const b=e.target.closest('[data-r]'); if(!b) return; w.remove(); if(b.dataset.r==='go') route('school',N.id); };
+    document.body.appendChild(w); }
+
+  /* 페이지 길: 'school' = 목록, 'school:id' = 일정 */
+  { const _ri=routeInner; routeInner=function(v,a,b){ if(v==='school'){ if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} VIEW='school'; return a?eventView(a):listView(); } return _ri.apply(this,arguments); }; }
+  /* 처음 화면: 인사말 바로 아래 */
+  { const _st=start; start=function(subj){ const r=_st.apply(this,arguments);
+    try{ if(!SUBJ[subj]&&!$app.querySelector('.scban')){ const h=banner(); const hero=$app.querySelector('.starttop .hero')||$app.querySelector('.hero'); if(hero) hero.insertAdjacentHTML('afterend',h); else $app.insertAdjacentHTML('afterbegin',h); setTimeout(remind,900); } }catch(e){}
+    return r; }; }
+  window.__school={SCHOOL,stat,banner,remind};
+})();
+</script>
+<!-- ===== 학교 일정 끝 ===== -->
+
 <!-- ===== 게임 뽑기 시작 ===== -->
 <script>
 /* ===== 종이 뽑기판 (2026-11-11, 네온 뽑기 기계 대신 · 알록달록 사탕 느낌) =====
