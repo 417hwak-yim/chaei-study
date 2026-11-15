@@ -10161,6 +10161,14 @@ const R=n=>Math.floor(Math.random()*n), SH=a=>{ a=a.slice(); for(let i=a.length-
 const NM=()=>(typeof KID!=='undefined'&&KID.name)||'나', TK=()=>dkey(new Date());
 const SAVE=()=>{ try{ persist(); }catch(e){} }, SFX=k=>{ try{ sfx(k); }catch(e){} };
 const isOpen=()=>STATE.bgOpen===TK();
+/* 2026-11-15: 보드게임은 종류마다 하루에 한 번만 열려요 (오늘 연 것을 적어 둬요) */
+const BGKEY={'mosaic':'mosaic','word':'word','wordagain':'word','sky':'sky','hun':'hun','ck':'ck'};
+const BGNM={mosaic:'🪟 모자이크 공방',word:'🔤 낱말 보드게임',sky:'⚙️ 하늘 기계섬 잇기',hun:'訓 훈민 큐브',ck:'🧩 쿠키 틀 퍼즐'};
+function bgDone(){ const P=STATE.bgPlay; return (P&&P.d===TK()&&Array.isArray(P.list))?P.list:[]; }
+function bgMark(k){ if(!k) return; let P=STATE.bgPlay; if(!P||P.d!==TK()) P=STATE.bgPlay={d:TK(),list:[]};
+  if(P.list.indexOf(k)<0){ P.list.push(k); try{ SAVE(); }catch(e){} } }
+function bgLeft(){ return Object.keys(BGNM).filter(k=>bgDone().indexOf(k)<0); }
+try{ window.__bgDone=bgDone; window.__bgMark=bgMark; window.__bgNM=BGNM; }catch(e){}
 const REC=()=>STATE.bgRec=STATE.bgRec||{mz:[0,0,0],cs:[0,0,0]};   /* 이김 · 짐 · 비김 */
 const msg=t=>{ const m=document.getElementById('bgmsg'); if(m) m.innerHTML=t; };
 const OM=()=>{ const m=document.getElementById('bgmsg'); return m?m.innerHTML:''; };
@@ -10177,12 +10185,18 @@ function hook(){ const pr=document.querySelector('#app .tdprog'); if(!pr||pr.dat
 try{ new MutationObserver(hook).observe(document.getElementById('app'),{childList:true,subtree:true}); }catch(e){} hook();
 
 function hub(){ const W=REC();
+  /* 오늘 이미 한 게임은 카드가 잠겨요 (종류마다 하루 한 번) */
+  later(()=>{ try{ const did=bgDone();
+    document.querySelectorAll('#app .bgcard[data-go]').forEach(b=>{ const g=b.dataset.go, a=g.indexOf(':')>0?g.split(':')[1]:g, k=BGKEY[a];
+      if(k&&did.indexOf(k)>=0){ b.disabled=true; b.style.opacity='.55'; b.insertAdjacentHTML('beforeend','<small>✅ 오늘은 다 했어요 · 내일 또 만나요</small>'); } }); }catch(e){} },30);
   if(!isOpen()) return show('<button class="back" data-go="start">🏠 메인 화면으로 나가기</button><section class="panel bgw" style="text-align:center"><div style="font-size:3rem">🔒</div><h2>보드게임 방</h2><p>오늘의 학습을 모두 끝내면 열려요. 조금만 더 힘내요!</p></section>','#7B4FBF');
   show('<button class="back" data-go="start">🏠 메인 화면으로 나가기</button><section class="panel bgw"><h2 style="text-align:center;margin-bottom:2px">🎲 보드게임 방</h2><p style="text-align:center;margin:0;opacity:.75;font-weight:800">오늘의 학습 끝! 부엉이와 한 판 겨뤄요</p>'
     +'<button type="button" class="bgcard" data-go="bg:mosaic"><h3>🪟 모자이크 공방</h3><p>접시에서 같은 색 유리 조각을 가져와 내 창문을 꾸며요. 이웃한 조각이 많을수록 점수가 커지고, 넘친 조각은 깨져서 감점!</p><small>약 12분 · 부엉이와 '+W.mz[0]+'승 '+W.mz[1]+'패</small></button>'
     +'<button type="button" class="bgcard" data-go="bg:word"><h3>🔤 낱말 보드게임</h3><p>초성 땅따먹기와 초성 글자판 모으기! 부엉이와 낱말로 겨뤄요.</p><small>약 10분 · 서이도 하는 게임</small></button>'
     +'<button type="button" class="bgcard" data-go="bg:sky"><h3>⚙️ 하늘 기계섬 잇기</h3><p>구름 위 기계 섬 타일을 돌려서 이어 붙여요. 철골 길은 길끼리, 톱니 구역은 구역끼리! 기공사를 올려 점수를 모아요.</p><small>약 15분 · 카르카손과 같은 방식</small></button><button type="button" class="bgcard" data-go="bg:hun"><h3>訓 훈민 큐브</h3><p>한글 자음 패로 가나다 줄과 오방색 줄을 만들어요. 첫 등록은 30점부터! 내 패를 먼저 다 내려놓으면 승리.</p><small>약 20분 · 루미큐브와 같은 방식</small></button><button type="button" class="bgcard" data-go="ck"><h3>🧩 쿠키 틀 퍼즐</h3><p>조각을 톡 눌러 돌리고 꾹 눌러 뒤집어, 쿠키 틀을 빈틈없이 채워요. 부엉이보다 빨리!</p><small>약 8분 · 6판 겨루기</small></button></section>','#7B4FBF'); }
-{ const _ri=routeInner; routeInner=function(v,a,b){ TOK++; closeSheet(); if(v==='bg'){ VIEW='bg'; if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} if(!isOpen()||!a) return hub(); if(a==='sky'||a==='hun'){ bgFrame(a,()=>route('bg')); return; } return a==='mosaic'?mzStart():a==='word'?(window.__wordBG&&window.__wordBG()):a==='wordagain'?(window.__wordAgain&&window.__wordAgain()):csStart(); } return _ri.apply(this,arguments); }; }
+{ const _ri=routeInner; routeInner=function(v,a,b){ TOK++; closeSheet(); if(v==='bg'){ VIEW='bg'; if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} if(!isOpen()||!a) return hub();
+      { const bk=BGKEY[a]; if(bk&&bgDone().indexOf(bk)>=0){ try{ toast&&toast(BGNM[bk]+'은 오늘 이미 했어요. 내일 또 만나요!'); }catch(e){} return hub(); } if(bk) bgMark(bk); }
+      if(a==='sky'||a==='hun'){ bgFrame(a,()=>route('bg')); return; } return a==='mosaic'?mzStart():a==='word'?(window.__wordBG&&window.__wordBG()):a==='wordagain'?(window.__wordAgain&&window.__wordAgain()):csStart(); } return _ri.apply(this,arguments); }; }
 window.addEventListener('popstate',()=>{ TOK++; closeSheet(); });
 const scoreBar=(a,b,turn,label)=>'<div class="bgsc"><div class="bgpl me'+(turn===0?' on':'')+'">🐰<span><small>'+NM()+'</small><br><b>'+a+'</b>점</span></div><span style="font-weight:900;color:#999;font-size:.8rem;text-align:center">'+(label||'VS')+'</span><div class="bgpl ow'+(turn===1?' on':'')+'"><span style="text-align:right"><small>부엉이</small><br><b>'+b+'</b>점</span>🦉</div></div>';
 function endSheet(key,a,b,detail,again){ const W=REC()[key]; W[a>b?0:a<b?1:2]++; SAVE(); SFX(a>b?'done':'no');
@@ -10494,7 +10508,7 @@ function start(){ TOK++; clearInterval(timer); closeSheet(); newGame(0); clearIn
   w.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{ closeSheet(); newGame(+b.dataset.m); clearInterval(timer); const ps=Date.now(); tut('🧩 쿠키 틀 퍼즐',TUT,()=>{ P.t0+=Date.now()-ps; timer=setInterval(tick,250); render(true); }); }); }
 
 window.__cookie=function(){ VIEW='ck'; show('<button class="back" data-go="bg">← 보드게임 방</button><section class="panel" id="ckwrap"><div id="ckapp"></div></section>','#E8590C'); TOK++; try{ clearInterval(timer); }catch(e){} start(); };
-{ const _ri=routeInner; routeInner=function(v,a,b){ if(v==='ck'){ if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} return window.__cookie(); } try{ clearInterval(timer); G&&(G.fin=1); }catch(e){} closeSheet(); return _ri.apply(this,arguments); }; }
+{ const _ri=routeInner; routeInner=function(v,a,b){ if(v==='ck'){ if(window.__bgDone&&window.__bgDone().indexOf('ck')>=0){ try{ toast(window.__bgNM.ck+'은 오늘 이미 했어요. 내일 또 만나요!'); }catch(e){} return route('bg'); } try{ window.__bgMark&&window.__bgMark('ck'); }catch(e){} if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} return window.__cookie(); } try{ clearInterval(timer); G&&(G.fin=1); }catch(e){} closeSheet(); return _ri.apply(this,arguments); }; }
 })();
 </script>
 <!-- ===== 쿠키 틀 퍼즐 끝 ===== -->
@@ -15567,11 +15581,16 @@ const EBSBOOKS = [
           grantGame(); } });
         M.R = P.length - nDone; M.T = P.length; mgFit(M); } catch (e) {}
       /* 다 풀면 오늘의 소품 */
-      if (all) { const tr = STATE.tr = STATE.tr || { days: {}, seen: {} }; tr.days = tr.days || {}; if (!tr.days[dkN(new Date())]) { tr.days[dkN(new Date())] = 1; try { persist(); } catch (e) {} setTimeout(() => { try { if (typeof start === 'function' && app.querySelector('.moodrow')) start(); } catch (e) {} }, 400); } }
+      if (all) { try { if (STATE.bgOpen !== dkey(new Date())) { STATE.bgOpen = dkey(new Date()); persist(); } } catch (e) {}
+        const tr = STATE.tr = STATE.tr || { days: {}, seen: {} }; tr.days = tr.days || {}; if (!tr.days[dkN(new Date())]) { tr.days[dkN(new Date())] = 1; try { persist(); } catch (e) {} setTimeout(() => { try { if (typeof start === 'function' && app.querySelector('.moodrow')) start(); } catch (e) {} }, 400); } }
       try { persist(); } catch (e) {}
       const now = done.indexOf(false), html = '<section class="bdlbox" id="bdlbox"><h2>🎒 일요일 보따리</h2><p class="lead">' + (all ? '🎉 <b>보따리를 다 풀었어요!</b> 오늘의 소품을 모았어요. 이번 주 활약 리포트를 부모님께 보여 드려요!' : '오늘은 새 진도 없이, 이번 주(월~토)에 배운 것을 과목마다 복습해요. 약했던 곳이 먼저 나와요. 다 풀면 오늘의 소품을 모아요. 게임은 내가 골라요! 🎮') + '</p>'
         + '<div class="bdlbar"><i style="width:' + (P.length ? Math.round(nDone / P.length * 100) : 100) + '%"></i></div>'
-        + '<div class="bdlgrid">' + P.map((p, i) => '<button type="button" class="bdlcard' + (done[i] ? ' did' : i === now ? ' now' : '') + '" data-go="' + goOf(p) + '"><span class="ic">' + p.ic + '</span><span><b>' + (i + 1) + '. ' + p.t + '</b><small>' + subOf(p) + (p.min ? ' · ⏱ 약 ' + p.min + '분' : '') + '</small></span>' + (done[i] ? '<span class="ck">완료</span>' : '') + '</button>').join('') + '</div></section>';
+        + '<div class="bdlgrid">' + P.map((p, i) => '<button type="button" class="bdlcard' + (done[i] ? ' did' : i === now ? ' now' : '') + '" data-go="' + goOf(p) + '"><span class="ic">' + p.ic + '</span><span><b>' + (i + 1) + '. ' + p.t + '</b><small>' + subOf(p) + (p.min ? ' · ⏱ 약 ' + p.min + '분' : '') + '</small></span>' + (done[i] ? '<span class="ck">완료</span>' : '') + '</button>').join('') + '</div>'
+        /* 2026-11-15: 보따리를 하는 날에는 오늘의 학습 상자가 없어서 보드게임 방 단추가 사라졌어요. 보따리 상자 안에 넣어요 */
+        + (all ? '<button type="button" class="bgopen" data-go="bg" style="margin-top:10px">🎲 보드게임 방이 열렸어요! <span>부엉이가 기다려요 🦉</span></button>'
+               : '<p class="bglock">🔒 보따리를 다 풀면 🎲 보드게임 방이 열려요</p>')
+        + '</section>';
       const old = document.getElementById('bdlbox'); if (old && old.dataset.src === html) return;   /* 내용이 같으면 다시 그리지 않아요 (떨림 방지) */
       window.__bdlSrc = html;
       if (old) old.outerHTML = html; else (app.querySelector('.tdprog') || home).insertAdjacentHTML('afterend', html);
