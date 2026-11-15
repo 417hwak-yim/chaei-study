@@ -10199,7 +10199,7 @@ function hub(){ const W=REC();
     +'<button type="button" class="bgcard" data-go="bg:lab"><h3>🔱 보물 미로 탐험</h3><p>바닷속 미로에 타일을 밀어 넣어 물길을 바꿔요. 잠수함을 몰고 보물 4개를 모아 내 기지로 먼저 돌아가면 승리!</p><small>약 15분 · 라비린스와 같은 방식</small></button><button type="button" class="bgcard" data-go="ck"><h3>🧩 쿠키 틀 퍼즐</h3><p>조각을 톡 눌러 돌리고 꾹 눌러 뒤집어, 쿠키 틀을 빈틈없이 채워요. 부엉이보다 빨리!</p><small>약 8분 · 6판 겨루기</small></button></section>','#7B4FBF'); }
 /* 2026-11-15: 점검하는 동안 보드게임 방에는 보물 미로 탐험과 낱말 보드게임만 보여요.
    (게임 코드는 그대로 남아 있어서 BGREST 목록만 비우면 다시 나와요) */
-const BGREST=window.__bgRest=['mosaic','sky'];   /* 2026-11-15: 훈민 큐브·쿠키 틀 퍼즐 다시 열기 */
+const BGREST=window.__bgRest=['mosaic','sky','hun'];   /* 2026-11-15: 훈민 큐브·쿠키 틀 퍼즐 다시 열기 */
 { const _h=hub; hub=function(){ const r=_h.apply(this,arguments);
     try{ document.querySelectorAll('#app .bgcard[data-go]').forEach(x=>{ const g=x.dataset.go, a=g.indexOf(':')>0?g.split(':')[1]:g;
       if(BGREST.indexOf(a)>=0) x.remove(); }); }catch(e){}
