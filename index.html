@@ -11868,10 +11868,16 @@ const DADREV = [
       if (it.gen) { for (let n = 0; n < (it.gen.n || 1); n++) out.push(Object.assign({ k: k + '.' + n, base: k, ph, tag: it.tag }, genQ(it.gen))); } else out.push(Object.assign({ k, base: k, ph }, it)); });
     add(g.p, 'p'); add(g.z, 'z'); return out; }
 
-  const norm = s => String(s == null ? '' : s).replace(/\s+/g, '').replace(/[.,!?。'"‘’“”]/g, '').toLowerCase();
+  /* 2026-11-16: 소수점은 지우지 않아요 (전에는 0.1 · 0.01 · 1.0 이 모두 같은 답으로 처리됐어요).
+     문장 끝의 마침표처럼 숫자 사이가 아닌 점만 지워요 */
+  const norm = s => String(s == null ? '' : s).replace(/\s+/g, '').replace(/\.(?!\d)/g, '').replace(/[,!?。'"‘’“”]/g, '').toLowerCase();
   /* 분수 답: 정답의 [f:10/7]·[f:1 3/4] 표기와 아이가 쓴 10/7 · 7분의 10 · 1 3/4 · 1과 3/4를 같은 모양으로 맞춰서 비교해요 */
   const fx = s => String(s == null ? '' : s).replace(/\[f:([^\]]+)\]/g, '$1').replace(/(\d+)\s*분의\s*(\d+)/g, '$2/$1').replace(/(\d+)\s*(?:과|와|\s)\s*(\d+)\s*\/\s*(\d+)/g, '$1+$2/$3').replace(/(\d+)\s*\/\s*(\d+)/g, '$1/$2');
   const isRight = (q, v) => { const A = (Array.isArray(q.a) ? q.a : [q.a]).map(a => norm(fx(a))), x = norm(fx(v)); if (!x) return false; if (A.includes(x)) return true;
+    /* 2026-11-16: 보기에서 고르는 문제는 글자가 똑같아야 정답이에요.
+       (숫자만 보고 맞히면 ‘8보다 커요’와 ‘8보다 작아요’가 둘 다 정답이 돼 버려요.
+        숫자 비교는 아이가 직접 답을 써 넣는 문제에서만 씁니다) */
+    if (q.ch && q.ch.length) return false;
     const nx = parseFloat(x.replace(/[^0-9.\-]/g, '')); return !isNaN(nx) && /^-?[0-9.]+[가-힣a-z]*$/.test(x) && A.some(a => { const na = parseFloat(a.replace(/[^0-9.\-]/g, '')); return !isNaN(na) && na === nx && /^-?[0-9.]+[가-힣a-z]*$/.test(a); }); };
   const ddate = d => String(d || '').replace(/^(\d+)-0?(\d+)-0?(\d+)$/, '$2월 $3일');
 
