@@ -13873,7 +13873,7 @@ try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v===
 <!-- ===== 마무리 복습 (2026-11-10) 시작 ===== -->
 <script>
 /* ===== 🔁 마무리 복습: 오늘의 학습 목록의 마지막 항목 (두 공부방, 2026-11-10) =====
-   오늘의 학습을 다 끝내면 무한 복습 한 판(8문제 중 6문제 이상)을 꼭 해요. 이걸 끝내야 오늘의 학습이 다 끝난 거예요.
+   오늘의 학습을 다 끝내면 무한 복습 한 판(10문제 중 8문제 이상)을 꼭 해요. 이걸 끝내야 오늘의 학습이 다 끝난 거예요.
    그래서 달력 왕관·보물 상자 소품도 마무리 복습을 끝낸 뒤에 생겨요. 이 한 판은 학습 한 개처럼 게임 칸도 채워요.
    그 뒤로 게임을 더 열고 싶으면 처음 화면의 무한 복습을 해요(원래 규칙 그대로).
    복습할 문제가 없는 날(듣기만 한 날 등)과 일요일은 마무리 복습 없이 끝나요. */
@@ -13892,7 +13892,7 @@ try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v===
     const ready = others.every(c => c.classList.contains('did'));
     if (ready && !fin() && !canQ()) finish();
     const did = fin();
-    g.insertAdjacentHTML('beforeend', '<button type="button" class="todaycard rrtoday' + (did ? ' did' : '') + '" style="--u:#7C5CE0"' + (ready && !did ? ' data-go="rr"' : '') + '><span class="tmark">🔁</span><span class="tt"><b>마무리 복습</b><span class="tw">' + (did ? '오늘 복습 끝! ✅' : '오늘 공부한 것에서 8문제 · 6문제 이상 맞히기') + '</span><span class="tl">' + (did ? '오늘의 학습을 모두 끝냈어요' : ready ? '꼭 한 번 해요' : '🔒 오늘의 학습을 다 하면 열려요') + '</span></span><span class="tgo" aria-hidden="true">' + (did ? '✅' : '▶') + '</span></button>');
+    g.insertAdjacentHTML('beforeend', '<button type="button" class="todaycard rrtoday' + (did ? ' did' : '') + '" style="--u:#7C5CE0"' + (ready && !did ? ' data-go="rr"' : '') + '><span class="tmark">🔁</span><span class="tt"><b>마무리 복습</b><span class="tw">' + (did ? '오늘 복습 끝! ✅' : '오늘 공부한 것에서 10문제 · 8문제 이상 맞히기') + '</span><span class="tl">' + (did ? '오늘의 학습을 모두 끝냈어요' : ready ? '꼭 한 번 해요' : '🔒 오늘의 학습을 다 하면 열려요') + '</span></span><span class="tgo" aria-hidden="true">' + (did ? '✅' : '▶') + '</span></button>');
     if (!ready && !did) g.querySelector('.rrtoday').addEventListener('click', () => tip('🔒 오늘의 학습을 다 하면 마무리 복습이 열려요'));
   }
   const _s = start; start = function () { const r = _s.apply(this, arguments); try { card(); } catch (e) {} return r; };
@@ -17129,9 +17129,9 @@ PX.push('#9ED8F5', '#5DB4E8', '#2E7D4F', '#A8DC7A', '#F6C9A0', '#6B3E26', '#F2D4
 </style>
 <script>
 /* 오늘의 학습을 다 끝낸 뒤에는 일반 학습을 되풀이해도 게임이 열리지 않아요.
-   대신 오늘 공부한 내용에서 8문제씩 섞어 내는 무한 복습이 열리고, 6문제 이상 맞힌 판을 2~3번 채우면 게임이 열려요.
+   대신 오늘 공부한 내용에서 10문제씩 섞어 내는 무한 복습이 열리고, 8문제 이상 맞힌 판을 2~3번 채우면 게임이 열려요.
    게임은 지금처럼 하루에 한 번씩만 열려요. 복습은 도장·보물·오늘의 학습 수에 들어가지 않아요. */
-(function(){ /* 2026-11-13: 마무리 복습(오늘의 학습 마지막 한 판)은 8문제 그대로, 그 뒤 무한 복습은 15문제(11문제 이상) */ const NQ0=8, PASS0=6, NQ1=15, PASS1=11, isFirst=()=>!!(window.__rrNeed&&window.__rrNeed()&&new Date().getDay()!==0), app=()=>document.getElementById('app');
+(function(){ /* 2026-11-16: 무한 복습은 모두 10문제. 마무리 복습(오늘의 학습 마지막 한 판)도 10문제, 그 뒤 무한 복습도 10문제(8문제 이상) */ const NQ0=10, PASS0=8, NQ1=10, PASS1=8, isFirst=()=>!!(window.__rrNeed&&window.__rrNeed()&&new Date().getDay()!==0), app=()=>document.getElementById('app');
   const done=M=>typeof M.R==='number'&&M.T>0&&M.R<=0;
   const left=M=>Object.keys(MGAMES).filter(k=>M.open.indexOf(k)<0).length;
   const need=M=>{ if(!M.rn) M.rn=2+Math.floor(Math.random()*2); M.rc=M.rc||0; return M.rn; };
@@ -17147,8 +17147,8 @@ PX.push('#9ED8F5', '#5DB4E8', '#2E7D4F', '#A8DC7A', '#F6C9A0', '#6B3E26', '#F2D4
     el.innerHTML='<p class="inst">'+q.inst+'</p><div class="stim">'+(q.stim||'')+say(q.listen||q.say)+'</div><div class="rrch">'+q.ch.map((c,i)=>'<button type="button" data-i="'+i+'">'+c.h+'</button>').join('')+'</div>';
     el.querySelector('.rrch').onclick=e=>{ const b=e.target.closest('button'); if(!b||b.disabled) return; const c=q.ch[+b.dataset.i], bs=[...el.querySelectorAll('.rrch button')]; bs.forEach((x,i)=>{ x.disabled=true; if(q.ch[i].ok) x.classList.add('ok'); }); if(!c.ok) b.classList.add('no'); fin(!!c.ok,q.ex||''); }; };
   function actsOf(it){ const u=it.u, out=[]; setGrade(it.g);
-    if(u.kind==='ma'){ const M=u.rev?u.members:[u]; for(let i=0;i<8;i++){ const m=M[Math.floor(Math.random()*M.length)], f=i%3===2?(m.word||m.drill):m.drill; if(f) out.push({g:it.g,a:f.call(m)}); } return out; }
-    if(u.kind==='ko'&&typeof KOA!=='undefined'){ const W=mix(koWords(u)).slice(0,8); W.forEach((w,i)=>out.push({g:it.g,a:KOA[i%2?'word2def':'def2word'](u,w)})); return out; }
+    if(u.kind==='ma'){ const M=u.rev?u.members:[u]; for(let i=0;i<10;i++){ const m=M[Math.floor(Math.random()*M.length)], f=i%3===2?(m.word||m.drill):m.drill; if(f) out.push({g:it.g,a:f.call(m)}); } return out; }
+    if(u.kind==='ko'&&typeof KOA!=='undefined'){ const W=mix(koWords(u)).slice(0,10); W.forEach((w,i)=>out.push({g:it.g,a:KOA[i%2?'word2def':'def2word'](u,w)})); return out; }
     let qs=[]; try{ qs=buildQuiz(u,it.l)||[]; }catch(e){} if(!qs.some(q=>q.t==='c')) try{ qs=buildQuiz(u,0)||[]; }catch(e){}
     mix(qs.filter(q=>q.t==='c'&&q.ch&&q.ch.length>=2&&!q.dl&&!/lisbox|trace/.test(q.stim||''))).forEach(q=>out.push({g:it.g,a:cAct(q),k:[q.inst,q.stim||'',q.listen||'',(q.ch.find(c=>c.ok)||{}).h].join('|')})); return out; }
   /* 2026-11-07: 듣기처럼 복습 문제가 없는 공부만 한 날은 복습을 열 수 없으니, 게임을 막지 않고 예전처럼 학습 2~3개마다 열어요 */
