@@ -7046,11 +7046,25 @@ function lessonIntro(u,l){
 }
 
 /* ---------- 문제 만들기 ---------- */
-function others(u,w,n,picOnly){return pick(u.words.filter(x=>x!==w&&(!picOnly||!x.nopic)&&!(x.p&&x.p===w.p)&&x.ko!==w.ko&&x.en!==w.en),n)}   /* 그림이나 뜻이 같은 낱말은 보기로 함께 내지 않아요 (pants·jeans 👖) */
+function others(u,w,n,picOnly){ const L=u.words.filter(x=>x!==w&&(!picOnly||!x.nopic)&&!(x.p&&x.p===w.p)&&x.ko!==w.ko&&x.en!==w.en);
+  /* 2026-11-20: 그림 보기 문제에서는 비슷하게 생긴 그림(✏️🖊️)도 함께 내지 않아요 */
+  if(!picOnly) return pick(L,n);
+  /* 2026-11-20: 그림 보기는 정답과도, 보기끼리도 닮지 않은 것만 골라요 */
+  const got=[w.p], out=[];
+  const add=A=>A.forEach(x=>{ if(out.length<n&&x.p&&x.ko!==w.ko&&x.en!==w.en&&!got.some(v=>window.__picClash&&__picClash(v,x.p))){ got.push(x.p); out.push(x); } });
+  add(pick(L,L.length));
+  /* 같은 단원에 안 닮은 그림이 모자라면 다른 단원 낱말에서 빌려 와요 */
+  if(out.length<n) add(pick(allPicWords(),60));
+  return out.length>=n?out:pick(L,n); }
+function allPicWords(){ if(window.__allPicWords) return window.__allPicWords; const a=[], seen={};
+  try{ Object.keys(GRADES).forEach(g=>(GRADES[g].units||[]).forEach(u=>(u.words||[]).forEach(x=>{ if(x&&x.p&&!x.nopic&&!seen[x.en]){ seen[x.en]=1; a.push(x); } }))); }catch(e){}
+  return (window.__allPicWords=a); }   /* 그림이나 뜻이 같은 낱말은 보기로 함께 내지 않아요 (pants·jeans 👖) */
 function buildQuiz(u,l){
   if(u.cq) return u.lq?lisQuiz(u,l):u.math?mathQuiz(u,l):u.gq?egQuiz(u,l):u.kq?korQuiz(u,l):hanjaQuiz(u,l);
   if(u.rp&&l===1) return erQuiz(u);
-  const pw=u.words.filter(w=>!w.nopic), qs=[];
+  /* 2026-11-20: 한 단원에서 두 낱말이 같은 그림을 쓰면(⚽ soccer·ball) 그림만 보고 고르는 문제에는 안 써요 */
+  const pwAll=u.words.filter(w=>!w.nopic), pwUniq=pwAll.filter(w=>!(w.p&&window.__picAmb&&__picAmb(w.p,u.words,x=>x.p)));
+  const pw=pwUniq.length>=4?pwUniq:pwAll, qs=[];
   const big=t=>'<span class="en" style="font-size:2rem;font-weight:700">'+t+'</span>', oth=(w,n)=>pick(LET.filter(x=>x!==w),n);
   if(u.abc&&l===0){
     const ws=pick(LET,10);
@@ -8126,7 +8140,13 @@ function lisIntro(u,l){
 /* 초등 영어 듣기평가의 문항 형식을 따라 만들어요: 그림 고르기, 일치하는 것 고르기, 대화의 주제, 세부 내용, 이어질 응답 */
 function lisQuiz(u,l){
   const W=u.words, S=u.sents, D=u.dlgs, G=GRADES[u.g].units, en=t=>'<span class="en">'+t+'</span>', test=l==='s';
-  const four=(w,pool,key,f,n)=>{ const seen=new Set([key(w)]), o=[]; shuffle(pool).forEach(x=>{ if(o.length<(n||3)&&!seen.has(key(x))){ seen.add(key(x)); o.push(x); } }); return shuffle([w,...o]).map(x=>({h:f(x),ok:x===w})); };
+  /* 2026-11-20: 보기가 그림일 때는 서로 닮은 그림을 함께 내지 않아요 */
+  const picEmo0=v=>typeof v==='string'&&/\p{Extended_Pictographic}/u.test(v)&&Array.from(v).length<=5;
+  const four=(w,pool,key,f,n)=>{ const kw=key(w), seen=new Set([kw]), got=[kw], o=[];
+    const bad=k=>picEmo0(kw)&&picEmo0(k)&&window.__picClash&&got.some(v=>picEmo0(v)&&__picClash(v,k));
+    shuffle(pool).forEach(x=>{ const k=key(x); if(o.length<(n||3)&&!seen.has(k)&&!bad(k)){ seen.add(k); got.push(k); o.push(x); } });
+    if(o.length<(n||3)) shuffle(pool).forEach(x=>{ const k=key(x); if(o.length<(n||3)&&!seen.has(k)){ seen.add(k); o.push(x); } });
+    return shuffle([w,...o]).map(x=>({h:f(x),ok:x===w})); };
   const pk=p=>'<span class="pic chpic" style="font-size:2.2rem">'+p+'</span>', one=t=>[['',t]];
   const box=(lines,top)=>(top||'')+'<div class="lisbox"><div class="row center"><button class="btn sun lisplay" type="button">🔊 '+(test?'들려주기 (두 번)':'들려주기')+'</button><button class="back lisscriptbtn" type="button">📄 대본 보기</button></div>'+lisCast(lines)+lisScript(lines)+'</div>';
   const Q1=(inst,lines,ch,ex,top)=>({t:'c',inst,stim:box(lines,top),dl:lines,ch,ex});
@@ -12285,7 +12305,7 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
         word: s => { const w = keyW(s, W); if (!w) return T.ko(s); const o = shuffle(W.concat(OW).filter(x => x.en !== w.en && low(s.en).indexOf(low(x.en)) < 0)).filter((x, k, a) => a.findIndex(y => y.en === x.en) === k).slice(0, 3);
           return Q1('다음을 듣고, 문장에서 들린 낱말을 고르시오.', one(s.en), shuffle([{ h: en(w.en), ok: 1 }, ...o.map(x => ({ h: en(x.en) }))]), '들린 낱말: ' + w.en + ' (' + w.ko + ') · ' + s.en + ' : ' + s.ko); },
         /* ④ 그림 + 꼬리표 고르기 */
-        pic: s => { const t0 = tag(s); if (!t0) return T.ko(s); const o = shuffle(S.filter(x => x !== s && tag(x) && tag(x) !== t0 && x.p !== s.p)).slice(0, 3);
+        pic: s => { const t0 = tag(s); if (!t0) return T.ko(s); const got0 = [s.p], o = []; shuffle(S.filter(x => x !== s && tag(x) && tag(x) !== t0 && x.p !== s.p)).forEach(x => { if (o.length < 3 && !(window.__picClash && got0.some(v => __picClash(v, x.p)))) { got0.push(x.p); o.push(x); } });
           if (o.length < 2) return T.ko(s); return Q1('다음을 듣고, 알맞은 그림을 고르시오.', one(s.en), shuffle([{ h: picTag(s.p, t0), ok: 1 }, ...o.map(x => ({ h: picTag(x.p, tag(x)) }))]), s.en + ' : ' + s.ko); },
         /* ⑤ 그림(꼬리표)과 맞는 문장 번호: 세 문장을 들려줘요 */
         match: s => { const t0 = tag(s) || s.ko; const ot = shuffle(S.filter(x => x !== s && x.p !== s.p)).slice(0, 2), all = shuffle([s, ...ot]), k = all.indexOf(s), N = '①②③';
@@ -17305,5 +17325,28 @@ PX.push('#9ED8F5', '#5DB4E8', '#2E7D4F', '#A8DC7A', '#F6C9A0', '#6B3E26', '#F2D4
 })();
 </script>
 <!-- ===== 기록 예비 보관 끝 ===== -->
+<!-- ===== 비슷하게 생긴 그림 가려내기 (2026-11-20) ===== -->
+<script>
+/* 작은 화면에서 거의 똑같아 보이는 그림끼리는 한 문제의 보기로 함께 내지 않아요.
+   (예: ✏️ 연필 · 🖊️ 펜 · 🖋️ 잉크펜 · 🖌️ 붓)
+   또 한 단원 안에서 두 낱말이 같은 그림을 쓰면(🪑 chair·sit) 그림만 보고 고르는 문제는 내지 않아요. */
+(function(){
+  const G=['✏️🖊️🖋️🖍️🖌️📝✒️🪶','🥛🧃🥤☕🍵🍼🍶','🧢🎩👒⛑️🎓','👟👞🥿👠🥾🩴🧦','🏠🏡🏘️🛖🏚️🏚','🚗🚙🚕🚐🚓🚌🚎',
+    '🐶🐕🦮🐩🐺🦊','🐱🐈🐯','🍊🍋🍈🍏🍎🍐','🎒👜👝💼👛','📖📗📘📕📙📚📒📔📓','🛏️🛌🛋️','🛁🚿🚽','🍽️🍴🥄','🍲🥘🍛',
+    '👕👚','🧥🥼','👖🩳','👗👘','🌳🌲','🌿🍃','🌸🌺🌼🌷🏵️💐','☀️🌞🌅🌄🌇','🌊💧💦','📄📃✉️📜📰','⏰⌚🕐⏱️',
+    '📱☎️📞📟','💻🖥️⌨️🖱️','🐢🐸🦎','🐭🐹🐀','🐰🐇','🐮🐂🐄','🐷🐖','🐵🐒🦧','🪑💺','🚪🚧','🧼🧽🧴',
+    '🍞🥖🥐🥯','🥔🍠🧅','🚂🚃🚄🚅','✈️🛩️🛫🛬','⛵🚤🛶🚢','🏃🚶🧎','😢😭😿','😴😪💤'];
+  const M={}; G.forEach((g,i)=>{ Array.from(g).forEach(ch=>{ M[ch]=i; }); });
+  const base=p=>{ p=String(p||''); const a=Array.from(p).filter(c=>c!=='️'&&c!=='︎'); return a.length?a[0]:''; };
+  /* 🧑‍🚒 🧑‍🎨 처럼 여러 글자가 이어 붙은 그림은 통째로 봐요 (소방관·화가는 서로 달라요) */
+  const key=p=>{ const t=String(p||'').replace(/[️︎]/g,''); if(t.indexOf('‍')>=0) return 'z'+t; const b=base(t); return (b in M)?('g'+M[b]):('x'+b); };
+  window.__picKey=key;
+  /* 두 그림이 서로 헷갈릴 만한가? (같은 그림도 포함) */
+  window.__picClash=(a,b)=>{ if(!a||!b) return false; if(a===b) return true; return key(a)===key(b); };
+  /* 한 꾸러미 안에서 그림이 겹치는 낱말인가? */
+  window.__picAmb=(p,pool,get)=>{ if(!p||!pool) return false; let n=0;
+    for(const x of pool){ const q=get?get(x):(x&&x.p); if(q&&q===p){ n++; if(n>1) return true; } } return false; };
+})();
+</script>
 </body>
 </html>
