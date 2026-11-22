@@ -6685,6 +6685,11 @@ function saveStamp(u,l,stars){
   /* 오늘 끝낸 차시를 과목마다 적어 둬요: 오늘의 학습 칸은 자정까지 이 차시를 '완료'로 보여 주고, 날이 바뀌면 다음 차시가 나와요 */
   try{ const sj=GS(u.g!=null?u.g:GRADE), D=STATE.td.done=STATE.td.done||{}; if(!D[sj]) D[sj]={g:+(u.g!=null?u.g:GRADE),id:u.id,l};
     const tk=dkey(new Date()), L=(STATE.log=STATE.log||{})[tk]=STATE.log[tk]||[], key=(u.g!=null?u.g:GRADE)+'|'+u.id+'|'+l; if(L.indexOf(key)<0) L.push(key); }catch(e){}
+  /* VOCA2DAY 2026-11-22: 영어독해는 하루 두 차시 — 첫 차시를 끝내면 바로 다음 차시가 이어서 나와요 */
+  try{ const sj2=GS(u.g!=null?u.g:GRADE), tk2=dkey(new Date());
+    if(sj2==='voca'){ const V=STATE.vq2=(STATE.vq2&&STATE.vq2.d===tk2)?STATE.vq2:{d:tk2,n:0}; V.n=(V.n||0)+1;
+      if(V.n<2){ if(STATE.td&&STATE.td.s) delete STATE.td.s[sj2]; if(STATE.td&&STATE.td.done) delete STATE.td.done[sj2];
+        if(STATE.tda&&STATE.tda.a) delete STATE.tda.a[sj2]; if(STATE.full) delete STATE.full[tk2]; TDJUST=''; } } }catch(e){}
   persist();
 }
 function saveResume(){ if(!Q) return; STATE.resume={uid:Q.u.id,l:Q.l,qs:Q.qs,i:Q.i,right:Q.right}; persist(); }
@@ -6939,7 +6944,8 @@ function start(subj){
       if(du>=0){ const U=GRADES[dn.g].units[du], dl=dn.l==='s'?(U.cq?'마무리 도전':'말하기 도전'):(+dn.l+1)+'차시 '+LN(U,dn.l)[0];
         todayBox+='<button class="todaycard did" style="--u:'+S.color+'" data-go="today:'+dn.g+':'+du+'_'+dn.l+'">'+num+'<span class="tmark">'+S.mark+'</span><span class="tt"><b>'+S.name+'</b><span class="tw">'+GL(dn.g)+' '+(U.sem&&!U.ul&&GL(dn.g)?U.sem+'학기 ':'')+UL(U)+'</span><span class="tl">'+dl+'</span></span><span class="tdone" role="img" aria-label="오늘 완료">완료</span></button>'; return; }
       if(!didToday) TDASET(k,g,nx.u.id,nx.l);
-      const ln=(nx.rev?'3학년 복습 · ':'')+(nx.l==='s'?(nx.u.cq?'마무리 도전':'말하기 도전'):(nx.l+1)+'차시 '+LN(nx.u,nx.l)[0]);
+      const vq2n=(k==='voca'&&STATE.vq2&&STATE.vq2.d===dkey(new Date()))?(STATE.vq2.n||0):0;
+      const ln=(k==='voca'?'<span class="tnext">오늘 '+(vq2n+1)+'/2차시 · </span>':'')+(nx.rev?'3학년 복습 · ':'')+(nx.l==='s'?(nx.u.cq?'마무리 도전':'말하기 도전'):(nx.l+1)+'차시 '+LN(nx.u,nx.l)[0]);
       todayBox+='<button class="todaycard'+(didToday?' did':'')+(!subj&&k===NOW?' now':'')+'" style="--u:'+S.color+'" data-go="today:'+g+':'+nx.ui+'_'+nx.l+'">'+num+'<span class="tmark">'+S.mark+'</span><span class="tt"><b>'+S.name+'</b><span class="tw">'+GL(g)+' '+(nx.u.sem&&!nx.u.ul&&GL(g)?nx.u.sem+'학기 ':'')+UL(nx.u)+'</span><span class="tl">'+(didToday?'<span class="tnext">다음: </span>':'')+ln+'</span></span>'+(didToday?'<span class="tdone" role="img" aria-label="오늘 완료">완료</span>':(!subj&&k===NOW?'<span class="tnow">지금 할 차례</span>':'')+'<span class="tgo" aria-hidden="true">▶</span>')+'</button>'; });
     if(!subj&&waiting.length) todayBox+='<p class="twait">'+waiting.map(k=>SUBJ[k].name).join(', ')+'은 준비 중이에요.</p>';
     if(subj&&!TK.length) todayBox+='<p class="twait">자료가 올라오면 여기에 오늘 할 것이 나와요.</p>';
@@ -14319,7 +14325,8 @@ try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v===
       const bar=tb.querySelector('.tbar'); if(bar){ bar.style.setProperty('--n',total); bar.setAttribute('aria-valuemax',total); bar.setAttribute('aria-valuenow',done); const bi=bar.querySelector('i'), bs=bar.querySelector('span'); if(bi) bi.style.width=(total?Math.round(done/total*100):0)+'%'; if(bs) bs.textContent=done>=total?'모두 끝!':'남은 학습 '+(total-done)+'개'; }
       const ld=tb.querySelector(':scope > .lead'); if(total&&done>=total){ tb.classList.add('alldone'); if(ld) ld.textContent='오늘의 학습을 끝냈어요! 🎉'; } else { tb.classList.remove('alldone'); if(ld&&/끝냈어요|남았어요/.test(ld.textContent)) ld.textContent='남은 학습 '+(total-done)+'개, 조금만 더 힘내요!'; }
       /* 게임: 남은 학습 수에 맞춰 다음 게임까지의 개수를 다시 맞춰요 */
-      try{ const M=mgState(); M.R=total-done; M.T=total; mgFit(M); saveLocal(); }catch(e){} }
+      /* SUNGAME 2026-11-22: 일요일(보따리)엔 숨어 있는 '오늘의 학습' 수로 게임 세기를 덮어쓰지 않아요 — 보따리 칸 수로만 세요 */
+      try{ if(new Date().getDay()!==0){ const M=mgState(); M.R=total-done; M.T=total; mgFit(M); saveLocal(); } }catch(e){} }
     const reads=[...tw.querySelectorAll('.nwbanner,.whybanner,.bdcard')], rdone=reads.filter(c=>c.classList.contains('did')).length;
     const mood=tw.querySelector(':scope > .moodrow');
 
