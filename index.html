@@ -9566,10 +9566,12 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
   const todayW=()=>{ const n=new Date(), pk=n.getFullYear()+'-'+(n.getMonth()+1)+'-'+n.getDate(), pin=W.find(x=>x.pin===pk); if(pin) return pin;   /* 2026-11-04: pin 날짜가 정해진 글은 그날 나오고, 돌아가는 차례에는 끼지 않아요 */
     const RW=W.filter(x=>!x.pin), d=Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-day0)/864e5);
     const i0=((d%RW.length)+RW.length)%RW.length, base=RW[i0];
-    /* 2026-11-20: 안 읽은 글을 먼저 보여 줘요. 오늘 차례가 이미 읽은 글이면 다음 안 읽은 글로 넘어가고,
-       모두 읽었으면 원래 차례 글을 그대로 보여 줘요(✅ 읽었어요로 보여요). */
-    try{ const R=(STATE&&STATE.why)||{}; if(R[base.id]) for(let k=1;k<RW.length;k++){ const c=RW[(i0+k)%RW.length]; if(!R[c.id]) return c; } }catch(e){}
-    return base; };
+  /* WHYLOCK 2026-11-22: 오늘 글은 하루 동안 그대로예요. 읽으면 ✅ 완료로 남고, 새 글은 내일 나와요 */
+  try{ const L=STATE&&STATE.whyDay; if(L&&L.d===pk){ const f=RW.find(x=>x.id===L.id); if(f) return f; } }catch(e){}
+  /* 그날 글을 처음 고를 때만: 차례가 이미 읽은 글이면 아직 안 읽은 글로 넘어가요 */
+  let out=base; try{ const R=(STATE&&STATE.why)||{}; if(R[base.id]) for(let k=1;k<RW.length;k++){ const c=RW[(i0+k)%RW.length]; if(!R[c.id]){ out=c; break; } } }catch(e){}
+  try{ STATE.whyDay={d:pk,id:out.id}; persist(); }catch(e){}
+  return out; };
   const dk=()=>{ const n=new Date(); return n.getFullYear()+'-'+(n.getMonth()+1)+'-'+n.getDate(); };
   const fmt=d=>{ const a=String(d).split('-'); return (+a[1])+'월 '+(+a[2])+'일'; };
   const RS=()=>(STATE.why=STATE.why||{});
@@ -9630,7 +9632,7 @@ const WHYCFG={big:false,after:'news',sk:'e3-view'};
   /* 처음 화면 카드 */
   function card(){ const N=todayW(), K=KIND[N.k], did=!!RS()[N.id], im=WHYIMG[N.id];
     return '<button class="whybanner'+(did?' did':'')+'" style="--k:'+K[2]+'" data-go="why:'+N.id+'"><span class="whythumb">'+(im?'<img src="'+im+'" alt="">':N.i)+'</span>'+(did?'<span class="whystamp">✅ 읽음</span>':'')
-      +'<span class="whybt"><span class="whybk">🦉 오늘의 왜? · '+K[0]+'</span><b>'+E(N.t)+'</b><span class="whybs">'+(did?'읽었어요 ✅':'그림책처럼 넘겨 읽고 퀴즈 1개')+'</span></span><span class="whygo" aria-hidden="true">›</span></button>'; }
+      +'<span class="whybt"><span class="whybk">🦉 오늘의 왜? · '+K[0]+'</span><b>'+E(N.t)+'</b><span class="whybs">'+(did?'✅ 오늘 읽기 끝! 새 글은 내일 나와요':'그림책처럼 넘겨 읽고 퀴즈 1개')+'</span></span><span class="whygo" aria-hidden="true">›</span></button>'; }
 
 
   /* 장마다 실제 사진: 위키미디어 공용에서 그때그때 불러와요. 인터넷이 없거나 사진을 못 불러오면 원래 그림(이모지 장면)이 나와요.
@@ -11011,13 +11013,13 @@ const CHG=[
 /* 땅따먹기 낱말 사전 더하기: 낱말 또는 낱말/그림 을 띄어쓰기로 */
 const CHBANK='가방/👜 가지/🍆 감자/🥔 강아지/🐶 개구리/🐸 거미/🕷️ 고구마/🍠 고래/🐳 고양이/🐱 고추/🌶️ 공원 과자 구두/👞 구름/☁️ 국수 그네 그림/🖼️ 기차/🚂 김밥 김치 꽃게/🦀 나무/🌳 나비/🦋 냄비 냉장고 노래 눈썹 다리 달걀/🥚 당나귀 대나무/🎋 도로 돼지/🐷 두부 딸기/🍓 라면/🍜 리본/🎀 마당 마차 만화 메뚜기 모래 모자/🧢 목걸이 무릎 물고기/🐟 미역 바나나/🍌 바다/🌊 바지/👖 반지/💍 배추 버스/🚌 베개 벌레 병아리/🐤 보리 부채 비행기/✈️ 빨래 사과/🍎 사자/🦁 사탕/🍬 상자/📦 새우/🦐 생선 소금/🧂 송아지 수박/🍉 수건 숟가락/🥄 시계/⏰ 신발 아기/👶 아빠 엄마 양파/🧅 여우/🦊 연못 오리/🦆 오이/🥒 우유/🥛 원숭이/🐒 의자/🪑 이불 인형 자동차/🚗 자전거/🚲 장미/🌹 젓가락/🥢 조개 종이 주머니 지구/🌍 지우개 참새 창문 책상 청소기 치마/👗 치즈/🧀 칠판 침대/🛏️ 카메라/📷 코뿔소/🦏 콩나물 토끼/🐰 토마토/🍅 파도 포도/🍇 피자/🍕 하늘 하마/🦛 할머니/👵 할아버지/👴 호랑이/🐯 호박/🎃 화분/🪴 휴대폰/📱 감나무 개나리 고드름 기러기 나팔꽃 노을 도마뱀/🦎 독수리/🦅 동생 두더지 딱따구리 메아리 모기/🦟 미꾸라지 바구니/🧺 바람 방울/🔔 번데기 보석/💎 부엌 비둘기/🕊️ 빗방울 사다리/🪜 사슴/🦌 산책 새싹/🌱 선물/🎁 소풍 손수건 수영장 시소 실내화 아침 안개/🌫️ 앵두 야채 어항 얼음/🧊 열매 오렌지/🍊 옷걸이 우물 운동장 유치원 은하수/🌌 자두 잠자리 전화 제비 주전자/🫖 지렁이/🪱 진흙 참외 채소 청개구리 촛불/🕯️ 축구 컴퓨터/💻 쿠키/🍪 탬버린 태양/☀️ 트럭/🚚 팽이 풀잎 하모니카 해님 허수아비 호수 홍당무 화장실/🚻 황소/🐂 가족 거실 고무줄 공주/👸 구슬 김장 꼬리 나라 낙엽/🍂 냇물 놀이터 누나 눈물 달님 대문 도깨비/👹 도시락/🍱 동화책 마스크/😷 마을 말벌 망원경/🔭 머리띠 먹구름 모닥불/🔥 목욕/🛁 문방구 물감 바퀴 박물관 반딧불 발자국/👣 밤하늘 배꼽 보름달/🌕 볼펜/🖊️ 부엉이/🦉 붕어빵 비옷 빨대 사진 산딸기 색종이 생쥐/🐭 선생님 세탁기 소나기 소방관/🧑‍🚒 손가락 손톱 솜사탕 수족관 스케치북 시냇물 식탁 액자 야구 어린이 엘리베이터 연기 옥상 요리사/🧑‍🍳 우주 이빨 자석/🧲 잠옷 저금통 접시/🍽️ 정원 조약돌 줄넘기 지갑/👛 지붕 짝꿍 찰흙 청소 초인종 친구 카레/🍛 케이크/🍰 코알라/🐨 콧물 탁자 태권도 텃밭 팔찌 포크 피리 필통 하품/🥱 해적/🏴‍☠️ 햄스터/🐹 헬멧/⛑️ 호루라기 화가/🧑‍🎨 가게 가로등 가루 가마솥 가을 간식 갈매기 감기 개미/🐜 거북선 거품 겨울 계단 고개 고무신 고슴도치 곰돌이 공기 과일 교실 구멍 국자 군고구마 귀신/👻 귤껍질 그릇 그림자 기름 기침 길고양이 깃발 까마귀 까치 꽃병 꽃잎 꿀떡 나뭇잎 나침반/🧭 낚시 날개 냉면 너구리 노란색 놀이 눈사람 다람쥐 단추 달력/📅 담요 대추 도서관 도자기 돈가스 동굴 동물원 두꺼비 뒷마당 들판 등대 땅콩 떡국 떡볶이 마법사/🧙 막대기 만두 망아지 머리카락 모래성 목도리 무지개 문어 물병 미끄럼틀 미술관 바닷가 바위/🪨 박수/👏 반바지 발가락 밤송이 방석 배낭 백조/🦢 버스표 벌집 베짱이 별님 병원 보물/💰 복숭아 볼링/🎳 부모님 분필 비밀 빗자루 빵집 뽀뽀 사냥꾼 사탕수수 산타 상어/🦈 새끼줄 색연필 생일 선풍기 설거지 성냥 세수 소라 소시지 손바닥 송편 수레 수염 스웨터 시금치 시장 썰매장 아이스크림 아저씨 아줌마 악기 안경집 애벌레/🐛 야자수/🌴 약국 양동이 어묵/🍢 언니 얼룩소 엉덩이 여름 연꽃/🪷 연필깎이 오두막 오빠 옥수수 올챙이 왕관/👑 요요/🪀 우산 운동화 웃음 이모 이야기 인사 자전거포 장난감 장화/🥾 저녁 전봇대 점심 젤리 조끼 종소리 주사위 줄무늬 지도/🗺️ 지팡이 짜장면 참기름 책장 천둥 체육관 초코우유 카드 캠핑 코끼리 콩국수 크레용 탁구/🏓 토끼풀 통나무 튜브 파란색 팥빙수 편지/✉️ 포도주스 풀밭 풍차 피아노 하루 학원 할로윈 해바라기 해파리 햇살 허리 호떡 호두 화장품 회오리 흙탕물';
 CHG.forEach((V,vi)=>{ const g=1001+vi; CHORDER.push(g); const PALC=['#B8402A','#2C6E8C','#3E7F6F','#7A3E6A'];
-  GRADES[g]={name:V[0],han:String(vi+1),step:'한글 놀이 '+(vi+1),sub:V[1],color:V[2],subj:'ch',rel:'cho',units:V[3].map((U,k)=>{
+  GRADES[g]={name:V[0],han:String(vi+1),step:'한글 보드게임 '+(vi+1),sub:V[1],color:V[2],subj:'ch',rel:'cho',units:V[3].map((U,k)=>{
     const items=U[1].split('|').map(x=>{ const a=x.split(':'); return {rel:'cho',w:a[0],e:a[1],d:a[2],s:'['+a[0]+']',c:chChoOf(a[0])}; });
     const words=items.map(it=>({w:it.w,d:it.e+' '+it.d}));
     const facts=items.map(it=>({q:it.e+' '+it.c,a:it.w}));
     let sl=items.map(it=>it.c[0]).slice(0,5); sl.push('★');
     return {id:'tt'+(vi+1)+'-'+(k+1),kind:'wd',rel:'cho',g,sem:2,num:k+1,title:U[0],color:PALC[k%4],ko:'보드게임 3판 · 이 주제 낱말이 많이 나와요',kshow:items.slice(0,5).map(it=>it.c).join(' · '),items,words,chars:[],games:[],seals:sl,facts,fact:()=>RP(facts)}; })}; });
-SUBJ.ch={name:'한글 놀이',sub:'초성 땅따먹기 · 초성 글자판 모으기',mark:'ㄱㄴ',order:CHORDER,color:'#D9480F'};
+SUBJ.ch={name:'한글 보드게임',sub:'부엉이랑 낱말 한 판 · 공부가 아니라 놀이예요' /* CHPLAY 2026-11-22 */,mark:'ㄱㄴ',order:CHORDER,color:'#D9480F'};
 CHORDER.forEach(g=>ALLG.push(g));
 REVGROUP[1001]=[]; REVGROUP[1002]=[];
 /* ===== 한글 놀이 끝 ===== */
@@ -13293,7 +13295,8 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
    오늘의 학습 → 📅 공부 달력 → 📚 책장 → 과목 살펴보기(접어 둠, 눌러서 열고 닫아요) */
 (function () {
   const css = document.createElement('style');
-  css.textContent = '.subjfold{margin:14px 0}.subjfold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:4px 2px;font-weight:800;font-size:1.1rem;touch-action:manipulation;-webkit-tap-highlight-color:transparent}'
+  css.textContent = '.playsubj{border-style:dashed!important;opacity:.95}'
+     +'.subjfold{margin:14px 0}.subjfold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:4px 2px;font-weight:800;font-size:1.1rem;touch-action:manipulation;-webkit-tap-highlight-color:transparent}'
     + '.subjfold>summary::-webkit-details-marker{display:none}.subjfold>summary small{font-weight:600;opacity:.65;font-size:.85rem}.subjfold>summary .chev{margin-left:auto;transition:transform .25s;font-size:1rem}.subjfold[open]>summary .chev{transform:rotate(180deg)}'
     + '.subjfold[open]>summary{margin-bottom:10px}.subjfold>section.grades{margin-top:0}';
   document.head.appendChild(css);
@@ -13306,7 +13309,12 @@ window.LIS_SQ={"In spring, it’s warm and flowers bloom.":["봄은 어떤가요
     let at = hero;
     if (cal) { at.after(cal); at = cal; }
     if (shelf) { at.after(shelf); at = shelf; }
-    const n = grades.querySelectorAll('.subjcard, .grade').length;
+    /* CHPLAY: 한글 보드게임은 공부가 아니라 놀이 — 과목 수에서 빼고 맨 아래로 내려요 */
+    const chb = grades.querySelector('[data-go="subj:ch"]');
+    if (chb) { chb.classList.add('playsubj'); grades.appendChild(chb);
+      const nb = chb.querySelector('.nb'); if (nb) nb.textContent = '🎲 놀이예요 (공부 아님) · 주제 12개';
+      const gb = chb.querySelector('.gbar'); if (gb) gb.remove(); }
+    const n = grades.querySelectorAll('.subjcard, .grade').length - (chb ? 1 : 0);
     const d = document.createElement('details'); d.className = 'subjfold';
     d.innerHTML = '<summary><span>📚 과목 살펴보기</span><small>' + (n ? n + '과목' : '') + '</small><span class="chev">▼</span></summary>';
     at.after(d); d.appendChild(grades);
@@ -15931,7 +15939,9 @@ const EBSBOOKS = [
     const skey = f => { try { if (typeof GS === 'function') return GS(f.g); return Object.keys(SUBJ).find(k => (SUBJ[k].order || []).map(String).includes(String(f.g))) || ''; } catch (e) { return ''; } };
     const maxU = (() => { try { return Math.max(2, Object.keys(SUBJ).filter(k => SUBJ[k].ready !== false && (typeof TODAYON !== 'function' || TODAYON(k))).length); } catch (e) { return 6; } })();
     const seen = new Set(), units = [], usedS = new Set();
-    cand.concat(learned.reverse()).forEach(c => { if (units.length >= maxU || seen.has(c.id)) return; const f = find(c.id); if (!f) return; const sk = skey(f); if (sk && usedS.has(sk)) return; seen.add(c.id); usedS.add(sk);
+    cand.concat(learned.reverse()).forEach(c => { if (units.length >= maxU || seen.has(c.id)) return; const f = find(c.id); if (!f) return; const sk = skey(f);
+      if (sk === 'ch') return; /* BDLNOGAME 2026-11-22: 보드게임은 놀이라서 보따리(복습)에 넣지 않아요 */
+      if (sk && usedS.has(sk)) return; seen.add(c.id); usedS.add(sk);
       const L = (() => { try { const ok = typeof slotsOf === 'function' ? slotsOf(f.u) : SLOTS; return ok.map(String).includes(String(c.l)) ? c.l : ok[1] != null ? ok[1] : ok[0]; } catch (e) { return 1; } })();
       units.push({ k: 'unit', id: c.id, g: f.g, ui: f.ui, l: L, ic: '📘', t: (subjOf(f.u, f.g) ? subjOf(f.u, f.g) + ' · ' : '') + (f.u.title || '다시 풀기'), s: c.why ? '이번 주 약했던 곳 · ' + c.why : '이번 주 배운 것 복습', min: 7, go: 'today:' + f.g + ':' + f.ui + '_' + L }); });
     parts.push(...units);
@@ -15944,7 +15954,17 @@ const EBSBOOKS = [
             return '<p class="mgnext">\u{1F3AE} 보따리 칸을 ' + n + '개 더 끝내면 게임이 열려요.</p>'; } } } catch (e) {}
       return _gb.apply(this, arguments); }; }
   function bag() { if (!isSun()) return null; const k = dkP(new Date()); if (!STATE.bdl || STATE.bdl.d !== k) { STATE.bdl = make(); try { persist(); } catch (e) {} }
-    const B = STATE.bdl; if (!B.mixLast && !(B.gr || []).length && B.parts) { const u = B.parts.filter(p => p.k !== 'mix'), m = B.parts.filter(p => p.k === 'mix'); B.parts = u.concat(m); B.mixLast = 1; try { persist(); } catch (e) {} }
+    const B = STATE.bdl;
+    /* BDLNOGAME2 2026-11-22: 이미 만들어진 보따리에 한글 보드게임 칸이 들어 있으면 빼요 (놀이는 학습이 아니에요) */
+    if (B.parts && !B.nog) {
+      const isGame = p => { try { if (p.k !== 'unit') return false; const ff = find(p.id); if (!ff) return false;
+        const sk = (typeof GS === 'function') ? GS(ff.g) : Object.keys(SUBJ).find(x => (SUBJ[x].order || []).map(String).includes(String(ff.g)));
+        return sk === 'ch'; } catch (e) { return false; } };
+      const kept = B.parts.filter(p => !isGame(p));
+      if (kept.length && kept.length !== B.parts.length) B.parts = kept;
+      B.nog = 1; try { persist(); } catch (e) {}
+    }
+    if (!B.mixLast && !(B.gr || []).length && B.parts) { const u = B.parts.filter(p => p.k !== 'mix'), m = B.parts.filter(p => p.k === 'mix'); B.parts = u.concat(m); B.mixLast = 1; try { persist(); } catch (e) {} }
     return B; }
   /* 한 칸이 끝났는지 */
   function isDone(p) { const R = STATE.rv || {}, n = dayN(new Date()), today = dkP(new Date()); try {
