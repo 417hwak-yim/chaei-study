@@ -8909,12 +8909,17 @@ const todayN=()=>{ const n=new Date(), i=Math.max(0,Math.round((new Date(n.getFu
   { const pk=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'), pin=NEWS.find(v=>v.pin===pk); if(pin) return pin; }
   let base=NEWS.find(v=>v.id===NORD[i]&&!v.pin);
   if(!base){ const E=NEWS.filter(v=>!NTIL[v.id]); base=E[i%E.length]||NEWS[0]; }
+  /* NEWSLOCK 2026-11-23: 오늘 이슈는 하루 동안 그대로예요. 읽으면 ✅ 읽음으로 남고, 새 이슈는 내일 나와요 */
+  const pk2=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+  try{ const L=STATE.newsDay; if(L&&L.d===pk2){ const f=NEWS.find(x=>x.id===L.id); if(f) return f; } }catch(e){}
+  let out=base;
   try{ const R=(typeof STATE!=='undefined'&&STATE.news)||{};
-    if(base&&R[base.id]){
-      for(const id of NORD){ const v=NEWS.find(x=>x.id===id); if(v&&!R[v.id]) return v; }
-      for(const v of NEWS){ if(!R[v.id]) return v; }
-    } }catch(e){}
-  return base; };
+    if(base&&R[base.id]){ let got=null;
+      for(const id of NORD){ const v=NEWS.find(x=>x.id===id); if(v&&!R[v.id]){ got=v; break; } }
+      if(!got) for(const v of NEWS){ if(!R[v.id]){ got=v; break; } }
+      if(got) out=got; } }catch(e){}
+  try{ STATE.newsDay={d:pk2,id:out.id}; persist(); }catch(e){}
+  return out; };
 const readSet=()=>(STATE.news=STATE.news||{});
 const fmt=d=>{ const a=d.split('-'); return (+a[1])+'월 '+(+a[2])+'일'; };
 const sents=t=>t.split(/(?<=[.?!])\s+/).filter(Boolean);
@@ -8939,7 +8944,11 @@ function newsView(id){
   h+='<details class="nwlist whylist"><summary><b>📰 다른 이슈도 읽어 봐요</b> <small style="font-weight:400;opacity:.65">(모두 '+NEWS.length+'편 · 눌러서 펼쳐요)</small></summary>'+others.map(x=>'<button class="nwitem'+(R[x.id]?' did':'')+'" data-go="news:'+x.id+'"><span class="nwic">'+x.i+'</span><span><b>'+esc(x.t)+'</b><small>'+x.c+' · '+(x.ev?'꾸준한 이슈':fmt(x.d))+(x===todayN()?' · 오늘의 이슈':'')+'</small></span><span class="nwchk">'+(R[x.id]?'✅':'›')+'</span></button>').join('')+'</details>';
   show(h,NCOL);
   THINK.bind($app,'n:'+N.id,N.th.length);
-  const ok=document.getElementById('nwok'); if(ok) ok.onclick=()=>{ if(!THINK.nudge($app,'n:'+N.id,N.th.length,document.getElementById('nwend'))) return; R[N.id]=dkeyN(); persist(); try{ sfx('done'); }catch(e){} document.getElementById('nwend').innerHTML=doneTag(R[N.id]); };
+  const ok=document.getElementById('nwok'); if(ok) ok.onclick=()=>{ /* NEWSLOCK: 한 번만 눌러도 읽음으로 남겨요 (생각 적기는 권하기만) */
+    const full=THINK.nudge($app,'n:'+N.id,N.th.length,document.getElementById('nwend'));
+    R[N.id]=dkeyN(); persist(); try{ sfx('done'); }catch(e){}
+    const end=document.getElementById('nwend'), msg=end&&end.querySelector('.thkmsg');
+    if(end){ end.innerHTML=doneTag(R[N.id]); if(!full&&msg) end.appendChild(msg); } };
   const rb=document.getElementById('nwread'); if(rb) rb.onclick=()=>newsRead(rb);
 }
 const dkeyN=()=>{ const n=new Date(); return n.getFullYear()+'-'+(n.getMonth()+1)+'-'+n.getDate(); };
@@ -9048,7 +9057,7 @@ try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v===
     if(host.dataset.asked){ return true; }   /* 필수가 아니에요: 한 번 권했으면 그냥 넘어가요 */
     host.dataset.asked='1';
     let first=null; qs.forEach(q=>{ const e=!filled(q.querySelector('textarea').value)&&!recd(key,+q.dataset.i); if(e&&!first) first=q; });
-    if(msgHost){ let m=msgHost.querySelector('.thkmsg'); if(!m){ m=document.createElement('p'); m.className='thkmsg'; msgHost.appendChild(m); } m.style.color='#8A5A00'; m.textContent='💭 내 생각을 적거나 🎙 녹음해 보면 더 좋아요! 그냥 넘어가려면 ‘다 읽었어요’를 한 번 더 눌러요.'; }
+    if(msgHost){ let m=msgHost.querySelector('.thkmsg'); if(!m){ m=document.createElement('p'); m.className='thkmsg'; msgHost.appendChild(m); } m.style.color='#8A5A00'; m.textContent='💭 읽음으로 표시했어요. 내 생각도 적거나 🎙 녹음해 보면 더 좋아요!'; }
     if(first){ try{ first.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} setTimeout(()=>{ try{ first.querySelector('textarea').focus({preventScroll:true}); }catch(e){} },400); }
     return false; }
   window.THINK={html,bind,ok,nudge,stopRec};
@@ -14165,7 +14174,11 @@ function bodyView(id){
       fb.hidden=false; fb.className='bdfb '+(ok?'ok':'no'); fb.textContent=(ok?'⭕ 맞았어요! ':'💡 다시 생각해 봐요. 답은 '+(q[1]?'O':'X')+'예요. ')+fill(q[2]);
       try{ sfx(ok?'ok':'no'); }catch(e){} }); });
   THINK.bind($app,'b:'+x.id,x.th.length);
-  const ok=document.getElementById('bdok'); if(ok) ok.onclick=()=>{ if(!THINK.nudge($app,'b:'+x.id,x.th.length,document.getElementById('bdend'))) return; R[x.id]=dk(); persist(); try{ sfx('done'); }catch(e){} document.getElementById('bdend').innerHTML=doneTag(R[x.id]); };
+  const ok=document.getElementById('bdok'); if(ok) ok.onclick=()=>{ /* READONCE 2026-11-23: 한 번만 눌러도 읽음으로 남겨요 */
+  const full=THINK.nudge($app,'b:'+x.id,x.th.length,document.getElementById('bdend'));
+  R[x.id]=dk(); persist(); try{ sfx('done'); }catch(e){}
+  const end=document.getElementById('bdend'), msg=end&&end.querySelector('.thkmsg');
+  if(end){ end.innerHTML=doneTag(R[x.id]); if(!full&&msg) end.appendChild(msg); } };
 }
 
 /* 화면 이동: body → 목록, body:a1 → 글 */
@@ -14229,7 +14242,8 @@ try{ const o=JSON.parse(sessionStorage.getItem('e3-view')||'null'); if(o&&o.v===
   /* 오늘 읽을 글이 이미 읽은 글이면(다시 읽기) ‘오늘 다시 읽었어요’ 단추를 놓아요 */
   { const _bv=B.bodyView; const wrap=function(id){ const r=_bv.apply(this,arguments); try{ const P=plan(); if(P&&P.id===id&&!P.ok){ const end=document.getElementById('bdend');
         if(end&&!document.getElementById('bdok')){ end.insertAdjacentHTML('beforeend','<p style="margin:10px 0 8px">🔁 오늘은 이 글을 다시 읽는 날이에요</p><button class="btn main" type="button" id="bdre" style="--u:#D9668F">✔ 오늘 다시 읽었어요</button>');
-          document.getElementById('bdre').onclick=()=>{ if(window.THINK&&!THINK.nudge($app,'b:'+id,(BODY.find(x=>x.id===id)||{th:[]}).th.length,end)) return; finish(); try{ sfx('done'); }catch(x){} end.innerHTML='<span class="bddone">✅ 오늘 다시 읽었어요!</span>'; }; } } }catch(e){} return r; };
+          document.getElementById('bdre').onclick=()=>{ /* READONCE 2026-11-23 */ try{ if(window.THINK) THINK.nudge($app,'b:'+id,(BODY.find(x=>x.id===id)||{th:[]}).th.length,end); }catch(e){}
+      finish(); try{ sfx('done'); }catch(x){} end.innerHTML='<span class="bddone">✅ 오늘 다시 읽었어요!</span>'; }; } } }catch(e){} return r; };
     const _ri=routeInner; routeInner=function(v,a,b){ if(v==='body'&&a){ if(canSpeak) try{ speechSynthesis.cancel(); }catch(e){} VIEW='body'; return wrap(a); } return _ri.apply(this,arguments); }; }
   /* 오늘의 학습 목록에 카드 (이틀에 한 번) */
   { const _st=start; start=function(subj){ const r=_st.apply(this,arguments);
